@@ -1,0 +1,477 @@
+/* --- PREMIUM VARIABLE MATRIX, FONTS & APPS TOKENS --- */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg-olive: #f7f9f4;         /* Super light modern mobile canvas tint */
+    --primary-olive: #556b2f;    /* Premium Corporate Accent Green */
+    --mehrum: #800020;           /* Brand Prime Highlight / Mehrum */
+    --mehrum-hover: #600018;
+    --text-black: #0f172a;       /* Clean Obsidian Black for flawless mobile contrast */
+    --text-gray: #64748b;        /* Medium Slate Tint for subtitle layers */
+    --white: #ffffff;
+    
+    /* Flutter Engine UI Equivalents */
+    --app-radius-sheet: 24px;    /* Rounded bottom sheet feel */
+    --app-radius-card: 18px;     /* Soft aesthetic structural curves */
+    --app-radius-chip: 12px;     /* Small dynamic nodes/inputs */
+    --app-elevation-soft: 0 4px 16px rgba(15, 23, 42, 0.03);
+    --app-elevation-high: 0 10px 32px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.02);
+    --ios-spring-curve: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); /* Lag-free native fluid animation */
+}
+
+/* --- STRUCTURAL MOBILE APP RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Removes ugly desktop web flashing box on tap */
+}
+
+body {
+    background-color: var(--bg-olive);
+    color: var(--text-black);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 4%;
+    min-height: 85vh;
+    width: 100%;
+}
+
+/* --- SEARCH & FILTER TOP BAR EMBED --- */
+.search-filter-wrapper {
+    background: var(--white);
+    padding: 16px;
+    border-radius: var(--app-radius-card);
+    box-shadow: var(--app-elevation-high);
+    margin-bottom: 24px;
+    border: 1px solid rgba(15, 23, 42, 0.03);
+}
+
+.search-bar-core {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #f8fafc;
+    padding: 8px 16px;
+    border-radius: 30px; /* Fully rounded search capsules like Airbnb/Zomato */
+    border: 1px solid #e2e8f0;
+    transition: var(--ios-spring-curve);
+}
+
+.search-bar-core:focus-within {
+    border-color: var(--primary-olive);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(85, 107, 47, 0.12);
+}
+
+.search-bar-core i { 
+    color: var(--text-gray); 
+    font-size: 16px; 
+    transition: color 0.2s;
+}
+
+.search-bar-core:focus-within i {
+    color: var(--primary-olive);
+}
+
+.search-bar-core input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 4px;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    color: var(--text-black);
+}
+
+.search-bar-core input::placeholder {
+    color: #94a3b8;
+}
+
+/* --- INTERACTIVE TACTILE ACTION BUTTONS --- */
+.icon-btn {
+    background: var(--white);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--app-radius-chip);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #475569;
+    transition: var(--ios-spring-curve);
+    flex-shrink: 0;
+}
+
+.icon-btn:active {
+    transform: scale(0.92); /* Instant physical press feedback down */
+}
+
+.icon-btn:hover {
+    border-color: var(--primary-olive);
+    color: var(--primary-olive);
+    background: var(--bg-olive);
+}
+
+.icon-btn.listening {
+    background: #ef4444;
+    color: var(--white);
+    border-color: #ef4444;
+    animation: pulse 1.5s infinite;
+}
+
+/* --- AI HORIZONTAL FLOATING CHIPS BAR --- */
+.ai-tags-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    overflow-x: auto;
+    padding: 4px 2px 12px 2px;
+    white-space: nowrap;
+    align-items: center;
+    scrollbar-width: none; /* Hide for Firefox */
+    -webkit-overflow-scrolling: touch; /* Butter smooth inertial kinetic scrolling on iOS */
+}
+
+.ai-tags-container::-webkit-scrollbar {
+    display: none; /* Hide default thick track lanes */
+}
+
+.ai-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--mehrum);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+/* Redesigned into App Horizontal Selection Segments */
+.filter-tag {
+    background: var(--white);
+    border: 1px solid #f1f5f9;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--ios-spring-curve);
+    color: #475569;
+    flex-shrink: 0;
+    box-shadow: var(--app-elevation-soft);
+}
+
+.filter-tag:active {
+    transform: scale(0.95);
+}
+
+.filter-tag:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.filter-tag.active {
+    background: var(--primary-olive);
+    color: var(--white);
+    border-color: var(--primary-olive);
+    box-shadow: 0 6px 16px rgba(85, 107, 47, 0.2);
+}
+
+/* --- LISTINGS NATIVE APP FEED GRID --- */
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+}
+
+/* --- FLUTTER CARD STYLING LAYER --- */
+.pg-card {
+    background: var(--white);
+    border-radius: var(--app-radius-card);
+    overflow: hidden;
+    box-shadow: var(--app-elevation-soft);
+    transition: var(--ios-spring-curve);
+    position: relative;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.pg-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--app-elevation-high);
+}
+
+.card-image-box {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+}
+
+.card-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--mehrum);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+    z-index: 1;
+    box-shadow: 0 4px 10px rgba(128, 0, 32, 0.25);
+}
+
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* --- PRICE DISCLOSURE ROW --- */
+.price-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.original-price {
+    color: #94a3b8;
+    text-decoration: line-through;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.current-price {
+    color: var(--text-black);
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+.saved-badge {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-left: auto;
+}
+
+.pg-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text-black);
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- RATINGS & GEO NODES --- */
+.rating-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.rating-row i { color: #f59e0b; } /* Deep Gold star */
+.rating-val { color: var(--text-black); }
+.reviews-count { color: var(--text-gray); font-weight: 500; }
+
+.location-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.location-info i {
+    color: var(--primary-olive);
+    margin-top: 2px;
+}
+
+.directions-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--primary-olive);
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    width: fit-content;
+    transition: opacity 0.2s;
+}
+
+/* --- SLICK HORIZONTAL CHIPS INSIDE CARDS --- */
+.amenities-box {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    margin-top: auto;
+}
+
+.amenity-tag {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* --- PRIMARY ACTION BUTTON CONSOLES --- */
+.card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.btn-details {
+    border: 1.5px solid var(--mehrum);
+    background: var(--white);
+    color: var(--mehrum);
+    padding: 12px;
+    border-radius: var(--app-radius-chip);
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--ios-spring-curve);
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-details:active {
+    transform: scale(0.96);
+}
+
+.btn-details:hover {
+    background: #fff5f5;
+}
+
+.btn-inquiry {
+    background: var(--mehrum);
+    color: var(--white);
+    border: none;
+    padding: 12px;
+    border-radius: var(--app-radius-chip);
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--ios-spring-curve);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(128, 0, 32, 0.2);
+}
+
+.btn-inquiry:active {
+    transform: scale(0.96);
+}
+
+.btn-inquiry:hover {
+    background: var(--mehrum-hover);
+    box-shadow: 0 6px 18px rgba(128, 0, 32, 0.3);
+}
+
+/* --- LOADER / APP SKELETON STATES --- */
+.loader-text {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-gray);
+    font-weight: 700;
+    font-size: 15px;
+}
+
+/* --- ANIMATION KEYFRAMES & MOBILE OVERLAYS --- */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { transform: scale(1.04); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* --- MOBILE ADAPTIVE ENGINE BREAKPOINTS --- */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 16px 16px;
+    }
+    
+    .search-filter-wrapper {
+        padding: 14px;
+        margin-bottom: 20px;
+        border-radius: var(--app-radius-card);
+    }
+    
+    .listings-grid {
+        grid-template-columns: 1fr; /* Rigid stack view like premium app feeds */
+        gap: 16px;
+    }
+    
+    .card-image-box {
+        height: 200px;
+    }
+    
+    .card-content {
+        padding: 16px;
+    }
+    
+    .filter-tag {
+        padding: 8px 16px; /* Optimized tap target padding rules */
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .card-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}

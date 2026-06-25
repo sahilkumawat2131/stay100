@@ -1,0 +1,323 @@
+/* --- StayPremium System Color Variables & Root Tokens --- */
+:root {
+    --primary-font: 'Plus Jakarta Sans', sans-serif;
+    --background-base: #f8fafc;
+    --surface-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --brand-accent: #b91c1c; /* Premium Mehrum Theme */
+    --accent-success: #15803d;
+    --border-token: #e2e8f0;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--primary-font);
+    background-color: var(--background-base);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px 80px 20px;
+}
+
+/* --- Search & Control Bar Layout Components --- */
+.search-filter-wrapper {
+    margin-bottom: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.search-bar-core {
+    background: var(--surface-card);
+    border: 1px solid var(--border-token);
+    border-radius: 16px;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.search-bar-core i {
+    color: var(--text-muted);
+    font-size: 18px;
+}
+
+.search-bar-core input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 16px;
+    font-family: var(--primary-font);
+    font-size: 15px;
+    color: var(--text-main);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.icon-btn:hover {
+    background: #f1f5f9;
+}
+
+/* --- Horizontal Scrolling Filter Badges Layer --- */
+.ai-tags-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none; /* Firefox masking */
+}
+
+.ai-tags-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari layout masking */
+}
+
+.ai-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brand-accent);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-tag {
+    background: var(--surface-card);
+    border: 1px solid var(--border-token);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-tag:hover {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+.filter-tag.active {
+    background: var(--brand-accent);
+    border-color: var(--brand-accent);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+}
+
+/* --- Reactive Listings CSS Presentation Layer --- */
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.room-card {
+    background: var(--surface-card);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-token);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-image-box {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: #e2e8f0;
+}
+
+.card-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--brand-accent);
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.current-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.saved-badge {
+    color: var(--accent-success);
+    background: #f0fdf4;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.room-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+.rating-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.rating-row i {
+    color: #f59e0b;
+}
+
+.rating-val {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.reviews-count {
+    color: var(--text-muted);
+}
+
+.location-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.directions-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.amenities-box {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-token);
+}
+
+.amenity-tag {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-details, .btn-inquiry {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: var(--primary-font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.btn-details {
+    background: transparent;
+    border: 1px solid var(--border-token);
+    color: var(--text-muted);
+}
+
+.btn-details:hover {
+    background: #f8fafc;
+    color: var(--text-main);
+    border-color: var(--text-muted);
+}
+
+.btn-inquiry {
+    background: var(--brand-accent);
+    border: none;
+    color: #ffffff;
+}
+
+.btn-inquiry:hover {
+    background: #991b1b;
+}
+
+.loader-text {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 0;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+}

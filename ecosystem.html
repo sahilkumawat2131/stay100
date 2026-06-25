@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Business Ecosystem | Stay100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* Base Palette Uniform Mapping */
+        :root {
+            --primary-brand: #ff385c; /* Matching your index.css branding */
+            --dark-surface: #2b3618;  /* Theme depth element */
+            --olive-light: rgba(85, 107, 47, 0.08);
+            --bg-slate: #f4f6f0;
+            --card-surface: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-muted: #6b7280;
+            --border-line: #e5e7eb;
+        }
+
+        /* Ecosystem Content Layout Structure */
+        .ecosystem-section {
+            margin: 20px 0 40px 0;
+            width: 100%;
+        }
+
+        .ecosystem-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .ecosystem-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .ecosystem-header p {
+            color: var(--text-muted);
+            font-size: 15px;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Core Ecosystem Visual Node Terminal */
+        .ecosystem-visual-map {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid var(--border-line);
+        }
+
+        .center-hub {
+            background: var(--primary-brand);
+            color: white;
+            padding: 18px 36px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 56, 92, 0.25);
+            z-index: 5;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Main Modules Node Distribution Matrix Grid */
+        .ecosystem-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .eco-card {
+            background: var(--card-surface);
+            border: 1px solid var(--border-line);
+            padding: 25px 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .eco-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-brand);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .eco-card.active {
+            border-color: var(--primary-brand);
+            background: rgba(255, 56, 92, 0.03);
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.05);
+        }
+
+        .eco-icon-wrapper {
+            width: 55px;
+            height: 55px;
+            background: #f7f7f7;
+            color: #444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin: 0 auto 15px auto;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .eco-card:hover .eco-icon-wrapper,
+        .eco-card.active .eco-icon-wrapper {
+            background: var(--primary-brand);
+            color: white;
+        }
+
+        .eco-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .eco-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Interactive Details Presentation Terminal */
+        .ecosystem-details-panel {
+            background: #1e2513; /* Deep Slate Olive Accent */
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .panel-icon {
+            font-size: 38px;
+            color: rgba(255,255,255,0.95);
+            background: rgba(255,255,255,0.08);
+            width: 75px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .panel-text h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .panel-text p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsive Breakpoints Adaptive Rules */
+        @media (max-width: 992px) {
+            .ecosystem-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .ecosystem-grid {
+                grid-template-columns: 1fr;
+            }
+            .ecosystem-header h1 {
+                font-size: 26px;
+            }
+            .ecosystem-details-panel {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="container">
+        
+        <section class="ecosystem-section">
+            
+            <header class="ecosystem-header">
+                <h1>The Stay100% Platform Ecosystem</h1>
+                <p>An optimized B2B operational network bridging room finders and landlords cleanly while maximizing business values for premium subscribed vendors.</p>
+            </header>
+
+            <div class="ecosystem-visual-map">
+                
+                <div class="center-hub">
+                    <i class="fa-solid fa-circle-nodes"></i> Stay100% B2B Network Core
+                </div>
+
+                <div class="ecosystem-grid">
+                    
+                    <div class="eco-card active" data-title="Free Tenant Discovery Portal" data-desc="Regular users and students get completely free access to search premium verified listings, filter accommodation data parameters, check maps data, and directly connect with landlords with zero broker transaction overhead fees." data-icon="fa-users">
+                        <div class="eco-icon-wrapper">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <h3>Free Discovery</h3>
+                        <p>Zero processing fees for search seekers. Direct on-click contact routes.</p>
+                    </div>
+
+                    <div class="eco-card" data-title="Vendor Hub Terminal" data-desc="Property owners get access to a streamlined backend workflow node system to deploy property elements, map floor specs, control media layers, and review active client inquiries." data-icon="fa-building-shield">
+                        <div class="eco-icon-wrapper">
+                            <i class="fa-solid fa-building-shield"></i>
+                        </div>
+                        <h3>Vendor Control</h3>
+                        <p>Asset cloud deployment tools, property inventory management, and lead trackers.</p>
+                    </div>
+
+                    <div class="eco-card" data-title="Vendor Premium Subscription System" data-desc="Premium vendor accounts are backed by structural tiered subscription models. Vendors choose micro plans to unlock dynamic ad exposure boosts, active system status indicators, and massive listing visibility parameters." data-icon="fa-credit-card">
+                        <div class="eco-icon-wrapper">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <h3>Vendor Subscriptions</h3>
+                        <p>Secure premium business plan choices, automated billing loops, and verified badges.</p>
+                    </div>
+
+                    <div class="eco-card" data-title="Instant Leads Routing Pipeline" data-desc="Our routing infrastructure automatically matches customer intent items and delivers real-time inquiry metrics straight to corresponding subscribed vendor hubs and notifications loops instantly." data-icon="fa-bolt">
+                        <div class="eco-icon-wrapper">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3>Smart Routing</h3>
+                        <p>Real-time inquiry allocations, client requirements capture, and targeted metrics.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="ecosystem-details-panel" id="detail-panel">
+                <div class="panel-icon" id="panel-icon-node">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="panel-text">
+                    <h2 id="panel-title-node">Free Tenant Discovery Portal</h2>
+                    <p id="panel-desc-node">Regular users and students get completely free access to search premium verified listings, filter accommodation data parameters, check maps data, and directly connect with landlords with zero broker transaction overhead fees.</p>
+                </div>
+            </div>
+
+        </section>
+        
+    </main>
+
+    <div id="dynamic-footer-container"></div>
+    <div id="dynamic-desktop-footer-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="header.js"></script>
+    <script>
+        // Interactive Engine Logic for the Ecosystem Map Nodes
+        document.querySelectorAll('.eco-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.eco-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+
+                const title = this.getAttribute('data-title');
+                const desc = this.getAttribute('data-desc');
+                const iconClass = this.getAttribute('data-icon');
+
+                document.getElementById('panel-title-node').innerText = title;
+                document.getElementById('panel-desc-node').innerText = desc;
+                document.getElementById('panel-icon-node').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            });
+        });
+    </script>
+    <script type="module" src="footer.js"></script>
+    
+</body>
+</html>

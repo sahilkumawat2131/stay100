@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services | StayPremium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* --- GLOBAL NATIVE FIT RESET --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Essential Structural Flow Alignment */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 15px 0;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .property-card { 
+            transition: transform 0.2s ease, box-shadow 0.2s ease; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            width: 100%;
+        }
+        .property-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+        }
+
+        /* --- NATIVE APP-FEEL SERVICES HERO --- */
+        .services-hero-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin: 20px 0 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            animation: fadeIn 0.5s ease-in-out;
+            word-wrap: break-word;
+        }
+        .services-hero-section h1 {
+            font-size: clamp(24px, 5vw, 38px);
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        .services-hero-section h1 span {
+            color: #4f46e5;
+        }
+        .services-hero-section p {
+            font-size: clamp(14px, 3vw, 16px);
+            color: #64748b;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* --- FEATURE SPLIT WRAPPER --- */
+        .service-highlight-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .service-vector-art {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            height: 320px;
+            background: #cbd5e1;
+            width: 100%;
+        }
+        .service-vector-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .service-info-node {
+            width: 100%;
+            word-wrap: break-word;
+        }
+        .service-info-node h2 {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        .service-info-node p {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* --- INTERNAL COMPONENTS FOR EXACT FEEL --- */
+        .card-icon-header {
+            padding: 20px 20px 10px 20px;
+        }
+        .card-icon-header i {
+            font-size: 24px;
+            color: #4f46e5;
+            background: #eeebff;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        .card-body-content {
+            padding: 0 20px 20px 20px;
+        }
+        .card-body-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 10px 0;
+        }
+        .card-body-content p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .listings-section h3 {
+            font-size: clamp(18px, 4vw, 22px);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .service-action-btn {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s ease;
+            display: inline-block;
+        }
+        .service-action-btn:hover {
+            background: #4338ca;
+        }
+
+        /* --- RESPONSIVE MEDIA BREAKPOINTS --- */
+        @media (max-width: 768px) {
+            .service-highlight-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .service-vector-art {
+                height: 240px;
+            }
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="container">
+        
+        <section class="services-hero-section">
+            <h1>Premium <span>Living Ecosystems</span></h1>
+            <p>Explore our end-to-end hospitality models and digital management matrices engineered to deliver flawless accommodation deals instantly.</p>
+        </section>
+
+        <section class="service-highlight-container">
+            <div class="service-vector-art">
+                <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80" alt="StayPremium Hospitality Experience">
+            </div>
+            <div class="service-info-node">
+                <h2>End-to-End Property Management</h2>
+                <p>We provide absolute verification, professional upkeep, and automated operational support for all listed spaces. Property owners get seamless dashboards while residents get uncompromised services.</p>
+                <p>From smart security logs to regular automated cleaning rosters, we streamline the entire standard of living loop effortlessly.</p>
+                <a href="#" class="service-action-btn">Request Custom Desk Setup</a>
+            </div>
+        </section>
+
+        <section class="listings-section" style="margin-bottom: 40px;">
+            <h3>Our Accommodation Verticals</h3>
+            <div class="listings-grid">
+                
+                <div class="property-card">
+                    <div class="card-icon-header">
+                        <i class="fa-solid fa-hotel"></i>
+                    </div>
+                    <div class="card-body-content">
+                        <h4>Executive PG Setups</h4>
+                        <p>Fully managed custom single/sharing rooms bundled with chef-crafted meals, deep housekeeping cycles, and corporate networking areas.</p>
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="card-icon-header">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="card-body-content">
+                        <h4>Luxury Studio Flats</h4>
+                        <p>Independent private studio apartments designed for couples or senior professionals looking for uninterrupted work-from-home spaces.</p>
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="card-icon-header">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="card-body-content">
+                        <h4>Tech-Driven Security</h4>
+                        <p>Biometric authentication matrix, real-time guest visitor management logs, and immediate response help desk assets on active standby.</p>
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="card-icon-header">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="card-body-content">
+                        <h4>Instant Maintenance Vault</h4>
+                        <p>Dedicated on-call electrical, plumbing, and tech-hardware support channels. Get any utility failure fixed within a 2-hour bracket window.</p>
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="card-icon-header">
+                        <i class="fa-solid fa-wifi"></i>
+                    </div>
+                    <div class="card-body-content">
+                        <h4>Enterprise Connectivity</h4>
+                        <p>High-speed internet mesh networks mapped across all private rooms and communal lounges to keep your workflow seamlessly synced.</p>
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="card-icon-header">
+                        <i class="fa-solid fa-handshake"></i>
+                    </div>
+                    <div class="card-body-content">
+                        <h4>Zero Brokerage Direct Deals</h4>
+                        <p>Complete transparent onboarding structures with absolute direct billing channels, secure digital documentation, and instant refunds.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <div id="dynamic-footer-container"></div>
+    <div id="dynamic-desktop-footer-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="header.js"></script>
+    <script type="module" src="footer.js"></script>
+</body>
+</html>

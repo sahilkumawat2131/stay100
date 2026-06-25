@@ -1,0 +1,406 @@
+/* ========================================================================= */
+/* FLUTTER APPBOUND DESIGN SYSTEM TOKENS (NATIVE FEEL)                      */
+/* ========================================================================= */
+:root {
+    --primary-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --background-base: #f7f9f4;       /* Canvas light standard color */
+    --surface-card: #ffffff;
+    --text-main: #0f172a;             /* Rich Obsidian App Black */
+    --text-muted: #64748b;            /* High accessibility contrast text gray */
+    --brand-accent: #b91c1c;          /* Premium Mehrum Theme */
+    --brand-accent-light: #fef2f2;
+    --border-token: #e2e8f0;
+    
+    /* Flutter Framework Shadow & Blur Matrices */
+    --shadow-sm: 0 4px 20px rgba(15, 23, 42, 0.02);
+    --shadow-md: 0 12px 32px -8px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.02);
+    --shadow-premium: 0 20px 40px rgba(15, 23, 42, 0.08);
+    
+    /* Cupertino (iOS) Shape Smoothness */
+    --radius-sm: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-pill: 100px;
+    
+    /* Linear Spring Physics (iOS-like tactile speed) */
+    --transition-smooth: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    --touch-response: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- STRUCTURAL APP CANVAS RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Browser tapping flash framework removal */
+}
+
+body {
+    font-family: var(--primary-font);
+    background-color: var(--background-base);
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* --- FLUTTER CORE COMPONENT LAYOUT --- */
+.profile-container {
+    max-width: 1240px;
+    margin: 40px auto 100px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* --- PROFILE SIDEBAR DASHBOARD (FLUTTER SHEET) --- */
+.profile-sidebar {
+    background: var(--surface-card);
+    border: 1px solid var(--border-token);
+    border-radius: var(--radius-xl);
+    padding: 35px 28px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Top Subtle Identity Divider */
+.avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 28px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    margin-bottom: 18px;
+    transition: var(--touch-response);
+}
+
+.avatar-wrapper:active {
+    transform: scale(0.95);
+}
+
+.profile-avatar-icon {
+    font-size: 90px;
+    color: #cbd5e1;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-radius: 50%;
+    display: block;
+    box-shadow: var(--shadow-sm);
+}
+
+.user-name-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0 0 10px 0;
+    letter-spacing: -0.6px;
+    line-height: 1.2;
+}
+
+/* Native Chip UI Badge */
+.uid-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 6px 16px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(15, 23, 42, 0.02);
+}
+
+.uid-label {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+}
+
+.uid-value {
+    color: var(--text-main);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Metadata Parameters Vector Stack */
+.user-meta-info {
+    padding: 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 4px 0;
+}
+
+.meta-icon-box {
+    width: 42px;
+    height: 42px;
+    background: var(--brand-accent-light);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-accent);
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 1px solid rgba(185, 28, 28, 0.05);
+}
+
+.meta-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.meta-text label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+}
+
+.meta-text span {
+    font-size: 14.5px;
+    color: var(--text-main);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Tactile Logout Button Framework */
+.btn-logout {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid #fee2e2;
+    color: #dc2626;
+    border-radius: var(--radius-lg);
+    font-family: var(--primary-font);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-logout:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.btn-logout:active {
+    transform: scale(0.97); /* Tactile click engine push back */
+}
+
+/* --- CONTENT PANEL TABS NAVIGATION (SLIDING SEGMENT) --- */
+.profile-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.profile-tabs-nav {
+    display: flex;
+    gap: 4px;
+    background: #edf2f7;
+    padding: 6px;
+    border-radius: var(--radius-lg);
+    width: fit-content;
+    border: 1px solid rgba(15, 23, 42, 0.02);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 24px;
+    font-family: var(--primary-font);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+}
+
+/* Active Segment Floating Standard */
+.tab-btn.active {
+    background: var(--surface-card);
+    color: var(--brand-accent);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.tab-btn:active {
+    transform: scale(0.96);
+}
+
+/* Panels Rendering Container */
+.tab-panel {
+    display: none;
+    background: var(--surface-card);
+    border: 1px solid var(--border-token);
+    border-radius: var(--radius-xl);
+    padding: 35px;
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-panel.active {
+    display: block;
+    animation: appSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panel-header {
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border-token);
+    padding-bottom: 18px;
+}
+
+.panel-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+.panel-subtitle {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.panel-list-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Dynamic Grid Layout Injection for Property Cards */
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* App Stream State Loaders */
+.panel-loader {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    font-weight: 600;
+}
+
+.panel-loader i {
+    font-size: 26px;
+    color: var(--brand-accent);
+    animation: spin 1s linear infinite;
+}
+
+/* --- STRUCTURED PREMIUM COMPONENT CARD --- */
+.item-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-token);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+
+.item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
+}
+
+.item-card:active {
+    transform: scale(0.99);
+}
+
+/* ========================================================================= */
+/* SYSTEM ANIMATIONS & RESPONSIVE BREAKPOINTS ENGINE                         */
+/* ========================================================================= */
+@keyframes appSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tablet & Mobile Screens Conversion Matrix */
+@media (max-width: 992px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+        margin: 24px auto;
+        gap: 24px;
+        padding: 0 16px;
+    }
+    
+    .profile-sidebar {
+        padding: 28px 20px;
+        border-radius: var(--radius-lg);
+    }
+    
+    .profile-tabs-nav {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .profile-tabs-nav::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+    
+    .tab-panel {
+        padding: 24px 16px;
+        border-radius: var(--radius-lg);
+    }
+}

@@ -1,0 +1,401 @@
+:root {
+    --primary-olive: #556b2f;
+    --mehrum: #800020;
+    --text-black: #0f172a;       /* 100% App style rich obsidian text */
+    --text-gray: #64748b;        /* Soft text gray */
+    --bg-light: #f1f5f9;         /* Screen background common in apps */
+    --white: #ffffff;
+    --star-gold: #f59e0b;
+    --app-radius-lg: 24px;       /* Smooth app corners */
+    --app-radius-md: 16px;
+    --app-radius-sm: 12px;
+    --app-shadow: 0 4px 18px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-light);
+    margin: 0; padding: 0; 
+    color: var(--text-black);
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile tap */
+}
+
+/* Base Wrapper System - Clean native column tracking */
+.details-wrapper {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+/* Top Bar Header Layout */
+.details-top-meta {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    padding: 20px;
+    border-radius: var(--app-radius-md);
+    box-shadow: var(--app-shadow);
+    gap: 16px;
+}
+
+.meta-left h1 { 
+    margin: 0 0 6px 0; 
+    font-size: 24px; 
+    font-weight: 800; 
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+}
+
+.meta-left p { 
+    margin: 0; 
+    color: var(--text-gray); 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-size: 14px; 
+    font-weight: 500;
+}
+
+.meta-right-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+.action-round-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    width: 44px; height: 44px; 
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; color: var(--text-black);
+    transition: var(--transition);
+}
+
+.action-round-btn:active {
+    transform: scale(0.92); /* Native press feedback feel */
+}
+
+.action-round-btn.saved { color: #ef4444; border-color: #fee2e2; background: #fef2f2; }
+
+/* Premium Native Image Carousel System */
+.slider-viewport {
+    position: relative;
+    height: 480px;
+    border-radius: var(--app-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--app-shadow);
+    margin-bottom: 0px;
+    width: 100%;
+}
+
+.slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1); }
+.slide-unit { min-width: 100%; height: 100%; }
+.slide-unit img { width: 100%; height: 100%; object-fit: cover; }
+
+.slide-nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9); border: none;
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+    z-index: 5; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: var(--transition);
+    backdrop-filter: blur(8px);
+}
+
+.slide-prev { left: 16px; } .slide-next { right: 16px; }
+
+.slider-counter-badge {
+    position: absolute; bottom: 16px; right: 16px;
+    background: rgba(15, 23, 42, 0.8); color: var(--white);
+    padding: 6px 12px; border-radius: 30px; font-size: 12px;
+    font-weight: 700; z-index: 5;
+    backdrop-filter: blur(10px);
+}
+
+/* Flutter-Style Content Box Cards */
+.content-card-box {
+    background: var(--white); 
+    border-radius: var(--app-radius-lg); 
+    padding: 24px;
+    box-shadow: var(--app-shadow);
+    margin-bottom: 24px;
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+}
+
+.section-title { 
+    font-size: 18px; 
+    font-weight: 800; 
+    margin: 0 0 20px 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    color: var(--text-black);
+    letter-spacing: -0.3px;
+}
+
+.section-title i {
+    color: var(--primary-olive);
+}
+
+/* UI-GRID AMENITIES CONTROLLER - 100% COLLAPSIBLE SYSTEM */
+.facilities-grid {
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) !important; 
+    gap: 12px !important;
+    width: 100% !important;
+    max-height: 116px; /* 2 Row Cutoff default state */
+    overflow: hidden !important; 
+    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* When expanded state is active via JS toggle */
+.facilities-grid.expanded { 
+    max-height: 2000px !important; 
+}
+
+.facility-item-node {
+    background: #f8fafc !important; 
+    padding: 12px 14px !important; 
+    border-radius: var(--app-radius-sm) !important;
+    display: flex !important; 
+    align-items: center !important; 
+    gap: 10px !important; 
+    font-weight: 600 !important; 
+    font-size: 13px !important;
+    box-sizing: border-box !important; 
+    border: 1px solid #f1f5f9 !important; 
+    transition: var(--transition) !important;
+}
+
+.facility-item-node i { 
+    color: var(--primary-olive) !important; 
+    font-size: 15px !important; 
+    flex-shrink: 0 !important; 
+}
+
+.facility-item-node span {
+    color: #475569 !important;
+}
+
+/* Custom Styled View More App Button */
+.collapse-trigger-btn, #btn-facilities-expand {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #f0fdf4; 
+    border: 1px solid #dcfce7; 
+    color: var(--primary-olive); 
+    font-weight: 700;
+    cursor: pointer; 
+    margin-top: 16px; 
+    font-size: 13px; 
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: var(--transition);
+    outline: none;
+    width: auto;
+}
+
+.collapse-trigger-btn:active, #btn-facilities-expand:active {
+    transform: scale(0.96);
+}
+
+/* Technical Specification Rows Grid */
+.spec-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    gap: 12px !important;
+    margin-top: 5px !important;
+}
+
+.spec-item {
+    background: #f8fafc !important;
+    padding: 14px !important;
+    border-radius: var(--app-radius-sm) !important;
+    border: 1px solid #f1f5f9 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.spec-item strong {
+    font-size: 11px !important;
+    color: var(--text-gray) !important;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+.spec-item span {
+    font-size: 14px !important;
+    color: var(--text-black) !important;
+    font-weight: 700 !important;
+}
+
+/* Pricing Chip Section */
+.pricing-metrics-row { 
+    display: flex; 
+    gap: 32px; 
+    margin-bottom: 0px; 
+    background: #fffcf7; 
+    padding: 20px; 
+    border-radius: var(--app-radius-md); 
+    border: 1px dashed #e2e8f0; 
+    box-sizing: border-box;
+}
+
+.price-metric-block span { font-size: 11px; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+.price-metric-block h2 { margin: 4px 0 0 0; font-size: 24px; font-weight: 800; color: var(--text-black); }
+.price-metric-block h2.promo-price { color: var(--mehrum); }
+
+/* Sidebar Component */
+.sticky-sidebar-box { position: sticky; top: 24px; }
+
+.owner-widget {
+    background: linear-gradient(135deg, #556b2f 0%, #3d4e22 100%); 
+    color: var(--white);
+    border-radius: var(--app-radius-lg); 
+    padding: 24px; 
+    margin-bottom: 24px; 
+    box-shadow: 0 12px 30px rgba(85, 107, 47, 0.15);
+    box-sizing: border-box;
+}
+
+.owner-widget h4 { margin: 0 0 6px 0; font-size: 12px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
+.owner-widget h3 { margin: 0 0 20px 0; font-size: 20px; font-weight: 800; }
+
+.btn-call-blink {
+    background: #25d366; 
+    color: var(--white); 
+    text-decoration: none;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px;
+    padding: 14px; 
+    border-radius: var(--app-radius-md); 
+    font-weight: 800; 
+    font-size: 15px;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+    animation: phoneBlink 1.5s infinite alternate;
+    box-sizing: border-box;
+}
+
+/* App Form Cards */
+.inquiry-form-card { 
+    background: var(--white); 
+    border-radius: var(--app-radius-lg); 
+    padding: 24px; 
+    box-shadow: var(--app-shadow);
+    box-sizing: border-box; 
+    border: none;
+}
+
+.form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-black); text-transform: uppercase; letter-spacing: 0.3px;}
+
+.form-group input, .form-group textarea {
+    width: 100%; padding: 14px; border-radius: var(--app-radius-sm); border: 1px solid #e2e8f0;
+    background: #f8fafc; font-family: inherit; font-size: 14px; outline: none; box-sizing: border-box; transition: var(--transition);
+}
+
+.form-group input:focus, .form-group textarea:focus { 
+    border-color: var(--mehrum); 
+    background: var(--white); 
+    box-shadow: 0 0 0 4px rgba(128,0,32,0.06); 
+}
+
+.btn-submit-inquiry {
+    width: 100%; background: var(--mehrum); color: var(--white); border: none; padding: 14px;
+    border-radius: var(--app-radius-sm); font-weight: 800; font-size: 15px; cursor: pointer; transition: var(--transition);
+}
+
+.btn-submit-inquiry:active { transform: scale(0.97); background: #600018; }
+
+/* Similar Properties Grid Systems */
+.recommendation-grid-system {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+    gap: 16px !important;
+    margin-top: 16px !important;
+}
+
+/* Google/App Review Feed */
+.review-rating-summary { 
+    display: flex; 
+    gap: 32px; 
+    align-items: center; 
+    background: #f8fafc; 
+    padding: 20px; 
+    border-radius: var(--app-radius-md); 
+    margin-bottom: 24px; 
+    box-sizing: border-box; 
+}
+
+.big-rating-num { font-size: 44px; font-weight: 800; color: var(--text-black); line-height: 1; }
+.star-rating-form-row { display: flex; gap: 6px; font-size: 22px; margin-bottom: 16px; }
+
+/* Toast Engine */
+#center-toast-node {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: #0f172a; color: var(--white); padding: 12px 24px;
+    border-radius: 40px; font-size: 13px; font-weight: 700; z-index: 9999;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px;
+    opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+#center-toast-node.active { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@keyframes phoneBlink {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+    100% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); }
+}
+
+/* ==========================================
+   MOBILE SCALING SUBSYSTEM (NATIVE VIEWPORT)
+   ========================================== */
+@media (max-width: 992px) {
+    .details-wrapper { grid-template-columns: 1fr; margin: 12px auto; padding: 0 12px; gap: 16px; }
+    .sticky-sidebar-box { position: static; }
+}
+
+@media (max-width: 600px) {
+    .details-top-meta { flex-direction: column; align-items: flex-start; gap: 14px; padding: 16px; border-radius: var(--app-radius-md); }
+    .meta-left h1 { font-size: 20px; }
+    .slider-viewport { height: 260px; border-radius: var(--app-radius-md); }
+    .slide-nav-btn { width: 34px; height: 34px; }
+    .slide-prev { left: 12px; } .slide-next { right: 12px; }
+    
+    .content-card-box { padding: 18px 14px; border-radius: var(--app-radius-md); margin-bottom: 16px; }
+    .section-title { font-size: 16px; margin-bottom: 16px; }
+    
+    .spec-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    .pricing-metrics-row { flex-direction: column; gap: 12px; padding: 14px; }
+    .price-metric-block h2 { font-size: 20px; }
+    
+    .facilities-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; max-height: 94px; }
+    .facility-item-node { padding: 10px !important; font-size: 12px !important; }
+    
+    .recommendation-grid-system { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+    .review-rating-summary { flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px; }
+}
+/* रेंट प्राइस को सही जगह सेट करने के लिए */
+.mini-property-card span[style*="color:#808000"] {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #808000 !important;
+    width: 100% !important;
+    text-align: left !important; /* या right कर सकते हैं */
+}
+/* --- HIDE DEPOSIT IN PROPERTY CARDS --- */
+.mini-property-card span[style*="font-size:11px"], 
+.mini-property-card span[style*="color:#64748b"] b,
+.mini-property-card div[style*="justify-content:space-between"] span:last-child {
+    display: none !important;
+}

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Tie-ups & Housing Solutions | Stay100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* CSS Uniform Token Variables */
+        :root {
+            --primary-brand: #ff385c; /* Core index mapping match */
+            --dark-olive: #2b3618;
+            --surface-white: #ffffff;
+            --border-muted: #e5e7eb;
+            --text-dark: #1a1a1a;
+            --text-muted: #6b7280;
+        }
+
+        .tieups-section {
+            margin: 20px 0 50px 0;
+            width: 100%;
+        }
+
+        /* Top Hero Pitch Area */
+        .tieups-banner {
+            background: linear-gradient(135deg, #1e2513 0%, #2b3618 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(43, 54, 24, 0.15);
+        }
+
+        .tieups-banner h1 {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .tieups-banner p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Split Feature Matrix and Lead Capture Console */
+        .tieups-grid-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 35px;
+            align-items: start;
+        }
+
+        /* Pillars Value Section */
+        .tieups-features-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-tieup-card {
+            background: var(--surface-white);
+            border: 1px solid var(--border-muted);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .feature-tieup-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-brand);
+        }
+
+        .tieup-icon-box {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 56, 92, 0.06);
+            color: var(--primary-brand);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .tieup-info-box h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .tieup-info-box p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Institutional Lead Intake Form Wrapper */
+        .tieups-form-wrapper {
+            background: var(--surface-white);
+            border: 1px solid var(--border-muted);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .tieups-form-wrapper h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tieups-form-wrapper p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .tieup-field-group {
+            margin-bottom: 18px;
+        }
+
+        .tieup-field-group label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #444;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .tieup-input-node {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border-muted);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .tieup-input-node:focus {
+            border-color: var(--primary-brand);
+            box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.08);
+        }
+
+        .btn-submit-tieup {
+            width: 100%;
+            background: var(--primary-brand);
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn-submit-tieup:hover {
+            background: #e03050;
+        }
+
+        /* Responsive Adapters */
+        @media (max-width: 992px) {
+            .tieups-grid-layout {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .tieups-banner {
+                padding: 40px 20px;
+            }
+            .tieups-banner h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-row-2 {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .tieups-form-wrapper {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="container">
+        
+        <section class="tieups-section">
+            
+            <div class="tieups-banner">
+                <h1>Stay100% Institutional Partnership</h1>
+                <p>Unlock structured end-to-end employee housing frameworks. We match working professionals, enterprise groups, and corporate interns with premium, localized living spaces seamlessly.</p>
+            </div>
+
+            <div class="tieups-grid-layout">
+                
+                <div class="tieups-features-stack">
+                    
+                    <div class="feature-tieup-card">
+                        <div class="tieup-icon-box">
+                            <i class="fa-solid fa-handshake"></i>
+                        </div>
+                        <div class="tieup-info-box">
+                            <h3>Bespoke Corporate SLAs</h3>
+                            <p>Dedicated enterprise-level operational service agreements ensuring guaranteed inventory locking, custom room allocation maps, and tailored check-in structures.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-tieup-card">
+                        <div class="tieup-icon-box">
+                            <i class="fa-solid fa-percent"></i>
+                        </div>
+                        <div class="tieup-info-box">
+                            <h3>Preferential Price Matrices</h3>
+                            <p>Unlock custom wholesale price sheets, subsidized long-term lock-in models, and completely waved-off brokerage overheads across all mapped properties.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-tieup-card">
+                        <div class="tieup-icon-box">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div class="tieup-info-box">
+                            <h3>Centralized Unified Ledger</h3>
+                            <p>Consolidated digital single monthly invoicing setups integrated cleanly with corporate accounts for effortless tax clearances and B2B GST credit claim flows.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-tieup-card">
+                        <div class="tieup-icon-box">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div class="tieup-info-box">
+                            <h3>Dedicated Relationship Desks</h3>
+                            <p>A separate, priority account management helpdesk assigned exclusively to your HR teams to handle swift relocation tickets on demand.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="tieups-form-wrapper">
+                    <h2><i class="fa-solid fa-briefcase" style="color: var(--primary-brand);"></i> Partner With Us</h2>
+                    <p>Register your corporate entity parameters below. Our commercial alliances lead will generate a custom onboarding package within hours.</p>
+                    
+                    <form id="corporate-tieups-payload">
+                        
+                        <div class="tieup-field-group">
+                            <label>Organization / Corporate Name</label>
+                            <input type="text" class="tieup-input-node" id="tieup-org" placeholder="e.g., Infosys Technologies" required>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="tieup-field-group">
+                                <label>Authorized Person Name</label>
+                                <input type="text" class="tieup-input-node" id="tieup-person" placeholder="HR Manager Name" required>
+                            </div>
+                            <div class="tieup-field-group">
+                                <label>Work Email Address</label>
+                                <input type="email" class="tieup-input-node" id="tieup-email" placeholder="name@company.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="tieup-field-group">
+                                <label>Expected Annual Enrolment</label>
+                                <select class="tieup-input-node" id="tieup-volume">
+                                    <option value="sub-20">< 20 Employees / Year</option>
+                                    <option value="mid-50">20 to 50 Employees / Year</option>
+                                    <option value="scale-100">> 50 Employees / Year</option>
+                                </select>
+                            </div>
+                            <div class="tieup-field-group">
+                                <label>Target City Location</label>
+                                <input type="text" class="tieup-input-node" id="tieup-city" placeholder="e.g., Jaipur / Noida" required>
+                            </div>
+                        </div>
+
+                        <div class="tieup-field-group">
+                            <label>Custom Partnership Scope / Notes</label>
+                            <textarea class="tieup-input-node" id="tieup-notes" rows="3" placeholder="Describe layout priorities, required food criteria or specific transport hub proximity metrics..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit-tieup">
+                            <i class="fa-solid fa-bezier-curve"></i> Initialize Partnership Proposal
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+        
+    </main>
+
+    <div id="dynamic-footer-container"></div>
+    <div id="dynamic-desktop-footer-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="header.js"></script>
+    <script>
+        // Tie-up Intake Submission Framework Handler
+        document.getElementById('corporate-tieups-payload').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Success! Your institutional onboarding data model has been dispatched. Our accounts lead will share custom commercial matrices via mail shortly.');
+            this.reset();
+        });
+    </script>
+    <script type="module" src="footer.js"></script>
+    
+</body>
+</html>

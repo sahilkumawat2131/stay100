@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vendor Subscription Club | Stay100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="subscription.css">
+    <style>
+        :root {
+            --bg-olive: #f4f6f0;         
+            --primary-olive: #556b2f;    
+            --mehrum: #800020;           
+            --mehrum-hover: #600018;
+            --text-black: #1a1a1a;
+            --text-gray: #666666;
+            --white: #ffffff;
+            --gold: #ffb300;
+            --border-light: #eef0eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-olive);
+            color: var(--text-black);
+            padding-bottom: 40px; 
+            width: 100%;
+            overflow-x: hidden;
+            letter-spacing: -0.2px;
+        }
+
+        /* --- NATIVE APP STICKY HEADER --- */
+        .custom-header { 
+            background: var(--white); 
+            padding: 14px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(0,0,0,0.06); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .custom-header h2 { 
+            font-size: 17px; 
+            font-weight: 700; 
+            color: var(--text-black); 
+            margin: 0; 
+            letter-spacing: -0.4px;
+        }
+        .header-action-btn {
+            background: #f1f5f9; 
+            border: none; 
+            padding: 8px 14px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            color: var(--text-black);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .header-action-btn:active {
+            background: #e2e8f0;
+            transform: scale(0.96);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px;
+            width: 100%;
+        }
+
+        /* --- HERO BANNER LAYOUT --- */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-olive) 0%, #3d4f22 100%);
+            border-radius: 16px;
+            padding: 30px;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(85, 107, 47, 0.15);
+        }
+
+        .hero-content { max-width: 65%; }
+        .hero-content h1 { font-size: 24px; margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+        .hero-content p { font-size: 13.5px; color: #f0f2f5; line-height: 1.45; opacity: 0.95; }
+
+        .badge-showcase {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 16px;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            animation: pulse 3s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+        .badge-showcase img { width: 90px; height: 90px; object-fit: contain; display: block; }
+
+        /* --- REALTIME NOTIFICATIONS ALERTS BAR --- */
+        .status-panel {
+            background: var(--white);
+            border-left: 4px solid var(--mehrum);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 25px;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            align-items: center;
+            gap: 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        /* --- CARD ELEMENTS CAROUSEL GRID --- */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 10px;
+        }
+
+        .plan-card {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 14 rgba(0,0,0,0.03);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+        }
+
+        .plan-card.recommended { 
+            border: 2px solid var(--mehrum); 
+            box-shadow: 0 8px 24px rgba(128, 0, 32, 0.08);
+        }
+
+        .popular-tag {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--mehrum);
+            color: var(--white);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+        }
+
+        .plan-header { text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px; }
+        .plan-title { font-size: 20px; font-weight: 700; color: var(--text-black); margin-bottom: 6px; letter-spacing: -0.3px; }
+        .plan-cost { font-size: 34px; font-weight: 800; color: var(--primary-olive); letter-spacing: -1px; }
+        .plan-cost span { font-size: 13px; color: var(--text-gray); font-weight: 500; letter-spacing: 0; }
+
+        .features-list { list-style: none; margin-bottom: 24px; flex-grow: 1; }
+        .features-list li { margin-bottom: 12px; font-size: 13.5px; color: #334155; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+        .features-list li i { color: var(--primary-olive); margin-top: 2.5px; font-size: 14px; }
+        .features-list li.highlight-feat i { color: var(--mehrum); }
+
+        .btn-purchase {
+            background-color: var(--mehrum);
+            color: var(--white);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-purchase:hover { background-color: var(--mehrum-hover); }
+        .btn-purchase:active { transform: scale(0.98); }
+
+        /* --- INTERNAL CARD LEGAL LINKS --- */
+        .card-legal-compliance {
+            font-size: 11px;
+            color: var(--text-gray);
+            text-align: center;
+            margin-top: 14px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+        .card-legal-compliance a {
+            color: var(--primary-olive);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .card-legal-compliance a:hover {
+            color: var(--mehrum);
+            text-decoration: underline;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- NATIVE MOBILE TOUCH OPTIMIZATIONS (APP-FEEL) --- */
+        @media (max-width: 768px) {
+            body { padding-bottom: 40px; }
+            .container { padding: 16px 12px; }
+            .hero-banner { 
+                flex-direction: column-reverse; 
+                text-align: center; 
+                gap: 16px; 
+                padding: 24px 16px; 
+                margin-bottom: 20px;
+                border-radius: 14px;
+            }
+            .hero-content { max-width: 100%; }
+            .hero-content h1 { font-size: 21px; }
+            .hero-content p { font-size: 12.5px; }
+            .badge-showcase { padding: 12px; }
+            .badge-showcase img { width: 75px; height: 75px; }
+            .plans-grid { grid-template-columns: 1fr; gap: 20px; }
+            .plan-card { padding: 20px; border-radius: 16px; }
+            .plan-cost { font-size: 30px; }
+            .btn-purchase { padding: 14px; font-size: 14px; border-radius: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="custom-header">
+        <h2>Stay100% Control Panel</h2>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span id="user-display-email" style="font-size: 12px; font-weight: 600; color: var(--text-gray);">Loading user...</span>
+            <button class="header-action-btn" onclick="window.location.href='vendor-admin.html'">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-banner">
+            <div class="hero-content">
+                <h1>Stay100% Verified Vendor Pro Club</h1>
+                <p>Apne properties aur Rooms par highly trusted premium validation badge lagwayein. Instant automated verification ke pass hone par aapki property space direct organic lists me sabse top tier rank karegi.</p>
+            </div>
+            <div class="badge-showcase">
+                <img src="/assets/verified-baidge.png" alt="Stay100% Premium Badge Component">
+            </div>
+        </section>
+
+        <div id="status-panel" class="status-panel"></div>
+
+        <section class="plans-grid">
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-title">Silver Growth</h3>
+                    <div class="plan-cost">₹99<span> / 30 Days</span></div>
+                </div>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-circle-check"></i> <span>100% Verified Blue Badge overlay across assets.</span></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <span>Search priority boost directly above free listing layers.</span></li>
+                </ul>
+                <button class="btn-purchase" onclick="initializeRazorpayCheckout('PLAN_SILVER', 99, 30)">
+                    <i class="fa-solid fa-credit-card"></i> Buy Plan Now
+                </button>
+                <div class="card-legal-compliance">
+                    By buying, you agree to our <a href="subscriptiontandc.html" target="_blank">Terms</a> & <a href="subscriptiontandc.html" target="_blank">Refund Policy</a>
+                </div>
+            </div>
+
+            <div class="plan-card recommended">
+                <span class="popular-tag">MOST PREFERRED</span>
+                <div class="plan-header">
+                    <h3 class="plan-title">Gold Premium Elite</h3>
+                    <div class="plan-cost">₹249<span> / 90 Days</span></div>
+                </div>
+                <ul class="features-list">
+                    <li class="highlight-feat"><i class="fa-solid fa-circle-check"></i> <span><strong>Absolute Top-Tier Rank</strong> sequencing configurations.</span></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <span>100% Verified Premium Badge stamp across UI fields.</span></li>
+                </ul>
+                <button class="btn-purchase" onclick="initializeRazorpayCheckout('PLAN_GOLD')">
+                    <i class="fa-solid fa-bolt"></i> Upgrade to Elite Gold
+                </button>
+                <div class="card-legal-compliance">
+                    By buying, you agree to our <a href="subscriptiontandc.html" target="_blank">Terms</a> & <a href="subscriptiontandc.html" target="_blank">Refund Policy</a>
+                </div>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-title">Diamond Ultimate</h3>
+                    <div class="plan-cost">₹999<span> / 365 Days</span></div>
+                </div>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-circle-check"></i> <span>Year-round continuous algorithmic placement optimization.</span></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <span>Full 100% verified asset lock sequence preventing rank drop.</span></li>
+                </ul>
+                <button class="btn-purchase" onclick="initializeRazorpayCheckout('PLAN_DIAMOND')">
+                    <i class="fa-solid fa-crown"></i> Claim Annual Diamond
+                </button>
+                <div class="card-legal-compliance">
+                    By buying, you agree to our <a href="subscriptiontandc.html" target="_blank">Terms</a> & <a href="subscriptiontandc.html" target="_blank">Refund Policy</a>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="subscription.js"></script>
+</body>
+</html>

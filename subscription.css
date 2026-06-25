@@ -1,0 +1,360 @@
+:root {
+    --bg-olive: #f4f6f0;         
+    --primary-olive: #556b2f;    
+    --mehrum: #800020;           
+    --mehrum-hover: #600018;
+    --text-black: #1a1a1a;
+    --text-gray: #666666;
+    --white: #ffffff;
+    --gold: #ffb300;
+    --border-light: #eef0eb;
+    
+    /* --- NEW PREMIUM CORE VARIABLES --- */
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.03);
+    --shadow-md: 0 12px 24px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 20px 40px rgba(128, 0, 32, 0.08);
+}
+
+/* --- DETAILED RESET CORE & STRUCTURAL HARDENING --- */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Removes blue highlight box on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--bg-olive);
+    color: var(--text-black);
+    padding-bottom: 60px; 
+    width: 100%;
+    overflow-x: hidden;
+    letter-spacing: -0.2px;
+    line-height: 1.5;
+}
+
+/* --- REINFORCED WRAPPER CONTAINER --- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    width: 100%;
+}
+
+/* --- HIGH FIDELITY HERO BANNER LAYOUT --- */
+.hero-banner {
+    background: linear-gradient(135deg, var(--primary-olive) 0%, #34421d 100%);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 35px;
+    box-shadow: 0 10px 30px rgba(85, 107, 47, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Premium background mesh effect inside hero */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.hero-content { 
+    max-width: 65%; 
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content h1 { 
+    font-size: 32px; 
+    margin-bottom: 12px; 
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    line-height: 1.25;
+}
+
+.hero-content p { 
+    font-size: 15px; 
+    color: rgba(255, 255, 255, 0.9); 
+    line-height: 1.55; 
+}
+
+/* Badge Showcase Core Setup */
+.badge-showcase {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 22px;
+    border-radius: 50%;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    animation: floatingPulse 4s infinite ease-in-out;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.badge-showcase img { 
+    width: 110px; 
+    height: 110px; 
+    object-fit: contain; 
+    display: block; 
+}
+
+/* --- SECURE ALERTS LOGIC APP BAR --- */
+.status-panel {
+    background: var(--white);
+    border-left: 5px solid var(--mehrum);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 35px;
+    display: none; /* Injected dynamically by JS token mapping */
+    box-shadow: var(--shadow-sm);
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* --- ANTI-TAMPER ALIGNED GRID LAYOUT --- */
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 10px;
+    align-items: stretch; /* Forces all cards to retain identical heights */
+}
+
+/* --- BULLETPROOF PLAN CARDS SYSTEM --- */
+.plan-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background-clip: padding-box;
+}
+
+.plan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Recommended Featured Layout Styles */
+.plan-card.recommended { 
+    border: 2px solid var(--mehrum); 
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.02);
+}
+.plan-card.recommended:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(128, 0, 32, 0.12);
+}
+
+/* Premium Header Badging Setup */
+.popular-tag {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, var(--mehrum) 0%, #a61c3c 100%);
+    color: var(--white);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    box-shadow: 0 4px 10px rgba(128, 0, 32, 0.25);
+    white-space: nowrap;
+}
+
+.plan-header { 
+    text-align: center; 
+    border-bottom: 1px solid #f1f5f9; 
+    padding-bottom: 24px; 
+    margin-bottom: 24px; 
+}
+
+.plan-title { 
+    font-size: 21px; 
+    font-weight: 700; 
+    color: var(--text-black); 
+    margin-bottom: 8px; 
+    letter-spacing: -0.4px;
+}
+
+.plan-cost { 
+    font-size: 40px; 
+    font-weight: 800; 
+    color: var(--primary-olive); 
+    letter-spacing: -1.2px;
+    line-height: 1;
+}
+
+.plan-cost span { 
+    font-size: 14px; 
+    color: var(--text-gray); 
+    font-weight: 500; 
+    letter-spacing: 0;
+}
+
+/* Features Component Node Layer */
+.features-list { 
+    list-style: none; 
+    margin-bottom: 32px; 
+    flex-grow: 1; 
+}
+
+.features-list li { 
+    margin-bottom: 14px; 
+    font-size: 14px; 
+    color: #334155; 
+    display: flex; 
+    align-items: flex-start; 
+    gap: 12px; 
+    line-height: 1.5; 
+}
+
+.features-list li i { 
+    color: var(--primary-olive); 
+    margin-top: 3px; 
+    font-size: 15px; 
+    flex-shrink: 0;
+}
+
+.features-list li.highlight-feat i { 
+    color: var(--mehrum); 
+}
+
+/* --- HARDENED SECURE PURCHASE CALL ACTION CTAS --- */
+.btn-purchase {
+    background: linear-gradient(135deg, var(--mehrum) 0%, #991b3b 100%);
+    color: var(--white);
+    border: none;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.15);
+}
+
+.btn-purchase:hover { 
+    background: linear-gradient(135deg, var(--mehrum-hover) 0%, #4c0012 100%);
+    box-shadow: 0 6px 16px rgba(128, 0, 32, 0.25);
+}
+
+/* Prevent UI spoofing during instant touch tap triggers on mobile */
+.btn-purchase:active { 
+    transform: scale(0.97); 
+    opacity: 0.9;
+}
+
+/* --- SYSTEM MOTION SMOOTH ENGINE --- */
+@keyframes floatingPulse {
+    0% { transform: scale(1) translateY(0px); }
+    50% { transform: scale(1.03) translateY(-4px); }
+    100% { transform: scale(1) translateY(0px); }
+}
+
+/* ==========================================================================
+   📱 NATIVE MOBILE DEVICE MEDIA LAYER (FLEX RESPONSIVE HARDENING)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .plans-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+    .plan-card.recommended {
+        transform: none;
+    }
+    .plan-card.recommended:hover {
+        transform: translateY(-6px);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 50px;
+    }
+    
+    .container {
+        padding: 20px 16px; /* Native fluid bounding ecosystem */
+    }
+    
+    /* Responsive conversion of hero component stacking order */
+    .hero-banner { 
+        flex-direction: column-reverse; 
+        text-align: center; 
+        gap: 20px; 
+        padding: 32px 20px; 
+        margin-bottom: 25px;
+        border-radius: var(--radius-md);
+    }
+    
+    .hero-content { 
+        max-width: 100%; 
+    }
+    
+    .hero-content h1 { 
+        font-size: 24px; 
+        letter-spacing: -0.4px;
+    }
+    
+    .hero-content p { 
+        font-size: 13.5px; 
+        line-height: 1.5;
+    }
+    
+    .badge-showcase { 
+        padding: 16px; 
+    }
+    
+    .badge-showcase img { 
+        width: 85px; 
+        height: 85px; 
+    }
+
+    /* Single Column Stacking Matrix For Pure App-Feel Scroll */
+    .plans-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .plan-card {
+        padding: 24px;
+        border-radius: var(--radius-md);
+    }
+    
+    .plan-cost { 
+        font-size: 34px; 
+    }
+    
+    .btn-purchase {
+        padding: 15px;
+        font-size: 14.5px;
+        border-radius: var(--radius-sm);
+    }
+}

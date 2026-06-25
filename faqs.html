@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequently Asked Questions | STAY100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* --- GLOBAL NATIVE FIT RESET --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- DOCUMENTATION LAYOUT CONTAINER --- */
+        .doc-wrapper {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin: 30px 0 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        /* --- DOC HEADER --- */
+        .doc-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .doc-header h1 {
+            font-size: clamp(26px, 5vw, 36px);
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+        .doc-header p {
+            font-size: 15px;
+            color: #64748b;
+        }
+
+        /* --- SEARCH BAR MATRIX --- */
+        .faq-search-box {
+            position: relative;
+            max-width: 600px;
+            margin: -10px auto 40px auto;
+        }
+        .faq-search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .faq-search-box input:focus {
+            border-color: #4f46e5;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        .faq-search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        /* --- FAQ CATEGORY TABS --- */
+        .faq-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .faq-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        .faq-tabs::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .faq-tab-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .faq-tab-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .faq-tab-btn.active {
+            background: #4f46e5;
+            color: #fff;
+        }
+
+        /* --- ACCORDION SYSTEM --- */
+        .faq-group {
+            margin-bottom: 35px;
+        }
+        .faq-group h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .faq-group h2 i {
+            color: #4f46e5;
+        }
+
+        .faq-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+        .faq-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+        }
+        .faq-item.active {
+            border-color: #4f46e5;
+        }
+
+        .faq-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 18px 20px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            outline: none;
+        }
+        .faq-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            transition: color 0.2s ease;
+        }
+        .faq-item.active .faq-question {
+            color: #4f46e5;
+        }
+        .faq-icon {
+            font-size: 14px;
+            color: #64748b;
+            transition: transform 0.3s ease;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+            color: #4f46e5;
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+            background: #fafafa;
+        }
+        .faq-inner-text {
+            padding: 0 20px 20px 20px;
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.7;
+            border-top: 1px dashed #f1f5f9;
+            padding-top: 15px;
+        }
+
+        /* --- HYPERLINKS STYLE --- */
+        .doc-link {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed #4f46e5;
+            transition: all 0.2s ease;
+        }
+        .doc-link:hover {
+            color: #4338ca;
+            border-bottom-style: solid;
+        }
+
+        /* --- CALLOUT BOX --- */
+        .doc-callout {
+            background: #eeebff;
+            border-left: 4px solid #4f46e5;
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 35px 0 10px 0;
+            text-align: center;
+        }
+        .doc-callout p {
+            font-size: 14px;
+            color: #4338ca;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 768px) {
+            .doc-wrapper {
+                padding: 25px 15px;
+                margin: 15px 0 40px 0;
+            }
+            .faq-trigger {
+                padding: 15px;
+            }
+            .faq-question {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="container">
+        
+        <div class="doc-wrapper">
+            
+            <div class="doc-header">
+                <h1>Frequently Asked Questions</h1>
+                <p>Have questions about bookings, payments, or properties? Find your answers here.</p>
+            </div>
+
+            <div class="faq-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="faqSearchInput" placeholder="Search for answers (e.g., Refund, Deposit, Owner)...">
+            </div>
+
+            <div class="faq-tabs">
+                <button class="faq-tab-btn active" onclick="filterFaqCategory('all')">All FAQs</button>
+                <button class="faq-tab-btn" onclick="filterFaqCategory('bookings')">Bookings & Leases</button>
+                <button class="faq-tab-btn" onclick="filterFaqCategory('payments')">Payments & Security</button>
+                <button class="faq-tab-btn" onclick="filterFaqCategory('amenities')">Amenities & Life</button>
+            </div>
+
+            <div id="faqAccordionWrapper">
+                
+                <div class="faq-group" data-category="bookings">
+                    <h2><i class="fa-solid fa-hotel"></i> Bookings & Leases</h2>
+                    
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">How do I book a premium room or flat on STAY100%?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                You can browse available properties, select your preferred stay, and click on "Inquiry Now" or "View Details" to connect directly with the host/owner.
+                                <br><br>
+                                <strong style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Important Note:</strong> STAY100% is a property discovery platform and <u>does not</u> create, draft, or execute rent agreements. All lease contracts, rent agreements, and mutual terms must be discussed and finalized directly between the Property Owner/Manager and the Tenant.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">Who is responsible for the rent agreement paperwork?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                The property owner or manager is solely responsible for creating and providing the rent agreement. STAY100% has no involvement or intervention in legal contracts, police verification, or rental documentation loops.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">What documents are required for background KYC verification?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                To protect platform integrity, owners usually check standard government-issued documents like an Aadhar Card, PAN card, or Passport, along with corporate employment proof or student IDs before moving in.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">Can I cancel my room booking contract before moving in?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                Yes, inquiries or reservations can be managed through your account. However, token advance or holding money refunds are governed entirely by the policy of that specific property owner, as STAY100% does not hold your security amounts.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-group" data-category="payments">
+                    <h2><i class="fa-solid fa-credit-card"></i> Payments & Security</h2>
+                    
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">Is my platform transaction fully secure?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                Absolutely. Any premium listings activation or token features handled directly on STAY100% are processed through certified, industry-standard secure Payment Gateway Partners using end-to-end encryption architecture.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">How much security deposit do I need to pay to the owner?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                Security deposit metrics differ by landlord, though most properties listed on our app request a standard 1-month or 2-month rental amount. The expected range is transparently displayed on the property card layout.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-group" data-category="amenities">
+                    <h2><i class="fa-solid fa-couch"></i> Amenities & Lifestyle</h2>
+                    
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">What amenities are included under the "Fully Furnished" space badge?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                Spaces displaying this badge generally feature setup utilities such as high-speed Wi-Fi, air conditioning (AC), clean beddings, functional wardrobes, and basic appliances managed by the host.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
+                            <span class="faq-question">Are meals included in the rent or charged separately?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </button>
+                        <div class="faq-content">
+                            <div class="faq-inner-text">
+                                It depends entirely on the property setup. Check for the "Food" badge on the property card's facilities grid. If the details specify `foodIncluded` or `mess available`, meals are integrated into the facility package.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="doc-callout">
+                <p><i class="fa-solid fa-headset"></i> Still need clarification? <a href="contact.html" class="doc-link">Submit a Grievance Ticket</a> or drop an email to our support team.</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="dynamic-footer-container"></div>
+    <div id="dynamic-desktop-footer-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="header.js"></script>
+    <script type="module" src="footer.js"></script>
+
+    <script>
+        // Smooth Accordion Dropdown Toggler
+        function toggleFaqItem(triggerNode) {
+            const faqItem = triggerNode.parentElement;
+            const contentBlock = faqItem.querySelector('.faq-content');
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all active items first for professional single-open behavior
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.faq-content').style.maxHeight = null;
+            });
+
+            if (!isActive) {
+                faqItem.classList.add('active');
+                contentBlock.style.maxHeight = contentBlock.scrollHeight + "px";
+            }
+        }
+
+        // Category Tab Filter Engine
+        function filterFaqCategory(category) {
+            // Update active state of filter buttons
+            document.querySelectorAll('.faq-tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const groups = document.querySelectorAll('.faq-group');
+            groups.forEach(group => {
+                if (category === 'all' || group.getAttribute('data-category') === category) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+
+        // Realtime Client-side Fuzzy Search Engine
+        document.getElementById('faqSearchInput').addEventListener('input', function(e) {
+            const queryStr = e.target.value.toLowerCase().trim();
+            const faqItems = document.querySelectorAll('.faq-item');
+            const groups = document.querySelectorAll('.faq-group');
+
+            // Reset tab highlights if user starts typing manually
+            if(queryStr !== "") {
+                document.querySelectorAll('.faq-tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.faq-tab-btn')[0].classList.add('active'); // highlight "All"
+                groups.forEach(g => g.style.display = 'block');
+            }
+
+            faqItems.forEach(item => {
+                const textContent = item.textContent.toLowerCase();
+                if (textContent.includes(queryStr)) {
+                    item.style.display = 'block';
+                    // Automatically expand matches if query string is deep
+                    if (queryStr.length > 2) {
+                        item.classList.add('active');
+                        item.querySelector('.faq-content').style.maxHeight = item.querySelector('.faq-content').scrollHeight + "px";
+                    } else {
+                        item.classList.remove('active');
+                        item.querySelector('.faq-content').style.maxHeight = null;
+                    }
+                } else {
+                    item.style.display = 'none';
+                    item.classList.remove('active');
+                    item.querySelector('.faq-content').style.maxHeight = null;
+                }
+            });
+
+            // Hide section header groups if they have no visible child nodes matching the search query
+            groups.forEach(group => {
+                const visibleItems = Array.from(group.querySelectorAll('.faq-item')).filter(i => i.style.display !== 'none');
+                if(visibleItems.length === 0) {
+                    group.style.display = 'none';
+                } else {
+                    group.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

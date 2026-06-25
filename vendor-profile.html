@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vendor Dashboard Hub | Stay100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="vendor-profile.css">
+    
+    <style>
+        /* Native Mobile Ergonomics System Tokens Injection */
+        :root {
+            --primary-olive: #556b2f;
+            --primary-olive-hover: #3e4f22;
+            --olive-light: rgba(85, 107, 47, 0.08);
+            --mehrum: #800020;
+            --bg-slate: #f8fafc;
+            --card-surface: #ffffff;
+            --text-primary: #0f172a;
+            --text-muted: #64748b;
+            --border-line: #e2e8f0;
+            --white: #ffffff;
+            
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Removes smart-device web click boxes */
+        }
+
+        body {
+            background-color: var(--bg-slate);
+            color: var(--text-primary);
+            padding: calc(20px + var(--safe-area-top)) 0 calc(40px + var(--safe-area-bottom)) 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            animation: nativeAppFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Native App Bar / Header Navigation Row */
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-surface);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border-line);
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .profile-meta-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f1f5f9;
+            border: 2px solid var(--olive-light);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vendor-identity-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-verified {
+            color: var(--primary-olive);
+            font-size: 18px;
+        }
+
+        .uid-subtext {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Call To Actions Functional Controllers Group */
+        .header-actions-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-manage-listings, .btn-logout {
+            height: 48px; /* Native ideal clickable target grid */
+            padding: 0 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-manage-listings {
+            background-color: var(--primary-olive);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.15);
+        }
+
+        .btn-manage-listings:active {
+            transform: scale(0.97);
+        }
+
+        .btn-logout {
+            background-color: rgba(239, 68, 68, 0.06);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-logout:active {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+        /* Native Dashboard Stream Info Cards Configuration */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .info-card {
+            background: var(--card-surface);
+            border: 1px solid var(--border-line);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.01);
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.03);
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--olive-light);
+            color: var(--primary-olive);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .card-content h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-content p {
+            font-size: 15px;
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .full-row {
+            grid-column: span 3;
+        }
+
+        @keyframes nativeAppFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Breakpoint Engine Layer (Mobile App Views Simulation) */
+        @media (max-width: 992px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .full-row {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: calc(12px + var(--safe-area-top)) 0 calc(24px + var(--safe-area-bottom)) 0;
+            }
+            .dashboard-wrapper {
+                padding: 0 16px;
+            }
+            .dash-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                padding: 20px;
+                border-radius: 16px;
+            }
+            .header-actions-group {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn-manage-listings, .btn-logout {
+                width: 100%;
+                justify-content: center;
+                height: 50px; /* Enhanced native mobile standard height */
+                border-radius: 14px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .full-row {
+                grid-column: span 1;
+            }
+            .info-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
+            .vendor-identity-text h1 {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <header class="dash-header">
+        <div class="profile-meta-container">
+            <div class="avatar-wrapper">
+                <img id="vendorDisplayDp" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Vendor Identity Avatar">
+            </div>
+            <div class="vendor-identity-text">
+                <h1 id="dashDisplayName">
+                    Loading Workspace... 
+                    <i class="fa-solid fa-circle-check badge-verified" id="verifiedBadge" style="display:none;"></i>
+                </h1>
+                <p class="uid-subtext">Partner Node Token: <span id="dashUid">...</span></p>
+            </div>
+        </div>
+        
+        <div class="header-actions-group">
+            <a href="vendor-admin.html" class="btn-manage-listings">
+                <i class="fa-solid fa-house-laptop"></i> Manage Space Listings
+            </a>
+            <button class="btn-logout" onclick="triggerSignOutSession()">
+                <i class="fa-solid fa-power-off"></i> Logoff
+            </button>
+        </div>
+    </header>
+
+    <main class="info-grid">
+        <div class="info-card">
+            <div class="card-icon"><i class="fa-solid fa-user-tag"></i></div>
+            <div class="card-content">
+                <h3>Account Type / Segment</h3>
+                <p id="dashSegment">-</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-icon"><i class="fa-solid fa-award"></i></div>
+            <div class="card-content">
+                <h3>Subscription Tier</h3>
+                <p id="dashPlan">-</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div class="card-content">
+                <h3>Official Email</h3>
+                <p id="dashEmail">-</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-icon"><i class="fa-solid fa-phone"></i></div>
+            <div class="card-content">
+                <h3>Registered Mobile</h3>
+                <p id="dashPhone">-</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-icon"><i class="fa-solid fa-city"></i></div>
+            <div class="card-content">
+                <h3>Core Hub City</h3>
+                <p id="dashCity">-</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-icon"><i class="fa-solid fa-file-invoice"></i></div>
+            <div class="card-content">
+                <h3>Legal KYC Status</h3>
+                <p id="dashKyc">-</p>
+            </div>
+        </div>
+
+        <div class="info-card full-row">
+            <div class="card-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="card-content">
+                <h3>Operational Scope Localities</h3>
+                <p id="dashLocalities">-</p>
+            </div>
+        </div>
+
+        <div class="info-card full-row">
+            <div class="card-icon"><i class="fa-solid fa-building"></i></div>
+            <div class="card-content">
+                <h3>Business Office Address Coordinates</h3>
+                <p id="dashAddress">-</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="vendor-profile.js"></script>
+</body>
+</html>

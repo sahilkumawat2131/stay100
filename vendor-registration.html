@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vendor Partner Onboarding | Stay100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-olive: #f4f6f0;         
+            --primary-olive: #556b2f;    
+            --primary-hover: #3d4f22;
+            --mehrum: #800020;           
+            --text-black: #1a1a1a;
+            --text-gray: #666666;
+            --white: #ffffff;
+            --border-color: #d1d5db;
+            --error-color: #dc2626;
+        }
+
+        /* Pure Dynamic Sizing Engine Reset */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight tint on iOS tap */
+        }
+        
+        body { 
+            background-color: var(--bg-olive); 
+            color: var(--text-black); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+        }
+
+        /* Mobile-Native Wrapper Architecture */
+        .reg-container { 
+            background: var(--white); 
+            max-width: 850px; 
+            width: 100%; 
+            min-height: 100vh; /* Mobile par automatic stretch hoga */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
+            overflow: hidden; 
+        }
+        
+        .reg-header { 
+            background: linear-gradient(135deg, var(--primary-olive) 0%, var(--primary-hover) 100%); 
+            color: var(--white); 
+            padding: 30px 20px; 
+            text-align: center; 
+        }
+        .reg-header h1 { 
+            font-size: 24px; 
+            margin-bottom: 8px; 
+            font-weight: 700; 
+            letter-spacing: -0.5px;
+        }
+        
+        /* Smooth Step Tracker Layout */
+        .step-indicator { 
+            display: flex; 
+            justify-content: center; 
+            gap: 24px; 
+            margin: 15px 0 0 0; 
+            font-weight: 600; 
+            font-size: 13px; 
+        }
+        .step { 
+            color: rgba(255,255,255,0.6); 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            padding-bottom: 4px;
+        }
+        .step.active { 
+            color: var(--white); 
+            border-bottom: 2px solid var(--white); 
+        }
+
+        .form-body { 
+            padding: 24px 20px; 
+            flex: 1; /* Pure viewport height cover karne ke liye background spacing adjustments */
+        }
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; }
+
+        .form-section-title { 
+            font-size: 16px; 
+            color: var(--primary-olive); 
+            border-bottom: 2px solid #eef0eb; 
+            padding-bottom: 8px; 
+            margin: 25px 0 16px 0; 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .form-section-title:first-of-type { margin-top: 0; }
+        
+        /* CSS Grid Fluid Setup (Mobile Single Column First) */
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 16px; 
+        }
+        
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        
+        label { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #4b5563; 
+        }
+        label span { color: var(--error-color); }
+
+        /* Form Inputs Native Styling (Font-size 16px blocks scaling zoom issues on iOS Safari) */
+        input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select, textarea {
+            padding: 12px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            font-size: 16px; 
+            background-color: #f9fafb; 
+            outline: none; 
+            transition: all 0.2s ease;
+            width: 100%;
+            -webkit-appearance: none; /* Removes native iOS default inner shadows */
+        }
+        input:focus, select:focus, textarea:focus { 
+            border-color: var(--primary-olive); 
+            background-color: var(--white); 
+            box-shadow: 0 0 0 3px rgba(85, 107, 47, 0.12); 
+        }
+
+        /* Touch Friendly Selection Target Blocks */
+        .radio-group, .checkbox-group { 
+            display: flex; 
+            gap: 12px; 
+            flex-direction: column; /* Vertical alignment for touch scrolling efficiency */
+            margin-top: 4px; 
+        }
+        .option-label { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            font-size: 14px; 
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .option-label input { 
+            accent-color: var(--primary-olive); 
+            width: 20px; 
+            height: 20px; 
+        }
+
+        /* Native App Bottom-Stuck Call-To-Action */
+        .btn-submit { 
+            background-color: var(--mehrum); 
+            color: var(--white); 
+            border: none; 
+            padding: 16px; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+            margin-top: 24px; 
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.15);
+        }
+        .btn-submit:hover { background-color: #600018; }
+        
+        .auth-container { max-width: 100%; margin: 0 auto; padding: 10px 0; }
+        
+        .btn-oauth { 
+            background: #ffffff; 
+            color: var(--text-black); 
+            border: 1px solid #d1d5db; 
+            padding: 14px; 
+            width: 100%; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+            font-size: 15px; 
+        }
+        
+        .divider { margin: 20px 0; display: flex; align-items: center; text-align: center; color: #9ca3af; font-size: 12px; font-weight: 600; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e5e7eb; }
+        .divider:not(:empty)::before { margin-right: 1em; }
+        .divider:not(:empty)::after { margin-left: 1em; }
+        
+        .switch-view-text { margin-top: 24px; font-size: 14px; color: var(--text-gray); text-align: center; padding-bottom: 10px; }
+        .switch-view-text span { color: var(--primary-olive); font-weight: 700; cursor: pointer; }
+
+        /* Media Query System for Desktop Scaling */
+        @media (min-width: 768px) {
+            body { padding: 40px 20px; }
+            .reg-container { min-height: auto; border-radius: 16px; border: 1px solid #eef0eb; }
+            .reg-header { padding: 35px; }
+            .reg-header h1 { font-size: 28px; }
+            .step-indicator { gap: 40px; font-size: 14px; }
+            .form-body { padding: 40px; }
+            .form-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .form-group.full-width { grid-column: span 2; }
+            .radio-group, .checkbox-group { flex-direction: row; }
+            .option-label { background: transparent; padding: 0; border: none; }
+            .form-section-title { font-size: 18px; margin: 25px 0 20px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="reg-container">
+    <div class="reg-header">
+        <h1 id="main-panel-title">Stay100% Partner Network</h1>
+        
+        <div class="step-indicator" id="stepIndicatorContainer">
+            <div class="step active" id="badgeStep1"><i class="fa-solid fa-1"></i> Business Details</div>
+            <div class="step" id="badgeStep2"><i class="fa-solid fa-2"></i> Account Security</div>
+        </div>
+    </div>
+
+    <div class="form-body">
+        <div id="registrationWizardView">
+            <form id="step1Form" class="wizard-step active" onsubmit="transitionToStep2(event)">
+                <div class="form-section-title"><i class="fa-solid fa-user-tie"></i> Personal & Account Information</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fullName">Owner / Full Name <span>*</span></label>
+                        <input type="text" id="fullName" placeholder="Enter registration full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Identity Segment Type <span>*</span></label>
+                        <div class="radio-group">
+                            <label class="option-label"><input type="radio" name="vendorType" value="Agent/Broker" checked> Agent / Broker</label>
+                            <label class="option-label"><input type="radio" name="vendorType" value="Builder"> Builder</label>
+                            <label class="option-label"><input type="radio" name="vendorType" value="Individual Owner"> Individual Owner</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vendorEmail">Contact Email Address <span>*</span></label>
+                        <input type="email" id="vendorEmail" placeholder="partner@firm.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vendorPhone">Mobile Number (WhatsApp) <span>*</span></label>
+                        <input type="tel" id="vendorPhone" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+
+                <div class="form-section-title"><i class="fa-solid fa-briefcase"></i> Company & Business Profile</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="companyName">Agency / Company Name (Optional)</label>
+                        <input type="text" id="companyName" placeholder="e.g., Luxury Housing Deals">
+                    </div>
+                    <div class="form-group">
+                        <label for="operatingCity">Primary Hub City <span>*</span></label>
+                        <select id="operatingCity" required>
+                            <option value="" disabled selected>Select operating hub city</option>
+                            <option value="Delhi NCR">Delhi NCR</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Bangalore">Bangalore</option>
+                            <option value="Jaipur">Jaipur</option>
+                            <option value="Pune">Pune</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="operatingLocalities">Localities Coverage <span>*</span></label>
+                        <input type="text" id="operatingLocalities" placeholder="e.g., Sector 62, Mansarovar" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Property Target Niches <span>*</span></label>
+                        <div class="checkbox-group">
+                            <label class="option-label"><input type="checkbox" name="propDealType" value="Residential Rent"> Residential Rent (Flats/PG/Rooms)</label>
+                            <label class="option-label"><input type="checkbox" name="propDealType" value="Residential Sale"> Residential Sale</label>
+                            <label class="option-label"><input type="checkbox" name="propDealType" value="Commercial Lease"> Commercial Lease</label>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="businessAddress">Complete Office Address <span>*</span></label>
+                        <textarea id="businessAddress" rows="3" placeholder="Enter complete physical address details" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section-title"><i class="fa-solid fa-file-shield"></i> Verification Checkpoints (RERA/GST)</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="reraNumber">RERA Number (Optional)</label>
+                        <input type="text" id="reraNumber" placeholder="e.g., RAJ/A/2026/1234">
+                    </div>
+                    <div class="form-group">
+                        <label for="gstNumber">GSTIN / PAN Card Number <span>*</span></label>
+                        <input type="text" id="gstNumber" placeholder="Enter alphanumeric identification number" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Continue to Security Step <i class="fa-solid fa-arrow-right"></i></button>
+                
+                <p class="switch-view-text">Already registered on Stay100%? <span onclick="toggleViewMode('LOGIN')">Login Directly</span></p>
+            </form>
+
+            <div id="step2AuthView" class="wizard-step">
+                <div class="auth-container">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-olive);">Choose Secure Verification Access</h3>
+                    
+                    <button class="btn-oauth" onclick="handleGoogleAuthLink()"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" style="width:18px; height:18px;"> Complete with Google</button>
+                    
+                    <div class="divider">OR CHOOSE EMAIL ACCESS</div>
+                    
+                    <div class="form-group" style="text-align: left; margin-bottom: 15px;">
+                        <label>Create Account Password</label>
+                        <input type="password" id="registerPassword" placeholder="Minimum 6 characters long">
+                    </div>
+                    <button class="btn-submit" onclick="handleEmailPasswordRegistration()">Finish & Create Node Account</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="directLoginView" style="display: none;">
+            <div class="auth-container">
+                <p style="color: var(--text-gray); margin-bottom: 20px;">Welcome back! Sign in using your registered credentials.</p>
+                
+                <button class="btn-oauth" onclick="handleGoogleAuthLink()"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAABVlBMVEX////qQzU0qFNChfT7vAUufPPg6P06gfSHrPc1f/T7uQCxyPr62djoKRH7twD/vQDpOirqPzAtpk7pNiXpNCIgo0b8wwAmefPpMB3qPC0ZokNDgv385+boJw780nrpNjf/+vH93Z/+897947D914ng7+P3+/j1sKzympXtaWDsW1H+9PTwiYPzpJ/4ysfucmrxlI7H1/ubzqZdtXINpldVj/XA38czqkOx2LmExJJ5wIn51NL2urf97u3rSz72wL37wCj8x0v8zmr8yVjw9P5vnvb+9eP+6cL+7Mr94ahMqk/T6ddHrmF+p/fQ3fyq1bOVzKHvfnfubmb4uXnrUDLvbyr0kR/4rBLtYC7ygiT3oRjvdDu6zvr7wzqLtVnnuRi8tC6ErkKaufiWsDzduB5kl/WyszNiq0rNtifTy3w9j806mqI2o3VAjNw8lbc4n4pAieQnqDbYB6nfAAAKZklEQVR4nO2c+3va1hnHZRni2kFGEhALFTI3DReD8QUSDASbLnWXttDYTrv1unXLll26rd3+/18mAQYkOEfvOToXofH5KU+fJ0ifnHPe77mpirJhw4YNGzZs2MCIeuHFSb/SaFSrZ9VqtVHpD05Sl7Jfig2Fk8bx0ZamWVY2k8noE5w/ZbOWpWVrd9V+qi77HalJ9Y9rmiOWN7ZQGHk9Y2n6aeNk7TRfNI40C+fmIa9nta3jwdp028v+qWbpQLkFzax2VX0h++WDKTRqWiZPajfF0C3r+ES2Ao56xdEjbjxfUzqSKdkiCE5Oi2H1JujWVSV6lafeyFu0nXMZI6NFrCELx1qGmd6EvHYUnRGZOtXYNd8cw7qKhmPqDRe/yDgWTjUm1QXpWJM7HuvHRV7tN3PUTiXOdSqWztnPJa81JPmlrrIC/FwyW1Jmc3dcB6AXQ7sT7neSEdFB5+i64Kp6pwn1c9GOBfql8mIbcELmqiBKsFqU4OdgFPtC/OpHokroMpaIgpPSeWc8jkyN+7KqL6mH3mNkOM/izsTXUD/FAU/BN/KG4Jwix0lcTUZILGOdcfKrb8msMYsU+YzFAvkWKCc0ToLWRlAQ3ARli93DSfAyG/MWrMe9yChXcResRSUHeQmeRmMmw0+wGoW5qAsvwYH81cQEXoKFuAsqW8zKqJGfXDMZXzqB3mHgL8ikyhjulRKrdnfWqPT7g36/0ji7OzI0KwuPWW6ClfCTNT2rXR2vvBZUGFTdKykQS26ChbCbMrplnOEvA6UagMsN3ARDzmXy1lYV8mr1/pGGHQz8BM/CnM0T3TW4bOjouT0/wVSIPprVG4Qbm4MrxAqUn2CIPpo1aLbfT65W1TWOglXaPqpnK5SPHBhLz+QoSFtHjWKYvb5q0dtxOAoqNbo+atXCHYEVaosTfZ6CA6qsNzTaDjqnMW9GnoIK1aI3U2NxMSRl5AUINmjKjMZqt31yQslVsE6xZjI0dncJ3CMuroLKGfmSIm+wPGWvFPkKXpInhc74cHbA947Ql8R1JnPE9YVYc7i3/9WvyARPZb8zGY/3Eo9+S6K4boKH+4lE4tHv4Ir6enVRRXm6l3AVv4YK5muy35iUsaDLN6BmNLZkvzApH84MH30LUbTW5nOlez5KzHj0XbBicQ0+VfLyZD+xQGBsZGXdUKbn5d6iYVBs5NetjDp4mjAwNrLR+z4piA/3En5FTGwwXE4I49d+QVxs5MXfLw/Nob+TYmPDWr8+qny21EmnsbFSUMylZLas7KSI2DDWbramoDopIja0tct6ZVUlXVD0xYbxRvbb0vASY+iPDb4bKbzACbosxEZ+LZvwCXoYTptxHhvr2YQfBLXhPDbWspAqysdBgolZbGS5fhPAjaBOOmnGcWxkZL8rFYHDcKroxIZelf2yVODS0KP49VeWsA/lmPIYaOjwvex3peP3YMG9p9QPuX7AmWvMw2HD0GX/CbXhw4MkVw4+QT/7N3DDBLWg8nB3mzPoZ78CG+49jrDhAfrZwTOameGrCBsmHyCfDS+l+4cRNtw9Rz4bub5fhl5QgOFD5LPBfnsvo2y48xb5bHih+SDShsi4wOzR+Nj/NNKGz1GPBs67E+EKjYA83EU9+lO4YQhBAYbIQHwFDouPom2YRM1MoWunROLjiBuiIh88pQkzZ1sTQ/qlkxjD14hHPwUbholDEbUUNW2Lj+EPoQ0/2xhKNkRNvTeGc8Ooj8P/X8PY5CEDw4jPaZC1NDbzUqRhbNYWyDlNbNaHSMPYrPGRM++47NNgtoRjsteGXuPHZb8UYxiTPW/M0UxMzi3Qu4lxOXvaRu4Ix+X8EL2rH5cz4J330A8Xc47P3RB9uibmLobME1J4MU2n/0BvmNyhAmyIOeUGr5/SP6p2idbw/Iv3qAArYm4qQOfe6T8+U80mrSEl10mo4Q7uZyCG6fSfnqmqaopSm3IOHr6YG0Og+6XpHz93BdVcW5TbhLfQXoo5xlcgs5r038d+Thu2RLlNeA5tQuQexpjAgZj+81RQDVFraLg+gBriSqkSdFc/nfjbTFA1e4LkxsBTNIn/Iez3Fum/qIsIbcR3UMHtd/gfwiVi+q/PPIYiGxHeSfGFBrdXMw0JSY0IrqTobah7UOt8JyRUPwLLKbiPYmc0YxDfH85CwtuIojLxHDyhwSx/p6zupgsh4W1FEXoOz8GdNGgYKiu7qSckvIZdAXqK8hrehIHDcFU19YWEt58OBQgSNGFQGo7xd1N/SIjvpz/Am3DnC8DveUN/RUh4DQWEIrwFAyalUzxz01Uh4eunHd6C8LUvICvGLPy/TVaHhE+Rc+6/Bk9nsBuJi8xrDSokfB21zNUQ7gfspMpsgYEOCZ/hiKfgJwR9FNhJ76+d4ELCp8hx9vYQXkeBldRlPK/Bh4SXHLeCSjIIQXE/5fFeUEgIUnxA0oLbuG+6fBzuT7ebJCtek22PA+akM/5hEvlxUrwm2Oh2OcB9W+mjZJMaqjnm5YZUEFxnxvSIG9EJDba5SDoGtw/wm2w+yuSNqJo5lguNc6Iq6hKwBeXnNkeuqNo3zATfEgvCo2IKjaEzGNn01Ot3xIeM6O+5UHSoFE0mxxnnB2Q1ZtyEmHNRBCPyYuNih27Gcsv+6X3+TUiVGJNmDDkab2xTvfgnqSLxKHTpUvVTh5xK31Xb6vipF//aJuuohIV0Cl03dbFHdI7t0X3HMdV/kzQjWRbOGFL2U/cF7RH57kZHtRf+US9+hivirtBgoe6nLrncLcn+Rqlr+5528csutKdC9hBXE0JQnTQkrLCWmp7mu/83Gv0HFotJzB2hoCfT99OJY84eNQPmcuV21/Q33/1fv4DFBkVSzGiG6af3knar2V7ZYUvDm55q5zAVDRQblGVmSou+oC5YupqjXrfZabeHw2G73blpdlsj287h7CaKwbGxS7DwXUGZheHMc45pAn/YNINiI0wfdQk7FMMTEBskK/vVdOQr/oJZ7SeBm8A4QqUiEzCxQbZ1gYJJtQkFMjZ24BuIWCgXUixBxEb4QTihrEZAcVVsHJAve1GK0ofiythIhktCD/IzQ12OjV0mVSZaip7Y2KFb9UZbcTE2aHZm1kBxHhuscsKjGDhNFsEsNtgLurPwSCi6sbGzzSgI/YoRiH43Nn56n/kYnNGKQDCq6n9/5iboTMMjUG/YH1V6kL+YsnlfNBtKLqk2/++RyjIHoynmvuettJ6aY3yUjmQoKRm5D8EFehKa0RR2c35MW3jBYXWEDkdsM4Y9eKViqIorquEPz+m4WXFixIOcKfh7zjnlrgBH076V5edSanF2NO2enA4qyNHxE/qtKgJujhHxc1k+hWdAzu5Gxc+l3DSZzgFMW72RPf6WaLewJ9Ykejm7J2QNQUz5ZhRe0r3eALzDIYVSM5Sko9eKXu/0U+70bBpLxy7Xa0deb8qw2XItoZrubQ2z14lS6YRQ6nQnN0ownu4FDduRa65N2y1Rat90W6rtmk4umbiM/+z8N1ttdZvt0trKLVIuDd17Qs1bl2bzxr07FA+zDRs2bNiwYUMk+B9rVKzOoKUFvgAAAABJRU5ErkJggg==" alt="G" style="width:18px; height:18px;"> Sign In with Google</button>
+                
+                <div class="divider">OR USE ACCOUNT DETAILS</div>
+                
+                <div class="form-group" style="text-align: left; margin-bottom: 15px;">
+                    <label>Registered Email</label>
+                    <input type="email" id="loginEmail" placeholder="partner@stay100.com">
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="btn-submit" onclick="handleDirectEmailLogin()">Authenticate Account</button>
+                
+                <p class="switch-view-text">New to the platform? <span onclick="toggleViewMode('REGISTER')">Create New Vendor Profile</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="vendor-registration.js"></script>
+</body>
+</html>

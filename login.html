@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - StayPremium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="login-container">
+        <div class="auth-box">
+            
+            <div class="auth-toggle-header">
+                <button id="toggle-login-tab" class="auth-tab-btn active">Sign In</button>
+                <button id="toggle-register-tab" class="auth-tab-btn">Create Account</button>
+            </div>
+
+            <button id="google-auth-btn" class="btn-social google">
+                <i class="fa-brands fa-google"></i> Continue with Google
+            </button>
+
+            <div class="divider"><span>OR</span></div>
+
+            <div id="login-panel" class="auth-panel active">
+                <form id="email-login-form" class="auth-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" placeholder="name@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+
+                <div class="divider"><span>OR</span></div>
+
+                <div class="phone-auth-wrapper">
+                    <div class="input-group" id="phone-field-block">
+                        <label>Phone Number</label>
+                        <div class="phone-input-row">
+                            <span class="country-code">+91</span>
+                            <input type="tel" id="login-phone" placeholder="9876543210" maxlength="10">
+                        </div>
+                        <div id="recaptcha-container" style="margin-top: 10px;"></div>
+                        <button id="send-otp-btn" class="btn-secondary" style="margin-top: 10px;">Send Verification OTP</button>
+                    </div>
+
+                    <div class="input-group" id="otp-field-block" style="display: none;">
+                        <label>Enter 6-Digit OTP</label>
+                        <input type="text" id="login-otp" placeholder="123456" maxlength="6" style="letter-spacing: 4px; text-align: center;">
+                        <button id="verify-otp-btn" class="btn-primary" style="margin-top: 15px;">Verify & Login</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="register-panel" class="auth-panel">
+                <form id="email-register-form" class="auth-form">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="register-name" placeholder="John Doe" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="register-phone" placeholder="9876543210" maxlength="10" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="register-email" placeholder="name@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Create Password</label>
+                        <input type="password" id="register-password" placeholder="Minimum 6 characters" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Register Account</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="dynamic-footer-container"></div>
+
+    <script type="module" src="login.js"></script>
+</body>
+</html>

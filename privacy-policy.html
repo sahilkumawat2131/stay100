@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | STAY100%</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* --- GLOBAL NATIVE FIT RESET --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- DOCUMENTATION LAYOUT CONTAINER --- */
+        .doc-wrapper {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin: 30px 0 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        /* --- DOC HEADER --- */
+        .doc-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .doc-header h1 {
+            font-size: clamp(26px, 5vw, 36px);
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+        .doc-header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* --- DOC CONTENT & TYPOGRAPHY --- */
+        .doc-section {
+            margin-bottom: 35px;
+            word-wrap: break-word;
+        }
+        .doc-section h2 {
+            font-size: clamp(18px, 4vw, 22px);
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .doc-section h2 i {
+            color: #4f46e5;
+            font-size: 18px;
+        }
+        .doc-section p {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        /* --- DOC LISTS --- */
+        .doc-list {
+            list-style: none;
+            padding-left: 5px;
+            margin-bottom: 15px;
+        }
+        .doc-list li {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .doc-list li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #4f46e5;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* --- HYPERLINKS STYLE --- */
+        .doc-link {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed #4f46e5;
+            transition: all 0.2s ease;
+        }
+        .doc-link:hover {
+            color: #4338ca;
+            border-bottom-style: solid;
+        }
+
+        /* --- CALLOUT BOX --- */
+        .doc-callout {
+            background: #eeebff;
+            border-left: 4px solid #4f46e5;
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 25px 0;
+        }
+        .doc-callout p {
+            font-size: 14px;
+            color: #4338ca;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 768px) {
+            .doc-wrapper {
+                padding: 25px 15px;
+                margin: 15px 0 40px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="container">
+        
+        <div class="doc-wrapper">
+            
+            <div class="doc-header">
+                <h1>Privacy Policy</h1>
+                <p><strong>Last Updated:</strong> June 21, 2026</p>
+            </div>
+
+            <section class="doc-section">
+                <h2><i class="fa-solid fa-circle-info"></i> 1. Introduction</h2>
+                <p>Welcome to STAY100%. We respect your privacy and are committed to protecting your personal data. This Privacy Policy outlines how we collect, use, disclose, and safeguard your information when you visit our platform or use our rental services.</p>
+                <p>By accessing our services, you agree to the terms outlined in this policy. If you do not agree, please discontinue use immediately. For details on user obligations, please review our <a href="terms.html" class="doc-link">Terms and Conditions</a>.</p>
+            </section>
+
+            <section class="doc-section">
+                <h2><i class="fa-solid fa-database"></i> 2. Information We Collect</h2>
+                <p>To provide seamless executive co-living and premium room booking facilities, we collect the following sets of data:</p>
+                <ul class="doc-list">
+                    <li><strong>Personal Identity Data:</strong> Full name, age, gender, and government-issued KYC verification documents (Aadhar, PAN, Passport).</li>
+                    <li><strong>Contact Credentials:</strong> Email address, mobile number, and emergency contact details.</li>
+                    <li><strong>Financial Transactions:</strong> Payment histories, token advance logs, and bank account setups handled via our secure <a href="payments-security.html" class="doc-link">Payment Gateway Partners</a>.</li>
+                    <li><strong>Technical Logs:</strong> IP address, device specifications, browser cookies, and location tracking assets while searching for properties.</li>
+                </ul>
+            </section>
+
+            <section class="doc-section">
+                <h2><i class="fa-solid fa-gears"></i> 3. How We Use Your Information</h2>
+                <p>Your data is processed under strict security metrics to maintain automated operational loops:</p>
+                <ul class="doc-list">
+                    <li>To verify your identity and generate direct rental agreements without middleman intervention.</li>
+                    <li>To match your preferences with recommended luxury flats or studio rooms.</li>
+                    <li>To manage background verification grids required by our onboarded property managers.</li>
+                    <li>To deliver transaction notifications, support tickets, and system updates.</li>
+                </ul>
+                
+                <div class="doc-callout">
+                    <p><i class="fa-solid fa-shield-halved"></i> <strong>Security Standard:</strong> We never sell, lease, or distribute your private rental history or financial logs to third-party marketing companies.</p>
+                </div>
+            </section>
+
+            <section class="doc-section">
+                <h2><i class="fa-solid fa-share-nodes"></i> 4. Data Sharing and Disclosures</h2>
+                <p>We only share information with certified stakeholders to fulfill lease commitments:</p>
+                <p><strong>Property Owners/Admins:</strong> Your primary identity details are shared with property managers once you finalize a room booking deal via our platform.</p>
+                <p><strong>Legal Authorities:</strong> If demanded by state or federal regulatory bodies for verification, policing registries, or local rental guidelines compliance.</p>
+            </section>
+
+            <section class="doc-section">
+                <h2><i class="fa-solid fa-user-shield"></i> 5. Your Privacy Rights</h2>
+                <p>As a STAY100% user, you possess absolute control over your digital footprint on our dashboard:</p>
+                <ul class="doc-list">
+                    <li><strong>Data Access & Rectification:</strong> You can modify or update your active contact metrics at any time through your account panel.</li>
+                    <li><strong>Account Deletion Matrix:</strong> You can request complete termination of your profile and background logs by visiting our <a href="support.html" class="doc-link">Account Support Desk</a> (subject to clear active lease contracts).</li>
+                </ul>
+            </section>
+
+            <section class="doc-section">
+                <h2><i class="fa-solid fa-envelope-open-text"></i> 6. Contact Our Privacy Officer</h2>
+                <p>If you have questions regarding this documentation, cookie consent configurations, or data encryption infrastructure, feel free to reach out to our management deck:</p>
+                <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> <a href="mailto:privacy@stay100.in" class="doc-link">privacy@stay100.in</a></p>
+                <p><i class="fa-solid fa-headset"></i> <strong>Helpdesk Support:</strong> <a href="contact.html" class="doc-link">Submit a Grievance Ticket</a></p>
+            </section>
+
+        </div>
+
+    </main>
+
+    <div id="dynamic-footer-container"></div>
+    <div id="dynamic-desktop-footer-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="header.js"></script>
+    <script type="module" src="footer.js"></script>
+</body>
+</html>

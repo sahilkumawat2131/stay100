@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Premium PG & Luxury Rooms for Rent | Stay100%</title>
+    <meta name="description" content="Find and book premium PGs, luxury flats, co-living spaces, and private rooms across India. Real-time availability, verified listings, and zero brokerage options on Stay100%.">
+    <meta name="keywords" content="premium pg, luxury flats, private rooms, co-living spaces, hostels near me, stay100, verified property rent">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://stay100.in/index.html"> <meta property="og:type" content="website">
+    <meta property="og:title" content="Premium PG & Luxury Rooms for Rent | Stay100%">
+    <meta property="og:description" content="Explore verified premium accommodations, single/sharing rooms, and luxury flats with elite amenities on Stay100%.">
+    <meta property="og:image" content="assets/stay100-og-banner.png"> <meta property="og:url" content="https://stay100.in/index.html">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Premium PG & Luxury Rooms for Rent | Stay100%">
+    <meta name="twitter:description" content="Find the best verified co-living properties and luxury flats near you with Stay100%.">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        /* Layout Structure */
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        /* Desktop Sidebar Filters */
+        .desktop-filters-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .content-area {
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        /* Filter UI Components */
+        .filter-group {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        .filter-group:last-child {
+            border-bottom: none;
+        }
+        .filter-group h4 {
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .filter-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+        }
+        .filter-options input[type="checkbox"], 
+        .filter-options input[type="radio"] {
+            accent-color: #ff385c; /* Brand color choice */
+            width: 16px;
+            height: 16px;
+        }
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* Active/Selected Chips Section */
+        .active-filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .filter-chip {
+            background: #f0f2f5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #4a5568;
+        }
+        .filter-chip i {
+            cursor: pointer;
+            color: #a0aec0;
+        }
+        .filter-chip i:hover {
+            color: #e53e3e;
+        }
+
+        /* Clear All Button */
+        .clear-all-btn {
+            background: none;
+            border: none;
+            color: #ff385c;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        /* Native Listings Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 15px 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .property-card { 
+            transition: transform 0.2s ease, box-shadow 0.2s ease; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        /* Slider Systems */
+        .banner-slider-container {
+            margin: 20px 0 25px 0;
+            position: relative;
+            width: 100%;
+        }
+        .slider-viewport-wrapper {
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            background: #e2e8f0;
+            position: relative;
+            width: 100%;
+        }
+        .dynamic-slides-track {
+            display: block;
+            width: 100%;
+            position: relative;
+        }
+        .dynamic-banner-slide {
+            display: none;
+            width: 100%;
+            text-decoration: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .dynamic-banner-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* ========================================== */
+        /* FIXED & UPGRADED HERO BANNER STYLING     */
+        /* ========================================== */
+        .hero-banner {
+            background: #eaf7f2; /* Beautiful light green layout background */
+            border-radius: 20px;
+            margin: 30px auto;
+            padding: 40px 50px;
+            max-width: 1200px;
+            box-sizing: border-box;
+        }
+        .banner-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            width: 100%;
+        }
+        .banner-content {
+            flex: 1;
+            max-width: 60%;
+        }
+        .banner-title {
+            font-size: 32px;
+            color: #0c1e36;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            display: block !important; /* Hiding override if any */
+        }
+        .banner-subtitle {
+            font-size: 16px;
+            color: #52627a;
+            margin: 0 0 25px 0;
+        }
+        .banner-cta-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: #8b0000; /* Rich maroon shade as your reference image */
+            color: #ffffff !important;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(139,0,0,0.2);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #600000;
+            text-decoration: none !important;
+        }
+        .whatsapp-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #1c2d42 !important;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .whatsapp-link:hover {
+            text-decoration: underline !important;
+            color: #25D366 !important;
+        }
+        .banner-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .banner-image img {
+            max-height: 220px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Responsive Breakpoint for Mobile/Tablet */
+        @media (max-width: 992px) {
+            .desktop-filters-sidebar {
+                display: none; 
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            #filter-btn {
+                display: inline-block !important; 
+            }
+        }
+        @media (min-width: 993px) {
+            #filter-btn {
+                display: none !important; 
+            }
+        }
+
+        /* Mobile Adjustments for Right-Aligned Banner */
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 30px 20px;
+            }
+            .banner-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 25px;
+            }
+            .banner-content {
+                max-width: 100%;
+                order: 1;
+            }
+            .banner-title {
+                font-size: 24px;
+            }
+            .banner-subtitle {
+                font-size: 14px;
+            }
+            .banner-cta-group {
+                justify-content: center;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .btn-primary {
+                width: 100%;
+                text-align: center;
+            }
+            .banner-image {
+                width: 100%;
+                justify-content: center;
+                order: 2;
+            }
+            .banner-image img {
+                max-height: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+  <main class="container">
+    
+    <h1 style="display: none;">Verified Premium PGs, Luxury Flats & Co-Living Spaces Across India</h1>
+
+   <div id="fraud-alert-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 450px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            
+            <div class="modal-banner-image-wrapper" style="width: 100%; text-align: center; background: #fff1f3; padding: 20px 0 10px 0;">
+                <img src="scam-removebg-preview.png" 
+                     alt="Scam Prevention Shield" 
+                     style="max-width: 130px; height: auto; display: inline-block;" />
+            </div>
+
+            <div class="modal-header" style="padding-top: 10px;">
+                <div class="alert-icon-wrapper" style="margin-bottom: 5px;">
+                    <span class="bell-badge">🔔</span>
+                    <i class="fa-solid fa-mobile-screen-button phone-icon"></i>
+                </div>
+                <h2>Never pay booking amount without visiting the property</h2>
+            </div>
+            
+            <hr class="modal-divider">
+            
+            <div class="modal-body">
+                <p class="scam-warning">SCAMMERS WILL ASK FOR :</p>
+                <ul class="scam-list">
+                    <li><i class="fa-solid fa-circle-xmark cross-icon"></i> Property visit charges</li>
+                    <li><i class="fa-solid fa-circle-xmark cross-icon"></i> Gate pass booking</li>
+                    <li><i class="fa-solid fa-circle-xmark cross-icon"></i> Refundable booking amount</li>
+                </ul>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="close-alert-btn" class="modal-primary-btn">Ok, understood</button>
+            </div>
+        </div>
+    </div>
+    <div class="hero-viewport-container">
+        
+        <div id="dynamic-banners-container" class="slider-wrapper-container"></div>
+        
+        <div class="search-card-wrapper">
+            <div class="search-bar-row">
+
+                <div class="search-input-container">
+                    <i class="fa-solid fa-magnifying-glass main-search-icon" aria-hidden="true"></i>
+                    <input type="text" id="search-input" placeholder='Search "Farm house in Punjab below 1 cr"' aria-label="Search accommodations">
+                </div>
+                
+                <div class="search-actions">
+                    <button id="location-search-btn" class="action-icon-btn" type="button" title="Search near me">
+                        <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
+                    </button>
+                    <button id="voice-search-btn" class="action-icon-btn" title="Voice Search">
+                        <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+                    </button>
+                    <button id="main-search-submit" class="search-maroon-btn" type="button">Search</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <section class="categories-section" aria-label="Accommodation Categories">
+        <div class="category-grid">
+            <div class="category-card active" data-category="all" role="button" aria-label="View All Spaces">
+                <i class="fa-solid fa-house-user" aria-hidden="true"></i>
+                <span>All Spaces</span>
+            </div>
+            <div class="category-card" data-category="pg" role="button" aria-label="View Premium PGs">
+                <i class="fa-solid fa-hotel" aria-hidden="true"></i>
+                <span>Premium PGs</span>
+            </div>
+            <div class="category-card" data-category="flat" role="button" aria-label="View Luxury Flats">
+                <i class="fa-solid fa-building" aria-hidden="true"></i>
+                <span>Luxury Flats</span>
+            </div>
+            <div class="category-card" data-category="room" role="button" aria-label="View Private Rooms">
+                <i class="fa-solid fa-bed" aria-hidden="true"></i>
+                <span>Private Rooms</span>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+        <div class="main-layout">
+            
+            <aside class="desktop-filters-sidebar" aria-label="Filter Properties Matrix">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Filters Matrix</h3>
+                    <button type="button" class="clear-all-btn" onclick="clearAllFilters()">Clear All</button>
+                </div>
+
+                <div class="active-filters-container" id="desktop-active-chips"></div>
+
+                <div class="filter-group">
+                    <h4>Budget (Max)</h4>
+                    <select class="filter-select" id="filter-budget" aria-label="Select Maximum Budget">
+                        <option value="">Any Budget</option>
+                        <option value="5000">Under ₹5,000</option>
+                        <option value="10000">Under ₹10,000</option>
+                        <option value="15000">Under ₹15,000</option>
+                        <option value="20000">Under ₹20,000</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Gender</h4>
+                    <div class="filter-options">
+                        <label><input type="radio" name="desktop-gender" value="boys"> Boys</label>
+                        <label><input type="radio" name="desktop-gender" value="girls"> Girls</label>
+                        <label><input type="radio" name="desktop-gender" value="unisex"> Unisex</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Locality / Area</h4>
+                    <input type="text" class="filter-input" id="filter-locality" placeholder="e.g., Malviya Nagar" aria-label="Filter by locality or area name">
+                </div>
+
+                <div class="filter-group">
+                    <h4>Sharing Type</h4>
+                    <div class="filter-options">
+                        <label><input type="checkbox" class="filter-sharing" value="single"> Single Occupancy</label>
+                        <label><input type="checkbox" class="filter-sharing" value="double"> Double Sharing</label>
+                        <label><input type="checkbox" class="filter-sharing" value="triple"> Triple Sharing</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Furnishing</h4>
+                    <div class="filter-options">
+                        <label><input type="checkbox" class="filter-furnishing" value="unfurnished"> Unfurnished</label>
+                        <label><input type="checkbox" class="filter-furnishing" value="semi-furnished"> Semi-Furnished</label>
+                        <label><input type="checkbox" class="filter-furnishing" value="fully-furnished"> Fully Furnished</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Food Services</h4>
+                    <div class="filter-options">
+                        <label><input type="checkbox" id="filter-food" value="food-included"> Food Included (Mess)</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Nearby Hubs</h4>
+                    <div class="filter-options">
+                        <label><input type="checkbox" class="filter-landmark" value="near-school"> Near Schools/Colleges</label>
+                        <label><input type="checkbox" class="filter-landmark" value="near-hospital"> Near Hospitals</label>
+                        <label><input type="checkbox" class="filter-landmark" value="near-office"> Near Corporate Offices</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Quick Filters</h4>
+                    <div class="filter-options">
+                        <label><input type="checkbox" id="filter-verified" value="verified"> Verified Properties Only</label>
+                        <label><input type="checkbox" id="filter-recent" value="recent"> Recently Posted</label>
+                    </div>
+                </div>
+            </aside>
+<section class="content-area" aria-label="Recommended Accommodations Listings">
+    <h2 id="listings-heading">Stay100% Properties </h2> 
+    
+    <section class="hero-banner">
+      <div class="banner-container">
+        <div class="banner-content">
+          <h2 class="banner-title">Rent faster at the right price!</h2>
+          <p class="banner-subtitle">Your perfect Rentals is waiting, list your property now</p>
+          <div class="banner-cta-group">
+              <a href="vendor-registration.html" class="btn-primary">Post Property, It's FREE</a>
+              <a href="https://wa.me/919876543210?text=I%20want%20to%20list%20my%20property" target="_blank" class="whatsapp-link">
+                Post via 
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="color: #25D366; vertical-align: middle; margin: 0 2px 0 4px;">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.69-4.98c-.202-.101-1.194-.588-1.379-.653-.185-.069-.32-.102-.455.101-.135.202-.52.653-.637.786-.117.135-.235.151-.437.05-.202-.101-.852-.313-1.623-.999-.6-.535-1.005-1.199-1.123-1.401-.117-.202-.012-.311.089-.41.09-.09.202-.236.3-.353.101-.117.135-.198.202-.333.067-.136.034-.253-.017-.354-.05-.101-.455-1.096-.624-1.503-.165-.398-.332-.344-.455-.35-.117-.006-.253-.007-.39-.007a.77.77 0 0 0-.558.26c-.185.202-.708.692-.708 1.688s.725 1.96 1.826 2.456c.102.046 1.8 2.751 4.36 3.857.61.263 1.087.42 1.458.537.613.195 1.173.167 1.615.102.493-.073 1.195-.488 1.362-.958.167-.47.167-.872.117-.958-.05-.088-.185-.136-.388-.237"/>
+                </svg>
+                Whatsapp ➔
+              </a>
+          </div>
+        </div>
+        <div class="banner-image">
+          <img src="stay1.png" alt="Surprised girl pointing to Stay100 mobile application presentation mockup">
+        </div>
+      </div>
+    </section>
+
+    <div class="listings-grid" id="listings-container"></div>
+</section>
+
+        </div>
+    </main>
+
+    <div id="filter-modal" class="modal" role="dialog" aria-labelledby="modal-title-filter" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title-filter">Filters Selection Matrix</h3>
+                <span class="close-modal" role="button" aria-label="Close Filter Modal">&times;</span>
+            </div>
+            <div class="modal-body" id="mobile-filter-body-container"></div>
+            <div class="modal-footer" style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
+                <button class="btn-mehrum w-100" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dynamic-footer-container">
+        <nav class="mobile-bottom-nav">
+            <a href="index.html" class="nav-item active-nav" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="pg.html" class="nav-item" data-page="pg"><i class="fa-solid fa-hotel"></i><span>PG's</span></a>
+            <a href="room.html" class="nav-item" data-page="rooms"><i class="fa-solid fa-bed"></i><span>Rooms</span></a>
+            <a href="profile.html" class="nav-item" data-page="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <div id="dynamic-desktop-footer-container">
+        <div class="footer-toggle-wrapper">
+            <button id="btn-global-footer-toggle" class="btn-footer-toggle">
+                <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
+                <span id="toggle-text">Show Full Directory</span>
+            </button>
+        </div>
+
+        <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
+            <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
+                <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
+                <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
+                <g transform="translate(150, 220) scale(0.85)">
+                    <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+                    <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
+                    <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
+                    <circle cx="132" cy="172" r="2" fill="#ffffff" />
+                </g>
+                <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
+            </svg>
+
+            <div class="footer-grid-container">
+                <div class="footer-brand-column">
+                    <a href="index.html" class="footer-logo-link">
+                        <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
+                    </a>
+                    <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
+                    <div class="footer-social-icons">
+                        <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="aboutus.html">About Corporate Group</a></li>
+                        <li><a href="ecosystem.html">Premium Ecosystem</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Partners</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="admin.html">Admin Hub</a></li>
+                        <li><a href="corporate.html">Corporate Tie-ups</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact Info</h4>
+                    <div class="footer-address-info">
+                        <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
+                        <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
+                        <p><i class="fa-solid fa-envelope"></i> <span>support@staypremium.in</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-seo-tabs-container">
+                <div class="seo-tabs-nav">
+                    <button class="seo-tab-trigger active-tab" data-target="panel-flats-rent">Flats for Rent</button>
+                    <button class="seo-tab-trigger" data-target="panel-pg-hostels">PG / Hostels</button>
+                    <button class="seo-tab-trigger" data-target="panel-flatmates">Flatmates</button>
+                </div>
+
+                <div class="seo-tabs-content-body">
+                    
+                    <div id="panel-flats-rent" class="seo-tab-panel active-panel">
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Jaipur</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=jaipur&type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
+                                <a href="index.html?location=jaipur&type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
+                                <a href="index.html?location=jaipur&type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
+                                <a href="index.html?location=jaipur&type=flat&area=station">Rental Rooms near Jaipur Junction</a>
+                                <a href="index.html?location=jaipur&type=flat&budget=10k">Budget Rental Flats under 10k</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Delhi NCR</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=delhi&type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
+                                <a href="index.html?location=delhi&type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
+                                <a href="index.html?location=delhi&type=flat&area=northcampus">Student Flats near DU North Campus</a>
+                                <a href="index.html?location=delhi&type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
+                                <a href="index.html?location=delhi&type=flat&area=ndls">Properties near New Delhi Station</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Gurugram</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=gurugram&type=flat&area=cybercity">Corporate Suites near Cyber City</a>
+                                <a href="index.html?location=gurugram&type=flat&area=sector48">Luxury 2 BHK Sector 48 Sohna Road</a>
+                                <a href="index.html?location=gurugram&type=flat&area=hudacity">Studio Rooms near Millennium Metro</a>
+                                <a href="index.html?location=gurugram&type=flat&area=sector21">Managed Flat Systems Sector 21</a>
+                                <a href="index.html?location=gurugram&type=flat&budget=15k">Premium Flats under 15k</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Noida</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=noida&type=flat&area=sector62">IT Park Linked Flats Sector 62</a>
+                                <a href="index.html?location=noida&type=flat&area=sector15">Metro Walk Apartments Sector 15</a>
+                                <a href="index.html?location=noida&type=flat&area=knowledgepark">Greater Noida Knowledge Park Units</a>
+                                <a href="index.html?location=noida&type=flat&area=amity">Independent Stays near Amity</a>
+                                <a href="index.html?location=noida&type=flat&budget=12k">Fully Furnished Flats under 12k</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="panel-pg-hostels" class="seo-tab-panel">
+                        <div class="seo-column-group">
+                            <h5>PG / Hostels in Mumbai</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=mumbai&type=pg&area=andheri">Executive Co-living in Andheri West</a>
+                                <a href="index.html?location=mumbai&type=pg&area=powai">IIT Tech Circle PG in Powai</a>
+                                <a href="index.html?location=mumbai&type=pg&area=bandra">Premium Single Rooms Bandra Complex</a>
+                                <a href="index.html?location=mumbai&type=pg&area=csmt">Working Hostels near CSMT Station</a>
+                                <a href="index.html?location=mumbai&type=pg&budget=12k">Managed Spaces under 12k</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>PG / Hostels in Pune</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=pune&type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3 PG</a>
+                                <a href="index.html?location=pune&type=pg&area=vimannagar">Symbiosis Student Rooms Viman Nagar</a>
+                                <a href="index.html?location=pune&type=pg&area=kothrud">Single Sharing Stays in Kothrud</a>
+                                <a href="index.html?location=pune&type=pg&area=punestation">Hostel Rooms near Pune Junction</a>
+                                <a href="index.html?location=pune&type=pg&facility=food">Premium Food Attached PG Pune</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>PG / Hostels in Hyderabad</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=hyderabad&type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
+                                <a href="index.html?location=hyderabad&type=pg&area=gachibowli">Professional Suites Gachibowli</a>
+                                <a href="index.html?location=hyderabad&type=pg&area=ameerpet">Coaching Area Rooms Ameerpet Hub</a>
+                                <a href="index.html?location=hyderabad&type=pg&area=secunderabad">Hostels near Secunderabad Station</a>
+                                <a href="index.html?location=hyderabad&type=pg&budget=6k">Sharing Room Systems under 6k</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Institutional Student Hubs</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=jaipur&type=pg&landmark=coaching">PG near Allen & Resonance Jaipur</a>
+                                <a href="index.html?location=lucknow&type=pg">Student Hostels in Lucknow</a>
+                                <a href="index.html?location=chandigarh&type=pg">Premium Stays in Chandigarh Sector Hubs</a>
+                                <a href="index.html?location=udaipur&type=pg">Luxury Student Rooms Udaipur</a>
+                                <a href="index.html?location=chennai&type=pg">Hostels near Chennai Central Station</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="panel-flatmates" class="seo-tab-panel">
+                        <div class="seo-column-group">
+                            <h5>Flatmates in Metro Zones</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?type=flatmate&location=bangalore">Shared Rooms in Bangalore (HSR & Koramangala)</a>
+                                <a href="index.html?type=flatmate&location=mumbai">Male/Female Room Sharing Mumbai West</a>
+                                <a href="index.html?type=flatmate&location=delhi">UPSC Roommates Sharing Delhi NCR</a>
+                                <a href="index.html?type=flatmate&location=pune">Pre-occupied 2 BHK Room sharing Pune</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Configurations Directory</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
+                                <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
+                                <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
+                                <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
+                                <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="footer-bottom-bar">
+                <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network. Dedicated to delivering 100% transparent rental solutions across India.</div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="header.js"></script>
+    <script src="propertycardscomponants.js"></script>
+    <script src="index.js"></script>
+    <script type="module" src="footer.js"></script>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- POPUP SYSTEM ---
+        const popup = document.createElement('div');
+        popup.className = 'property-popup-bubble';
+        popup.innerHTML = `
+            <div class="popup-message-content">
+                <div class="popup-avatar">
+                    <img src="assets/stay100.png" alt="Stay100% Logo Ecosystem Support Avatar">
+                </div>
+                <div class="popup-bubble-text">
+                    <p>Hey! Want to grow your business?</p>
+                    <a href="vendor-registration.html" class="popup-action-btn">
+                        List Your Property <span class="popup-free-badge">FREE</span>
+                    </a>
+                </div>
+                <button class="popup-close-x" onclick="this.parentElement.parentElement.classList.remove('show')" aria-label="Dismiss Popup Dialog">&times;</button>
+            </div>
+        `;
+        document.body.appendChild(popup);
+
+        function triggerPopup() {
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 6000); 
+        }
+        setTimeout(triggerPopup, 15000);
+        setInterval(triggerPopup, 15000);
+
+        // --- FOOTER INTERACTION LOGIC ---
+        const toggleBtn = document.getElementById('btn-global-footer-toggle');
+        const coreFooter = document.getElementById('staypremium-core-footer');
+        const toggleIcon = document.getElementById('toggle-icon');
+        const toggleText = document.getElementById('toggle-text');
+
+        if (toggleBtn && coreFooter) {
+            toggleBtn.addEventListener('click', () => {
+                if (coreFooter.style.display === 'none' || coreFooter.style.display === '') {
+                    coreFooter.style.display = 'block';
+                    setTimeout(() => { coreFooter.style.opacity = '1'; }, 10);
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                    toggleText.textContent = 'Hide Full Directory';
+                } else {
+                    coreFooter.style.opacity = '0';
+                    setTimeout(() => { coreFooter.style.display = 'none'; }, 300);
+                    toggleIcon.style.transform = 'rotate(0deg)';
+                    toggleText.textContent = 'Show Full Directory';
+                }
+            });
+        }
+
+        // --- SEO TABS TOGGLE SYSTEM ---
+        const tabTriggers = document.querySelectorAll('.seo-tab-trigger');
+        const tabPanels = document.querySelectorAll('.seo-tab-panel');
+
+        tabTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                tabTriggers.forEach(t => t.classList.remove('active-tab'));
+                tabPanels.forEach(p => p.classList.remove('active-panel'));
+
+                trigger.classList.add('active-tab');
+                const targetId = trigger.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active-panel');
+            });
+        });
+    });
+    </script>
+
+    <script>document.addEventListener("DOMContentLoaded", function () {
+    
+        // ==========================================
+        // 1. SYSTEM DIALOG / FRAUD ALERT POPUP LOGIC
+        // ==========================================
+        const alertModal = document.getElementById("fraud-alert-modal");
+        const closeAlertBtn = document.getElementById("close-alert-btn");
+
+        if (sessionStorage.getItem("fraudAlertDismissed") === "true") {
+            alertModal.style.setProperty("display", "none", "important");
+        } else {
+            alertModal.style.setProperty("display", "flex", "important");
+        }
+
+        closeAlertBtn.addEventListener("click", function () {
+            alertModal.style.setProperty("display", "none", "important");
+            sessionStorage.setItem("fraudAlertDismissed", "true");
+        });
+
+
+        // ==========================================
+        // 2. LIVE LOCATION SEARCH SYSTEM
+        // ==========================================
+        const locationBtn = document.getElementById("location-search-btn");
+        const searchInput = document.getElementById("search-input");
+
+        locationBtn.addEventListener("click", function () {
+            if (navigator.geolocation) {
+                searchInput.value = "";
+                searchInput.placeholder = "Fetching your live location...";
+                
+                navigator.geolocation.getCurrentPosition(
+                    async function (position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        try {
+                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                            const addressData = await response.json();
+                            
+                            if (addressData && addressData.display_name) {
+                                const locationText = addressData.address.suburb || 
+                                                     addressData.address.neighbourhood || 
+                                                     addressData.address.city_district || 
+                                                     addressData.address.city || 
+                                                     addressData.display_name;
+
+                                searchInput.value = locationText;
+                                searchInput.placeholder = "Search by area, location or PG name...";
+                                
+                            } else {
+                                searchInput.value = `${latitude}, ${longitude}`;
+                            }
+                        } catch (apiError) {
+                            console.error("Geocoding failed:", apiError);
+                            searchInput.value = `${latitude}, ${longitude}`;
+                        }
+                    },
+                    function (locationError) {
+                        searchInput.placeholder = "Search by area, location or PG name...";
+                        if (locationError.code === locationError.PERMISSION_DENIED) {
+                            alert("Location access denied. Please enable location permissions or type manually.");
+                        } else {
+                            alert("Unable to retrieve location. Please type manually.");
+                        }
+                    },
+                    { enableHighAccuracy: true, timeout: 8000 }
+                );
+            } else {
+                alert("Your browser does not support live location services.");
+            }
+        });
+    });
+    </script>
+</body>
+</html>
