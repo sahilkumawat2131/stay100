@@ -513,7 +513,16 @@
     // Initialize Structural Firebase Context Securely
     let db;
     try {
-        firebase.initializeApp(firebaseConfig);
+       const firebaseConfig = {
+  apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
+  authDomain: "stay100-31316.firebaseapp.com",
+  databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "stay100-31316",
+  storageBucket: "stay100-31316.firebasestorage.app",
+  messagingSenderId: "91816784620",
+  appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
+  measurementId: "G-4J40FKKDNT"
+};
         db = firebase.database();
     } catch(e) {
         console.error("Firebase initializing anomaly sequence caught: ", e);

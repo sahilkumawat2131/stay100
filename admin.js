@@ -2,17 +2,16 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCfa9vnSViGViHteH0xY3zZgTIl7P22EV8",
-            authDomain: "impstaff-93232.firebaseapp.com",
-            databaseURL: "https://impstaff-93232-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "impstaff-93232",
-            storageBucket: "impstaff-93232.firebasestorage.app",
-            messagingSenderId: "384617941707",
-            appId: "1:384617941707:web:26a59adb8472371d0ee94e",
-            measurementId: "G-X5X4FJRYDJ"
-        };
-
+      const firebaseConfig = {
+  apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
+  authDomain: "stay100-31316.firebaseapp.com",
+  databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "stay100-31316",
+  storageBucket: "stay100-31316.firebasestorage.app",
+  messagingSenderId: "91816784620",
+  appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
+  measurementId: "G-4J40FKKDNT"
+};
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
