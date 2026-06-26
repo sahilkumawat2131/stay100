@@ -915,210 +915,212 @@ class LayoutEngine {
         }
 
 // --- 2. MOBILE BOTTOM NAVIGATION SYSTEM ---
-        const mobileContainer = document.getElementById('dynamic-footer-container');
-        if (mobileContainer) {
-            mobileContainer.innerHTML = `
-                <nav class="mobile-bottom-nav">
-                    <a href="index.html" class="nav-item" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
-                    <a href="pg.html" class="nav-item" data-page="pg"><i class="fa-solid fa-hotel"></i><span>PG's</span></a>
-                    <a href="room.html" class="nav-item" data-page="rooms"><i class="fa-solid fa-bed"></i><span>Flats</span></a>
-                    <a href="profile.html" class="nav-item" data-page="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-                </nav>
-            `;
-        }
+const mobileContainer = document.getElementById('dynamic-footer-container');
+if (mobileContainer) {
+    mobileContainer.innerHTML = `
+        <nav class="mobile-bottom-nav">
+            <a href="index.html" class="nav-item" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="pg.html" class="nav-item" data-page="pg"><i class="fa-solid fa-hotel"></i><span>PG's</span></a>
+            <a href="room.html" class="nav-item" data-page="rooms"><i class="fa-solid fa-bed"></i><span>Flats</span></a>
+            <a href="profile.html" class="nav-item" data-page="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        </nav>
+    `;
+}
 
-        // --- 3. DESKTOP LANDSCAPE FOOTER INJECTION WITH UPDATED SEMANTICS ---
-        const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
-        if (desktopFooterContainer) {
-            desktopFooterContainer.innerHTML = `
-                <div class="footer-toggle-wrapper">
-                    <button id="btn-global-footer-toggle" class="btn-footer-toggle">
-                        <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
-                        <span id="toggle-text">Show Full Directory</span>
-                    </button>
+// --- 3. DESKTOP LANDSCAPE FOOTER INJECTION WITH UPDATED SEMANTICS ---
+const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
+if (desktopFooterContainer) {
+    desktopFooterContainer.innerHTML = `
+        <div class="footer-toggle-wrapper">
+            <button id="btn-global-footer-toggle" class="btn-footer-toggle">
+                <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
+                <span id="toggle-text">Show Full Directory</span>
+            </button>
+        </div>
+
+        <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
+            <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
+                <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
+                <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
+                <g transform="translate(150, 220) scale(0.85)">
+                    <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+                    <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
+                    <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
+                    <circle cx="132" cy="172" r="2" fill="#ffffff" />
+                </g>
+                <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
+            </svg>
+
+            <div class="footer-grid-container">
+                <div class="footer-brand-column">
+                    <a href="index.html" class="footer-logo-link">
+                        <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
+                    </a>
+                    <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
+                    <div class="footer-social-icons">
+                        <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="aboutus.html">About Corporate Group</a></li>
+                        <li><a href="ecosystem.html">Premium Ecosystem</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms & Conditions</a></li>
+                        <li><a href="faqs.html">Faq's</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Partners</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="admin.html">Admin Hub</a></li>
+                        <li><a href="corporate.html">Corporate Tie-ups</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact Info</h4>
+                    <div class="footer-address-info">
+                        <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
+                        <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
+                        <p><i class="fa-solid fa-envelope"></i> <span>supportstay100@gmail.com</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-seo-tabs-container">
+                <div class="seo-tabs-nav">
+                    <button class="seo-tab-trigger active-tab" data-target="panel-flats-rent">Flats for Rent</button>
+                    <button class="seo-tab-trigger" data-target="panel-pg-hostels">PG / Hostels</button>
+                    <button class="seo-tab-trigger" data-target="panel-flatmates">Flatmates</button>
                 </div>
 
-                <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
-                    <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
-                        <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
-                        <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
-                        <g transform="translate(150, 220) scale(0.85)">
-                            <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
-                            <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
-                            <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
-                            <circle cx="132" cy="172" r="2" fill="#ffffff" />
-                        </g>
-                        <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
-                    </svg>
-
-                    <div class="footer-grid-container">
-                        <div class="footer-brand-column">
-                            <a href="index.html" class="footer-logo-link">
-                                <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
-                            </a>
-                            <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
-                            <div class="footer-social-icons">
-                                <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
-                                <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
-                                <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                <div class="seo-tabs-content-body">
+                    
+                    <div id="panel-flats-rent" class="seo-tab-panel active-panel">
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Jaipur</h5>
+                            <div class="seo-links-list">
+                                <a href="jaipur.html?type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
+                                <a href="jaipur.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
+                                <a href="jaipur.html?type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
+                                <a href="jaipur.html?type=flat&area=station">Rental Rooms near Jaipur Junction</a>
+                                <a href="jaipur.html?type=flat&budget=10k">Budget Rental Flats under 10k</a>
                             </div>
                         </div>
-                        
-                        <div class="footer-column">
-                            <h4>Company</h4>
-                            <ul class="footer-links-list">
-                                <li><a href="aboutus.html">About Corporate Group</a></li>
-                                <li><a href="ecosystem.html">Premium Ecosystem</a></li>
-                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                                <li><a href="terms.html">Terms & Conditions</a></li>
-                                 <li><a href="faqs.html">Faq's</a></li>
-                            </ul>
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Delhi NCR</h5>
+                            <div class="seo-links-list">
+                                <a href="delhi.html?type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
+                                <a href="delhi.html?type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
+                                <a href="delhi.html?type=flat&area=northcampus">Student Flats near DU North Campus</a>
+                                <a href="delhi.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
+                                <a href="delhi.html?type=flat&area=ndls">Properties near New Delhi Station</a>
+                            </div>
                         </div>
-                        
-                        <div class="footer-column">
-                            <h4>Partners</h4>
-                            <ul class="footer-links-list">
-                                <li><a href="admin.html">Admin Hub</a></li>
-                                <li><a href="corporate.html">Corporate Tie-ups</a></li>
-                            </ul>
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Gurugram</h5>
+                            <div class="seo-links-list">
+                                <a href="gurugram.html?type=flat&area=cybercity">Corporate Suites near Cyber City</a>
+                                <a href="gurugram.html?type=flat&area=sector48">Luxury 2 BHK Sector 48 Sohna Road</a>
+                                <a href="gurugram.html?type=flat&area=hudacity">Studio Rooms near Millennium Metro</a>
+                                <a href="gurugram.html?type=flat&area=sector21">Managed Flat Systems Sector 21</a>
+                                <a href="gurugram.html?type=flat&budget=15k">Premium Flats under 15k</a>
+                            </div>
                         </div>
-                        
-                        <div class="footer-column">
-                            <h4>Contact Info</h4>
-                            <div class="footer-address-info">
-                                <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
-                                <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
-                                <p><i class="fa-solid fa-envelope"></i> <span>support@staypremium.in</span></p>
+                        <div class="seo-column-group">
+                            <h5>Flats for Rent in Noida</h5>
+                            <div class="seo-links-list">
+                                <a href="noida.html?type=flat&area=sector62">IT Park Linked Flats Sector 62</a>
+                                <a href="noida.html?type=flat&area=sector15">Metro Walk Apartments Sector 15</a>
+                                <a href="noida.html?type=flat&area=knowledgepark">Greater Noida Knowledge Park Units</a>
+                                <a href="noida.html?type=flat&area=amity">Independent Stays near Amity</a>
+                                <a href="noida.html?type=flat&budget=12k">Fully Furnished Flats under 12k</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="footer-seo-tabs-container">
-                        <div class="seo-tabs-nav">
-                            <button class="seo-tab-trigger active-tab" data-target="panel-flats-rent">Flats for Rent</button>
-                            <button class="seo-tab-trigger" data-target="panel-pg-hostels">PG / Hostels</button>
-                            <button class="seo-tab-trigger" data-target="panel-flatmates">Flatmates</button>
+                    <div id="panel-pg-hostels" class="seo-tab-panel">
+                        <div class="seo-column-group">
+                            <h5>PG / Hostels in Mumbai</h5>
+                            <div class="seo-links-list">
+                                <a href="mumbai.html?type=pg&area=andheri">Executive Co-living in Andheri West</a>
+                                <a href="mumbai.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
+                                <a href="mumbai.html?type=pg&area=bandra">Premium Single Rooms Bandra Complex</a>
+                                <a href="mumbai.html?type=pg&area=csmt">Working Hostels near CSMT Station</a>
+                                <a href="mumbai.html?type=pg&budget=12k">Managed Spaces under 12k</a>
+                            </div>
                         </div>
-
-                        <div class="seo-tabs-content-body">
-                            
-                            <div id="panel-flats-rent" class="seo-tab-panel active-panel">
-                                <div class="seo-column-group">
-                                    <h5>Flats for Rent in Jaipur</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=jaipur&type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
-                                        <a href="index.html?location=jaipur&type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
-                                        <a href="index.html?location=jaipur&type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
-                                        <a href="index.html?location=jaipur&type=flat&area=station">Rental Rooms near Jaipur Junction</a>
-                                        <a href="index.html?location=jaipur&type=flat&budget=10k">Budget Rental Flats under 10k</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>Flats for Rent in Delhi NCR</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=delhi&type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
-                                        <a href="index.html?location=delhi&type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
-                                        <a href="index.html?location=delhi&type=flat&area=northcampus">Student Flats near DU North Campus</a>
-                                        <a href="index.html?location=delhi&type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
-                                        <a href="index.html?location=delhi&type=flat&area=ndls">Properties near New Delhi Station</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>Flats for Rent in Gurugram</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=gurugram&type=flat&area=cybercity">Corporate Suites near Cyber City</a>
-                                        <a href="index.html?location=gurugram&type=flat&area=sector48">Luxury 2 BHK Sector 48 Sohna Road</a>
-                                        <a href="index.html?location=gurugram&type=flat&area=hudacity">Studio Rooms near Millennium Metro</a>
-                                        <a href="index.html?location=gurugram&type=flat&area=sector21">Managed Flat Systems Sector 21</a>
-                                        <a href="index.html?location=gurugram&type=flat&budget=15k">Premium Flats under 15k</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>Flats for Rent in Noida</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=noida&type=flat&area=sector62">IT Park Linked Flats Sector 62</a>
-                                        <a href="index.html?location=noida&type=flat&area=sector15">Metro Walk Apartments Sector 15</a>
-                                        <a href="index.html?location=noida&type=flat&area=knowledgepark">Greater Noida Knowledge Park Units</a>
-                                        <a href="index.html?location=noida&type=flat&area=amity">Independent Stays near Amity</a>
-                                        <a href="index.html?location=noida&type=flat&budget=12k">Fully Furnished Flats under 12k</a>
-                                    </div>
-                                </div>
+                        <div class="seo-column-group">
+                            <h5>PG / Hostels in Pune</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?location=pune&type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3 PG</a>
+                                <a href="index.html?location=pune&type=pg&area=vimannagar">Symbiosis Student Rooms Viman Nagar</a>
+                                <a href="index.html?location=pune&type=pg&area=kothrud">Single Sharing Stays in Kothrud</a>
+                                <a href="index.html?location=pune&type=pg&area=punestation">Hostel Rooms near Pune Junction</a>
+                                <a href="index.html?location=pune&type=pg&facility=food">Premium Food Attached PG Pune</a>
                             </div>
-
-                            <div id="panel-pg-hostels" class="seo-tab-panel">
-                                <div class="seo-column-group">
-                                    <h5>PG / Hostels in Mumbai</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=mumbai&type=pg&area=andheri">Executive Co-living in Andheri West</a>
-                                        <a href="index.html?location=mumbai&type=pg&area=powai">IIT Tech Circle PG in Powai</a>
-                                        <a href="index.html?location=mumbai&type=pg&area=bandra">Premium Single Rooms Bandra Complex</a>
-                                        <a href="index.html?location=mumbai&type=pg&area=csmt">Working Hostels near CSMT Station</a>
-                                        <a href="index.html?location=mumbai&type=pg&budget=12k">Managed Spaces under 12k</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>PG / Hostels in Pune</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=pune&type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3 PG</a>
-                                        <a href="index.html?location=pune&type=pg&area=vimannagar">Symbiosis Student Rooms Viman Nagar</a>
-                                        <a href="index.html?location=pune&type=pg&area=kothrud">Single Sharing Stays in Kothrud</a>
-                                        <a href="index.html?location=pune&type=pg&area=punestation">Hostel Rooms near Pune Junction</a>
-                                        <a href="index.html?location=pune&type=pg&facility=food">Premium Food Attached PG Pune</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>PG / Hostels in Hyderabad</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=hyderabad&type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
-                                        <a href="index.html?location=hyderabad&type=pg&area=gachibowli">Professional Suites Gachibowli</a>
-                                        <a href="index.html?location=hyderabad&type=pg&area=ameerpet">Coaching Area Rooms Ameerpet Hub</a>
-                                        <a href="index.html?location=hyderabad&type=pg&area=secunderabad">Hostels near Secunderabad Station</a>
-                                        <a href="index.html?location=hyderabad&type=pg&budget=6k">Sharing Room Systems under 6k</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>Institutional Student Hubs</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?location=jaipur&type=pg&landmark=coaching">PG near Allen & Resonance Jaipur</a>
-                                        <a href="index.html?location=lucknow&type=pg">Student Hostels in Lucknow</a>
-                                        <a href="index.html?location=chandigarh&type=pg">Premium Stays in Chandigarh Sector Hubs</a>
-                                        <a href="index.html?location=udaipur&type=pg">Luxury Student Rooms Udaipur</a>
-                                        <a href="index.html?location=chennai&type=pg">Hostels near Chennai Central Station</a>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>PG / Hostels in Hyderabad</h5>
+                            <div class="seo-links-list">
+                                <a href="hyderabad.html?type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
+                                <a href="hyderabad.html?type=pg&area=gachibowli">Professional Suites Gachibowli</a>
+                                <a href="hyderabad.html?type=pg&area=ameerpet">Coaching Area Rooms Ameerpet Hub</a>
+                                <a href="hyderabad.html?type=pg&area=secunderabad">Hostels near Secunderabad Station</a>
+                                <a href="hyderabad.html?type=pg&budget=6k">Sharing Room Systems under 6k</a>
                             </div>
-
-                            <div id="panel-flatmates" class="seo-tab-panel">
-                                <div class="seo-column-group">
-                                    <h5>Flatmates in Metro Zones</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?type=flatmate&location=bangalore">Shared Rooms in Bangalore (HSR & Koramangala)</a>
-                                        <a href="index.html?type=flatmate&location=mumbai">Male/Female Room Sharing Mumbai West</a>
-                                        <a href="index.html?type=flatmate&location=delhi">UPSC Roommates Sharing Delhi NCR</a>
-                                        <a href="index.html?type=flatmate&location=pune">Pre-occupied 2 BHK Room sharing Pune</a>
-                                    </div>
-                                </div>
-                                <div class="seo-column-group">
-                                    <h5>Configurations Directory</h5>
-                                    <div class="seo-links-list">
-                                        <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
-                                        <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
-                                        <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
-                                        <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
-                                        <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Institutional Student Hubs</h5>
+                            <div class="seo-links-list">
+                                <a href="jaipur.html?type=pg&landmark=coaching">PG near Allen & Resonance Jaipur</a>
+                                <a href="lucknow.html?type=pg">Student Hostels in Lucknow</a>
+                                <a href="chandigarh.html?type=pg">Premium Stays in Chandigarh Sector Hubs</a>
+                                <a href="index.html?location=udaipur&type=pg">Luxury Student Rooms Udaipur</a>
+                                <a href="chennai.html?type=pg">Hostels near Chennai Central Station</a>
+                                <a href="index.html?location=kolkata&type=pg">Premium Co-living Stays in Kolkata</a>
                             </div>
-
                         </div>
                     </div>
 
-                    <div class="footer-bottom-bar">
-                        <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network. Dedicated to delivering 100% transparent rental solutions across India.</div>
+                    <div id="panel-flatmates" class="seo-tab-panel">
+                        <div class="seo-column-group">
+                            <h5>Flatmates in Metro Zones</h5>
+                            <div class="seo-links-list">
+                                <a href="bangalore.html?type=flatmate">Shared Rooms in Bangalore (HSR & Koramangala)</a>
+                                <a href="mumbai.html?type=flatmate">Male/Female Room Sharing Mumbai West</a>
+                                <a href="delhi.html?type=flatmate">UPSC Roommates Sharing Delhi NCR</a>
+                                <a href="index.html?type=flatmate&location=pune">Pre-occupied 2 BHK Room sharing Pune</a>
+                            </div>
+                        </div>
+                        <div class="seo-column-group">
+                            <h5>Configurations Directory</h5>
+                            <div class="seo-links-list">
+                                <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
+                                <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
+                                <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
+                                <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
+                                <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
+                            </div>
+                        </div>
                     </div>
-                </footer>
-            `;
+
+                </div>
+            </div>
+
+            <div class="footer-bottom-bar">
+                <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network. Dedicated to delivering 100% transparent rental solutions across India.</div>
+            </div>
+        </footer>
+    `;
+
         
             // --- 4. UNIFIED INTERACTIVE TOGGLE LOGIC FOR DESKTOP & MOBILE ---
             const toggleButton = document.getElementById('btn-global-footer-toggle');

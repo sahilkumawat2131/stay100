@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Premium PGs, Co-Living Spaces & Luxury Rooms in Mumbai | stay100%</title>
+    <meta name="description" content="Find premium luxury PGs, professional co-living spaces, single private rooms, 1 RK, 1 BHK, and 2 BHK service apartments in Mumbai. Filter by budget and prime localities like Andheri, Bandra, Powai, Vile Parle, Worli, and Thane with zero brokerage.">
+    <meta name="keywords" content="PG in Mumbai, Co-living spaces Mumbai, Private room Mumbai, Single room PG Mumbai, 1 RK for rent Mumbai, 1 BHK Mumbai, 2 BHK flat Mumbai, Corporate PG Mumbai, Ladies hostel Mumbai, Gents PG Mumbai, Unisex co-living Powai, Student PG Vile Parle, Luxury accommodation Bandra, Paying guest Mumbai">
+    <meta name="robots" content="index, follow">
+    <link class="canonical" href="https://www.stay100.in/mumbai">
+ <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Premium PGs, Co-Living & Luxury Rooms in Mumbai | stay100%">
+    <meta property="og:description" content="Explore elite single rooms, premium co-living PGs, managed 1RK, 1BHK, and 2BHK luxury setups across Mumbai's prime corporate zones and educational hubs.">
+    <meta property="og:url" content="https://www.stay100.in/mumbai">
+    <meta property="og:site_name" content="stay100%">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Premium PGs & Luxury Co-Living in Mumbai">
+    <meta name="twitter:description" content="Find managed single private rooms, shared luxury setups, and corporate housing options across Mumbai with premium amenities.">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="mumbai.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Premium Co-Living & PGs in Mumbai",
+      "description": "Top-rated single private rooms, luxury corporate PGs, 1RK, 1BHK, and 2BHK service apartments across major transit and business nodes in Mumbai.",
+      "url": "https://www.stay100.in/mumbai",
+      "numberOfItems": 10,
+      "itemListOrder": "https://schema.org/ItemListOrderDescending"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "What are the best areas for premium co-living and PGs in Mumbai?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Top strategic areas include Andheri (East & West) for corporate connectivity, Powai for tech professionals near IIT, Vile Parle & Juhu for student hubs like NMIMS, and Bandra or South Mumbai for luxury living."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What space types are available on stay100% Mumbai?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "stay100% provides diverse premium layouts including fully managed Co-Living PGs, Single Private Rooms, independent Studio 1 RKs, Elite 1 BHKs, and Luxury 2 BHK Suites."
+        }
+      }]
+    }
+    </script>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="main-layout-container">
+        
+        <aside class="sidebar-filter-wrapper" id="core-filter-drawer" aria-label="Search Filter Drawer">
+            <div class="drawer-header-mobile">
+                <h3><i class="fa-solid fa-sliders"></i> Filter Properties</h3>
+                <button type="button" class="close-drawer-btn" id="filter-close-trigger" aria-label="Close Filter">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="drawer-scroll-body">
+                <div class="filter-section-block">
+                    <label class="filter-block-label" for="filter-local-area">Local Area Zone</label>
+                    <select id="filter-local-area" class="premium-form-control">
+                        <option value="all">All Areas / Whole Mumbai</option>
+                        <option value="andheri">Andheri (East & West)</option>
+                        <option value="bandra">Bandra & Khar</option>
+                        <option value="powai">Powai (Near IIT Bombay)</option>
+                        <option value="vile parle">Vile Parle & Juhu (NMIMS Hub)</option>
+                        <option value="goregaon">Goregaon & Malad</option>
+                        <option value="dadar">Dadar & Prabhadevi</option>
+                        <option value="south mumbai">South Mumbai (Colaba, Churchgate)</option>
+                        <option value="navi mumbai">Navi Mumbai (Vashi, Nerul)</option>
+                        <option value="thane">Thane Suburb</option>
+                    </select>
+                </div>
+
+                <div class="filter-section-block">
+                    <div class="flex-label-row">
+                        <label class="filter-block-label" for="filter-budget-range">Maximum Monthly Budget</label>
+                        <span class="range-display-badge" id="budget-cap-badge">₹30,000</span>
+                    </div>
+                    <input type="range" id="filter-budget-range" min="2000" max="30000" step="500" value="30000" class="premium-range-slider">
+                    <div class="range-limit-text"><span>₹2,000</span><span>₹30,000+ Premium</span></div>
+                </div>
+
+                <div class="filter-section-block">
+                    <label class="filter-block-label">Space Arrangement Type</label>
+                    <div class="tag-cloud-matrix">
+                        <button type="button" class="filter-tag type-filter active" data-type="all">All Typologies</button>
+                        <button type="button" class="filter-tag type-filter" data-type="pg">Co-Living PG</button>
+                        <button type="button" class="filter-tag type-filter" data-type="room">Single Private Room</button>
+                        <button type="button" class="filter-tag type-filter" data-type="1rk">Studio 1 RK</button>
+                        <button type="button" class="filter-tag type-filter" data-type="1bhk">Elite 1 BHK</button>
+                        <button type="button" class="filter-tag type-filter" data-type="2bhk">Luxury 2 BHK Suite</button>
+                    </div>
+                </div>
+
+                <div class="filter-section-block">
+                    <label class="filter-block-label">Sharing/Target Gender</label>
+                    <div class="tag-cloud-matrix">
+                        <button type="button" class="filter-tag gender-filter active" data-gender="all">All Demographics</button>
+                        <button type="button" class="filter-tag gender-filter" data-gender="boys">Men / Gents Accommodation</button>
+                        <button type="button" class="filter-tag gender-filter" data-gender="girls">Women / Ladies Accommodation</button>
+                        <button type="button" class="filter-tag gender-filter" data-gender="unisex">Unisex Co-Living</button>
+                    </div>
+                </div>
+
+                <div class="filter-section-block">
+                    <label class="filter-block-label">Premium Essential Amenities</label>
+                    <div class="checkbox-matrix-stack">
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="furnished">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-couch"></i> Luxury Fully Furnished</span>
+                        </label>
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="lift">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-elevator"></i> With Elevator / Lift</span>
+                        </label>
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="ground">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-stairs"></i> Ground Floor Preference</span>
+                        </label>
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="ac">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-snowflake"></i> Air Conditioner (AC)</span>
+                        </label>
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="food">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-utensils"></i> Food Catering Included</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="drawer-action-footer">
+                    <button type="button" class="btn-clear-all-filters" id="filter-reset-trigger">Reset Filters</button>
+                    <button type="button" class="btn-apply-mobile-view" id="filter-apply-trigger">Apply Layout</button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="content-stream-grid-wrapper" aria-labelledby="listings-heading">
+            <header class="search-and-heading-block">
+                <div class="heading-dynamic-counter-group">
+                    <h1 id="listings-heading">Premium PGs & Luxury Co-Living Spaces in Mumbai</h1>
+                    <p class="sub-meta-summary">Explore verified luxury co-living hubs, private single rooms, managed 1 RK setups, and elite apartments across Mumbai Metropolitan Region (MMR).</p>
+                </div>
+                
+                <div class="search-action-matrix-bar">
+                    <div class="input-icon-group">
+                        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+                        <input type="text" id="pg-search-input" placeholder="Search spaces in Mumbai by railway station, corporate hub, college or landmark...">
+                        <i class="fa-solid fa-microphone voice-icon" id="voice-search-trigger" title="Voice Search Engine Activation"></i>
+                    </div>
+                    
+                    <button type="button" class="mobile-filter-modal-trigger-btn" id="mobile-drawer-open-btn">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Filters</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="active-badges-row-bar" id="active-badges-runtime-container"></div>
+
+            <div id="pg-cards-container">
+                <div class="initial-loader-placeholder">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>Retrieving real-time premium accommodation data for Mumbai hubs...</p>
+                </div>
+            </div>
+
+            <article class="seo-localized-footer-content" style="margin-top: 40px; padding: 20px; border-top: 1px solid #eee; font-size: 0.95rem; color: #555; line-height: 1.6;">
+                <h2>Verified Luxury Accommodations Across Mumbai's Premier Business & Student Hubs</h2>
+                <p>stay100% redefines structural urban living across Mumbai for working executives and university students alike. Whether you need a premium <strong>corporate PG in Andheri East or Powai</strong> near major commercial parks, a student-friendly <strong>single room or 1 RK studio in Vile Parle</strong> close to top institutes, or an elite fully managed <strong>1 BHK or 2 BHK apartment in Bandra and Lower Parel</strong>, our zero-brokerage listings provide premium benefits seamlessly.</p>
+                
+                <h3>Tailored Residential Infrastructure:</h3>
+                <ul>
+                    <li><strong>Luxury PGs & Managed Co-Living:</strong> Sophisticated communities offering top-tier security, institutional housekeeping, high-speed Wi-Fi networks, and freshly curated meals.</li>
+                    <li><strong>Private Single Rooms & Studio 1 RKs:</strong> Independent quiet zones carefully mapped near suburban local railway stations and metro networks for hustle-free daily transit.</li>
+                    <li><strong>Elite 1 BHK & 2 BHK Suites:</strong> High-end autonomous rental structures featuring contemporary premium fit-outs, perfect for modern working professionals and corporate teams.</li>
+                </ul>
+            </article>
+        </section>
+    </main>
+
+    <div class="footer-bottom-bar"></div>
+
+   <script type="module" src="propertycardscomponants.js"></script>
+    <script type="module" src="mumbai.js"></script>
+    <script type="module" src="footer.js"></script>
+    <script type="module" src="header.js"></script>
+</body>
+</html>
