@@ -13,13 +13,13 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Premium PGs & Luxury Co-Living Spaces across India | Stay100%">
     <meta property="og:description" content="Explore verified single/sharing premium PGs with elite amenities (Food, AC, Wi-Fi) in major metro cities and student hubs.">
-    <meta property="og:image" content="/assets/stay100-og-banner.png">
+    <meta property="og:image" content="assets/stay100-og-banner.png">
     <meta property="og:url" content="https://stay100.in/pg.html">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Premium PGs & Luxury Co-Living Stays | Stay100%">
     <meta name="twitter:description" content="Find top-rated verified PGs near you under budget. Safe & secure stays for boys and girls.">
-
+ <link rel="icon" type="image/x-icon" href="/favicon.png">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -48,6 +48,7 @@
     <link rel="stylesheet" href="pgapp.css">
     
     <style>
+        /* CSS Patches for Bookmark Button alignment and hover animations */
         .pg-card {
             position: relative;
             display: flex;
@@ -131,15 +132,17 @@
             color: #94a3b8;
         }
 
-        /* PREMIUM PROMO HERO BANNER DESIGN */
+        /* ======================================================= */
+        /* PREMIUM PROMO HERO BANNER DESIGN (TEXT LEFT, IMAGE RIGHT)*/
+        /* ======================================================= */
         .premium-promo-banner {
-            background: #eaf7f2; 
+            background: #eaf7f2; /* Soft premium green layout background */
             border-radius: 20px;
             padding: 40px 50px;
             margin: 30px auto;
             max-width: 1200px;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 18 rgba(0,0,0,0.03);
             box-sizing: border-box;
         }
         .banner-flex-container {
@@ -173,7 +176,7 @@
             flex-wrap: wrap;
         }
         .promo-post-btn {
-            background: #8b0000; 
+            background: #8b0000; /* Rich Maroon Shade */
             color: #ffffff !important;
             padding: 12px 28px;
             border-radius: 8px;
@@ -215,6 +218,7 @@
             display: block;
         }
         
+        /* Responsive Breakpoints for Tablets & Mobile Screens */
         @media (max-width: 768px) {
             .premium-promo-banner {
                 padding: 30px 20px;
