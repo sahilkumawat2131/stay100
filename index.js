@@ -535,6 +535,7 @@ window.renderPostsDataPipeline = function() {
         setTimeout(() => { window.PropertyCardComponent.initAutoswipe(); }, 50);
     }
 };
+
 function renderPosts(postsToRender) {
     const postContainer = document.getElementById('postContainer');
     if (!postContainer) return;
@@ -561,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSessionUID = localStorage.getItem('staypremium_uid') || null;
     if (typeof updateUserProfileUI === 'function') updateUserProfileUI();
 
-    // --- 0. TOP LEVEL DOM ELEMENT DECLARATIONS (Fixes the Redeclaration Bug) ---
+    // --- 0. TOP LEVEL DOM ELEMENT DECLARATIONS ---
     const listingsGrid = document.getElementById('listings-container');
     const filterBtn = document.getElementById('filter-btn');
     const filterModal = document.getElementById('filter-modal');
@@ -584,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. DESKTOP FOOTER SYSTEM INJECTION WITH SEO LINK SYNC ---
-    const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
+const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
     if (desktopFooterContainer) {
         desktopFooterContainer.innerHTML = `
             <div class="footer-toggle-wrapper">
@@ -651,41 +652,94 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <div class="footer-seo-tabs-container">
                     <div class="seo-tabs-nav">
-                        <button class="seo-tab-trigger active-tab" data-target="panel-flats-rent">Flats for Rent</button>
-                        <button class="seo-tab-trigger" data-target="panel-pg-hostels">PG / Hostels</button>
-                        <button class="seo-tab-trigger" data-target="panel-flatmates">Flatmates</button>
+                        <button class="seo-tab-trigger active-tab" data-target="panel-north-west-cities">North & West Directory</button>
+                        <button class="seo-tab-trigger" data-target="panel-south-cities">South Metro Directory</button>
+                        <button class="seo-tab-trigger" data-target="panel-flatmates">Configurations & Trust</button>
                     </div>
 
                     <div class="seo-tabs-content-body">
-                        <div id="panel-flats-rent" class="seo-tab-panel active-panel">
+                        <div id="panel-north-west-cities" class="seo-tab-panel active-panel">
                             <div class="seo-column-group">
-                                <h5>Flats for Rent in Jaipur</h5>
+                                <h5>Jaipur</h5>
                                 <div class="seo-links-list">
-                                    <a href="index.html?location=jaipur&type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
-                                    <a href="index.html?location=jaipur&type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
-                                    <a href="index.html?location=jaipur&type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
-                                    <a href="index.html?location=jaipur&type=flat&area=station">Rental Rooms near Jaipur Junction</a>
-                                    <a href="index.html?location=jaipur&type=flat&budget=10k">Budget Rental Flats under 10k</a>
+                                    <a href="jaipur.html?type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
+                                    <a href="jaipur.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
+                                    <a href="jaipur.html?type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
+                                    <a href="jaipur.html?type=flat&area=station">Rental Rooms near Jaipur Junction</a>
+                                    <a href="jaipur.html?type=flat&budget=10k">Budget Rental Flats under 10k</a>
                                 </div>
                             </div>
                             <div class="seo-column-group">
-                                <h5>Flats for Rent in Delhi NCR</h5>
+                                <h5>Delhi NCR</h5>
                                 <div class="seo-links-list">
-                                    <a href="index.html?location=delhi&type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
-                                    <a href="index.html?location=delhi&type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
-                                    <a href="index.html?location=delhi&type=flat&area=northcampus">Student Flats near DU North Campus</a>
-                                    <a href="index.html?location=delhi&type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
-                                    <a href="index.html?location=delhi&type=flat&area=ndls">Properties near New Delhi Station</a>
+                                    <a href="delhi.html?type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
+                                    <a href="delhi.html?type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
+                                    <a href="delhi.html?type=flat&area=northcampus">Student Flats near DU North Campus</a>
+                                    <a href="delhi.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
+                                    <a href="delhi.html?type=flat&area=ndls">Properties near New Delhi Station</a>
+                                </div>
+                            </div>
+                            <div class="seo-column-group">
+                                <h5>Gurugram</h5>
+                                <div class="seo-links-list">
+                                    <a href="gurugram.html?type=flat&area=cybercity">Corporate Suites near Cyber City</a>
+                                    <a href="gurugram.html?type=flat&area=sector48">Luxury 2 BHK Sector 48 Sohna Road</a>
+                                    <a href="gurugram.html?type=flat&area=hudacity">Studio Rooms near Millennium Metro</a>
+                                    <a href="gurugram.html?type=flat&area=sector21">Managed Flat Systems Sector 21</a>
+                                    <a href="gurugram.html?type=flat&budget=15k">Premium Flats under 15k</a>
+                                </div>
+                            </div>
+                            <div class="seo-column-group">
+                                <h5>Noida</h5>
+                                <div class="seo-links-list">
+                                    <a href="noida.html?type=flat&area=sector62">IT Park Linked Flats Sector 62</a>
+                                    <a href="noida.html?type=flat&area=sector15">Metro Walk Apartments Sector 15</a>
+                                    <a href="noida.html?type=flat&area=knowledgepark">Greater Noida Knowledge Park Units</a>
+                                    <a href="noida.html?type=flat&area=amity">Independent Stays near Amity</a>
+                                    <a href="noida.html?type=flat&budget=12k">Fully Furnished Flats under 12k</a>
+                                </div>
+                            </div>
+                            <div class="seo-column-group">
+                                <h5>Mumbai & Pune</h5>
+                                <div class="seo-links-list">
+                                    <a href="mumbai.html?type=pg&area=andheri">Executive Co-living in Andheri West</a>
+                                    <a href="mumbai.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
+                                    <a href="pune.html?type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3 PG</a>
+                                    <a href="pune.html?type=pg&area=vimannagar">Symbiosis Student Rooms Viman Nagar</a>
+                                    <a href="pune.html?type=pg&facility=food">Premium Food Attached PG Pune</a>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="panel-pg-hostels" class="seo-tab-panel">
+                        <div id="panel-south-cities" class="seo-tab-panel">
                             <div class="seo-column-group">
-                                <h5>PG / Hostels in Mumbai</h5>
+                                <h5>Bangalore</h5>
                                 <div class="seo-links-list">
-                                    <a href="index.html?location=mumbai&type=pg&area=andheri">Executive Co-living in Andheri West</a>
-                                    <a href="index.html?location=mumbai&type=pg&area=powai">IIT Tech Circle PG in Powai</a>
+                                    <a href="bengluru.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
+                                    <a href="bengluru.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
+                                    <a href="bengluru.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
+                                    <a href="bengluru.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>
+                                    <a href="bengluru.html?type=flat&budget=15k">Fully Furnished Units under 15k</a>
+                                </div>
+                            </div>
+                            <div class="seo-column-group">
+                                <h5>Hyderabad</h5>
+                                <div class="seo-links-list">
+                                    <a href="hyderabad.html?type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
+                                    <a href="hyderabad.html?type=pg&area=gachibowli">Professional Suites Gachibowli</a>
+                                    <a href="hyderabad.html?type=pg&area=ameerpet">Coaching Area Rooms Ameerpet Hub</a>
+                                    <a href="hyderabad.html?type=flat&area=madhapur">Managed Studio Flats Madhapur</a>
+                                    <a href="hyderabad.html?type=pg&budget=6k">Sharing Room Systems under 6k</a>
+                                </div>
+                            </div>
+                            <div class="seo-column-group">
+                                <h5>Chennai</h5>
+                                <div class="seo-links-list">
+                                    <a href="chennai.html?type=flat&area=omr">IT Highway Rooms OMR Road</a>
+                                    <a href="chennai.html?type=pg&area=adyar">Student Co-living Hostels Adyar</a>
+                                    <a href="chennai.html?type=flat&area=velachery">1 & 2 BHK Apartments Velachery</a>
+                                    <a href="chennai.html?type=pg&area=anna-nagar">Executive Staying Units Anna Nagar</a>
+                                    <a href="chennai.html?type=flat&budget=10k">Budget Rental Rooms under 10k</a>
                                 </div>
                             </div>
                         </div>
@@ -696,6 +750,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div class="seo-links-list">
                                     <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
                                     <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
+                                    <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
+                                    <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
+                                    <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
                                 </div>
                             </div>
                         </div>
@@ -707,6 +764,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </footer>
         `;
+    
 
         // --- FOOTER TOGGLE ATTACHMENT ---
         const toggleBtn = document.getElementById('btn-global-footer-toggle');
@@ -749,7 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. DYNAMIC MOBILE FILTER POPUP INJECTION (No Const Here!) ---
+    // --- 3. DYNAMIC MOBILE FILTER POPUP INJECTION ---
     if (filterModal) {
         const bodyTarget = document.getElementById('mobile-filter-body-container') || filterModal.querySelector('.modal-body');
         if (bodyTarget) {
@@ -765,23 +823,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     </select>
                 </div>
                 <div class="filter-group">
-                    <h4>Gender</h4>
+                    <h4>Gender / Room Type</h4>
                     <div class="filter-options">
                         <label><input type="radio" name="mobile-gender" value="boys"> Boys Only</label>
                         <label><input type="radio" name="mobile-gender" value="girls"> Girls Only</label>
-                        <label><input type="radio" name="mobile-gender" value="unisex"> Unisex / Both</label>
+                        <label><input type="radio" name="mobile-gender" value="unisex"> Unisex / Family</label>
                     </div>
                 </div>
                 <div class="filter-group">
                     <h4>Locality / Area</h4>
-                    <input type="text" class="filter-input" id="m-filter-locality" placeholder="e.g., Mansarovar">
+                    <input type="text" class="filter-input" id="m-filter-locality" placeholder="e.g., Mansarovar, Malviya Nagar">
                 </div>
                 <div class="filter-group">
                     <h4>Sharing Type</h4>
                     <div class="filter-options">
-                        <label><input type="checkbox" class="m-filter-sharing" value="single"> Private Room</label>
-                        <label><input type="checkbox" class="m-filter-sharing" value="double"> Double Sharing</label>
-                        <label><input type="checkbox" class="m-filter-sharing" value="triple"> Triple Sharing</label>
+                        <label><input type="checkbox" class="m-filter-sharing" value="single"> Private Room / Single</label>
+                        <label><input type="checkbox" class="m-filter-sharing" value="double"> 2 Sharing / Double</label>
+                        <label><input type="checkbox" class="m-filter-sharing" value="triple"> 3 Sharing / Triple</label>
                     </div>
                 </div>
                 <div class="filter-group">
@@ -803,15 +861,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="filter-options">
                         <label><input type="checkbox" class="m-filter-landmark" value="metro"> Near Metro Station</label>
                         <label><input type="checkbox" class="m-filter-landmark" value="railway"> Near Railway Station</label>
-                        <label><input type="checkbox" class="m-filter-landmark" value="coaching"> Near Coaching Institutes</label>
-                        <label><input type="checkbox" class="m-filter-landmark" value="college"> Near College/University</label>
+                        <label><input type="checkbox" class="m-filter-landmark" value="coaching"> Near Coaching Institutes (Allen/Reso etc.)</label>
+                        <label><input type="checkbox" class="m-filter-landmark" value="college"> Near Colleges / Universities</label>
                     </div>
                 </div>
                 <div class="filter-group">
                     <h4>Quick Filters</h4>
                     <div class="filter-options">
-                        <label><input type="checkbox" id="m-filter-verified" value="verified"> Verified Only</label>
-                        <label><input type="checkbox" id="m-filter-recent" value="recent"> Recently Added</label>
+                        <label><input type="checkbox" id="m-filter-verified" value="verified"> Verified Properties Only</label>
+                        <label><input type="checkbox" id="m-filter-recent" value="recent"> Recently Posted</label>
                     </div>
                 </div>
             `;
@@ -819,42 +877,85 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 4. BIND SYNC EVENTS ---
-    if (typeof bindSyncEvents === 'function') {
-        bindSyncEvents();
-    }
+    const bindSyncEvents = () => {
+        document.getElementById('filter-budget')?.addEventListener('change', (e) => {
+            const mel = document.getElementById('m-filter-budget'); if(mel) mel.value = e.target.value;
+            window.syncAndRenderFilters();
+        });
+        document.getElementById('m-filter-budget')?.addEventListener('change', (e) => {
+            const del = document.getElementById('filter-budget'); if(del) del.value = e.target.value;
+            window.syncAndRenderFilters();
+        });
+
+        document.getElementById('filter-locality')?.addEventListener('input', (e) => {
+            const mel = document.getElementById('m-filter-locality'); if(mel) mel.value = e.target.value;
+            window.syncAndRenderFilters();
+        });
+        document.getElementById('m-filter-locality')?.addEventListener('input', (e) => {
+            const del = document.getElementById('filter-locality'); if(del) del.value = e.target.value;
+            window.syncAndRenderFilters();
+        });
+
+        document.querySelectorAll('input[name="desktop-gender"]').forEach(r => {
+            r.addEventListener('change', () => {
+                const match = document.querySelector(`input[name="mobile-gender"][value="${r.value}"]`);
+                if(match) match.checked = true;
+                window.syncAndRenderFilters();
+            });
+        });
+        document.querySelectorAll('input[name="mobile-gender"]').forEach(r => {
+            r.addEventListener('change', () => {
+                const match = document.querySelector(`input[name="desktop-gender"][value="${r.value}"]`);
+                if(match) match.checked = true;
+                window.syncAndRenderFilters();
+            });
+        });
+
+        const syncCheckboxClasses = (desktopClass, mobileClass) => {
+            document.querySelectorAll('.' + desktopClass).forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const mCB = document.querySelector(`.${mobileClass}[value="${cb.value}"]`);
+                    if(mCB) mCB.checked = cb.checked;
+                    window.syncAndRenderFilters();
+                });
+            });
+            document.querySelectorAll('.' + mobileClass).forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const dCB = document.querySelector(`.${desktopClass}[value="${cb.value}"]`);
+                    if(dCB) dCB.checked = cb.checked;
+                    window.syncAndRenderFilters();
+                });
+            });
+        };
+
+        syncCheckboxClasses('filter-sharing', 'm-filter-sharing');
+        syncCheckboxClasses('filter-furnishing', 'm-filter-furnishing');
+        syncCheckboxClasses('filter-landmark', 'm-filter-landmark');
+
+        const bindIdSync = (dId, mId) => {
+            document.getElementById(dId)?.addEventListener('change', (e) => {
+                const target = document.getElementById(mId); if(target) target.checked = e.target.checked;
+                window.syncAndRenderFilters();
+            });
+            document.getElementById(mId)?.addEventListener('change', (e) => {
+                const target = document.getElementById(dId); if(target) target.checked = e.target.checked;
+                window.syncAndRenderFilters();
+            });
+        };
+
+        bindIdSync('filter-food', 'm-filter-food');
+        bindIdSync('filter-verified', 'm-filter-verified');
+        bindIdSync('filter-recent', 'm-filter-recent');
+    };
+
+    bindSyncEvents();
+
+    window.applyFilters = function() {
+        if(filterModal) filterModal.style.display = 'none';
+        window.syncAndRenderFilters();
+    };
 
     // --- 5. URL FILTERS ENGINE ---
-    function parseAndApplyUrlFilters() {
-        const params = new URLSearchParams(window.location.search);
-        
-        const locationParam = params.get('location') || params.get('area');
-        const budgetParam = params.get('budget');
-        const genderParam = params.get('gender');
-
-        if (locationParam) {
-            const locInput = document.getElementById('filter-locality') || document.getElementById('m-filter-locality');
-            if(locInput) locInput.value = locationParam;
-        }
-        if (budgetParam) {
-            const budgetVal = budgetParam.replace('k', '000');
-            const bSelect = document.getElementById('filter-budget') || document.getElementById('m-filter-budget');
-            if(bSelect) bSelect.value = budgetVal;
-        }
-        if (genderParam) {
-            const dRadio = document.querySelector(`input[name="desktop-gender"][value="${genderParam}"]`);
-            const mRadio = document.querySelector(`input[name="mobile-gender"][value="${genderParam}"]`);
-            if(dRadio) dRadio.checked = true;
-            if(mRadio) mRadio.checked = true;
-        }
-
-        if (typeof window.syncAndRenderFilters === 'function') {
-            window.syncAndRenderFilters();
-        } else if (typeof window.renderPostsDataPipeline === 'function') {
-            window.renderPostsDataPipeline();
-        }
-    }
-
-    // Run URL search filter injection
     parseAndApplyUrlFilters();
 
     // --- OTHER EVENT CHANNELS ---
@@ -867,14 +968,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('cityChanged', () => {
         if (typeof window.renderPostsDataPipeline === 'function') window.renderPostsDataPipeline();
     });
-});
-    const listingsGrid = document.getElementById('listings-container');
-    const filterBtn = document.getElementById('filter-btn');
-    const filterModal = document.getElementById('filter-modal');
-    const closeModal = document.querySelector('.close-modal');
-    const voiceBtn = document.getElementById('voice-search-btn');
-    const searchInput = document.getElementById('search-input');
-    const categoryCards = document.querySelectorAll('.category-card');
 
     // --- INQUIRY MODAL ELEMENT ---
     const inquiryOverlayHtml = `
@@ -921,193 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- MOBILE FILTER STRUCT INJECTION & ASYNC BINDINGS ---
-    if (filterModal) {
-    const bodyTarget = document.getElementById('mobile-filter-body-container') || filterModal.querySelector('.modal-body');
-    if (bodyTarget) {
-        bodyTarget.innerHTML = `
-            <div class="filter-group">
-                <h4>Budget (Max)</h4>
-                <select class="filter-select" id="m-filter-budget">
-                    <option value="">Any Budget</option>
-                    <option value="5000">Under ₹5,000</option>
-                    <option value="10000">Under ₹10,000</option>
-                    <option value="15000">Under ₹15,000</option>
-                    <option value="20000">Under ₹20,000</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <h4>Gender / Room Type</h4>
-                <div class="filter-options">
-                    <label><input type="radio" name="mobile-gender" value="boys"> Boys Only</label>
-                    <label><input type="radio" name="mobile-gender" value="girls"> Girls Only</label>
-                    <label><input type="radio" name="mobile-gender" value="unisex"> Unisex / Family</label>
-                </div>
-            </div>
-            
-            <div class="filter-group">
-                <h4>Locality / Area</h4>
-                <input type="text" class="filter-input" id="m-filter-locality" placeholder="e.g., Mansarovar, Malviya Nagar">
-            </div>
-            
-            <div class="filter-group">
-                <h4>Sharing Type</h4>
-                <div class="filter-options">
-                    <label><input type="checkbox" class="m-filter-sharing" value="single"> Private Room / Single</label>
-                    <label><input type="checkbox" class="m-filter-sharing" value="double"> 2 Sharing / Double</label>
-                    <label><input type="checkbox" class="m-filter-sharing" value="triple"> 3 Sharing / Triple</label>
-                </div>
-            </div>
-            
-            <div class="filter-group">
-                <h4>Furnishing</h4>
-                <div class="filter-options">
-                    <label><input type="checkbox" class="m-filter-furnishing" value="unfurnished"> Unfurnished</label>
-                    <label><input type="checkbox" class="m-filter-furnishing" value="semi-furnished"> Semi-Furnished</label>
-                    <label><input type="checkbox" class="m-filter-furnishing" value="fully-furnished"> Fully Furnished</label>
-                </div>
-            </div>
-            
-            <div class="filter-group">
-                <h4>Food Services</h4>
-                <div class="filter-options">
-                    <label><input type="checkbox" id="m-filter-food" value="food-included"> Food Included</label>
-                </div>
-            </div>
-            
-            <div class="filter-group">
-                <h4>Nearby Hubs & Transit</h4>
-                <div class="filter-options">
-                    <label><input type="checkbox" class="m-filter-landmark" value="metro"> Near Metro Station</label>
-                    <label><input type="checkbox" class="m-filter-landmark" value="railway"> Near Railway Station</label>
-                    <label><input type="checkbox" class="m-filter-landmark" value="coaching"> Near Coaching Institutes (Allen/Reso etc.)</label>
-                    <label><input type="checkbox" class="m-filter-landmark" value="college"> Near Colleges / Universities</label>
-                </div>
-            </div>
-            
-            <div class="filter-group">
-                <h4>Quick Filters</h4>
-                <div class="filter-options">
-                    <label><input type="checkbox" id="m-filter-verified" value="verified"> Verified Properties Only</label>
-                    <label><input type="checkbox" id="m-filter-recent" value="recent"> Recently Posted</label>
-                </div>
-            </div>
-        `;
-    }
-
-        const bindSyncEvents = () => {
-            document.getElementById('filter-budget')?.addEventListener('change', (e) => {
-                const mel = document.getElementById('m-filter-budget'); if(mel) mel.value = e.target.value;
-                window.syncAndRenderFilters();
-            });
-            document.getElementById('m-filter-budget')?.addEventListener('change', (e) => {
-                const del = document.getElementById('filter-budget'); if(del) del.value = e.target.value;
-                window.syncAndRenderFilters();
-            });
-
-            document.getElementById('filter-locality')?.addEventListener('input', (e) => {
-                const mel = document.getElementById('m-filter-locality'); if(mel) mel.value = e.target.value;
-                window.syncAndRenderFilters();
-            });
-            document.getElementById('m-filter-locality')?.addEventListener('input', (e) => {
-                const del = document.getElementById('filter-locality'); if(del) del.value = e.target.value;
-                window.syncAndRenderFilters();
-            });
-
-            document.querySelectorAll('input[name="desktop-gender"]').forEach(r => {
-                r.addEventListener('change', () => {
-                    const match = document.querySelector(`input[name="mobile-gender"][value="${r.value}"]`);
-                    if(match) match.checked = true;
-                    window.syncAndRenderFilters();
-                });
-            });
-            document.querySelectorAll('input[name="mobile-gender"]').forEach(r => {
-                r.addEventListener('change', () => {
-                    const match = document.querySelector(`input[name="desktop-gender"][value="${r.value}"]`);
-                    if(match) match.checked = true;
-                    window.syncAndRenderFilters();
-                });
-            });
-
-            const syncCheckboxClasses = (desktopClass, mobileClass) => {
-                document.querySelectorAll('.' + desktopClass).forEach(cb => {
-                    cb.addEventListener('change', () => {
-                        const mCB = document.querySelector(`.${mobileClass}[value="${cb.value}"]`);
-                        if(mCB) mCB.checked = cb.checked;
-                        window.syncAndRenderFilters();
-                    });
-                });
-                document.querySelectorAll('.' + mobileClass).forEach(cb => {
-                    cb.addEventListener('change', () => {
-                        const dCB = document.querySelector(`.${desktopClass}[value="${cb.value}"]`);
-                        if(dCB) dCB.checked = cb.checked;
-                        window.syncAndRenderFilters();
-                    });
-                });
-            };
-
-            syncCheckboxClasses('filter-sharing', 'm-filter-sharing');
-            syncCheckboxClasses('filter-furnishing', 'm-filter-furnishing');
-            syncCheckboxClasses('filter-landmark', 'm-filter-landmark');
-
-            const bindIdSync = (dId, mId) => {
-                document.getElementById(dId)?.addEventListener('change', (e) => {
-                    const target = document.getElementById(mId); if(target) target.checked = e.target.checked;
-                    window.syncAndRenderFilters();
-                });
-                document.getElementById(mId)?.addEventListener('change', (e) => {
-                    const target = document.getElementById(dId); if(target) target.checked = e.target.checked;
-                    window.syncAndRenderFilters();
-                });
-            };
-
-            bindIdSync('filter-food', 'm-filter-food');
-            bindIdSync('filter-verified', 'm-filter-verified');
-            bindIdSync('filter-recent', 'm-filter-recent');
-        };
-
-        bindSyncEvents();
-
-        window.applyFilters = function() {
-            filterModal.style.display = 'none';
-            window.syncAndRenderFilters();
-        };
-    }
-
-    // --- REALTIME DATA FETCH STREAM FROM FIREBASE ---
-    db.ref('properties').on('value', (snapshot) => {
-        const response = snapshot.val();
-        allPosts = response ? Object.keys(response).map(key => ({ id: key, views: 0, ...response[key] })) : [];
-        window.renderPostsDataPipeline(); 
-    });
-
-    // --- BANNERS ATTACHMENT REALTIME MATRIX ---
-// --- BANNERS ATTACHMENT REALTIME MATRIX ---
-db.ref('banners').on('value', (snapshot) => {
-    const rawData = snapshot.val();
-    const bannersContainer = document.getElementById('dynamic-banners-container');
-    if (bannersContainer) {
-        let parsedBanners = [];
-        if (rawData) {
-            parsedBanners = Object.values(rawData);
-            if (parsedBanners.length > 3) {
-                parsedBanners = parsedBanners.slice(-3).reverse();
-            } else {
-                parsedBanners = parsedBanners.reverse();
-            }
-        }
-        if (parsedBanners.length === 0) {
-            parsedBanners = [
-                { link: "#", image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1600&q=80" },
-                { link: "#", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1600&q=80" },
-                { link: "#", image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=80" }
-            ];
-        }
-        generateBannerSlidesLayout(parsedBanners);
-    }
-    
-    // बाकी का आपका इवेंट हैंडलर लॉजिक यहाँ सुरक्षित रहेगा...
+    // --- LISTINGS GRID EVENT DELEGATION ---
     if (listingsGrid) {
         listingsGrid.addEventListener('click', (e) => {
             const targetViewBtn = e.target.closest('[data-view-id]');
@@ -1177,12 +1084,45 @@ db.ref('banners').on('value', (snapshot) => {
         } else { voiceBtn.style.display = 'none'; }
     }
 
-    if (filterBtn) filterBtn.addEventListener('click', () => filterModal.style.display = 'flex');
-    if (closeModal) closeModal.addEventListener('click', () => filterModal.style.display = 'none');
+    if (filterBtn) filterBtn.addEventListener('click', () => { if(filterModal) filterModal.style.display = 'flex'; });
+    if (closeModal) closeModal.addEventListener('click', () => { if(filterModal) filterModal.style.display = 'none'; });
+    
     window.addEventListener('click', (e) => { 
         if (e.target === filterModal) filterModal.style.display = 'none'; 
         if (e.target === inqModal) inqModal.style.display = 'none'; 
     });
+});
+
+// --- REALTIME DATA FETCH STREAM FROM FIREBASE ---
+db.ref('properties').on('value', (snapshot) => {
+    const response = snapshot.val();
+    allPosts = response ? Object.keys(response).map(key => ({ id: key, views: 0, ...response[key] })) : [];
+    window.renderPostsDataPipeline(); 
+});
+
+// --- BANNERS ATTACHMENT REALTIME MATRIX ---
+db.ref('banners').on('value', (snapshot) => {
+    const rawData = snapshot.val();
+    const bannersContainer = document.getElementById('dynamic-banners-container');
+    if (bannersContainer) {
+        let parsedBanners = [];
+        if (rawData) {
+            parsedBanners = Object.values(rawData);
+            if (parsedBanners.length > 3) {
+                parsedBanners = parsedBanners.slice(-3).reverse();
+            } else {
+                parsedBanners = parsedBanners.reverse();
+            }
+        }
+        if (parsedBanners.length === 0) {
+            parsedBanners = [
+                { link: "#", image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1600&q=80" },
+                { link: "#", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1600&q=80" },
+                { link: "#", image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=80" }
+            ];
+        }
+        generateBannerSlidesLayout(parsedBanners);
+    }
 });
 
 // CLOUDINARY OPTIMIZER
@@ -1194,7 +1134,6 @@ function optimizeCloudinaryUrl(url) {
     return url;
 }
 
-// UPDATE: बैनर लेआउट जनरेटर को बैकग्राउंड के लिए मॉडिफाई किया गया है
 // UPDATE: बैनर लेआउट जनरेटर जो मोबाइल पर इमेज को कटने से बचाएगा
 function generateBannerSlidesLayout(banners) {
     const bannersContainer = document.getElementById('dynamic-banners-container');
