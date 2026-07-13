@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stay100% property detials - Stay100%</title>
+    <title>Premium Executive Co-Living Space - STAY100%</title>
+    <meta name="description" content="Explore premium verified co-living spaces, hostels, and studio apartments on STAY100%. Instant bookings, zero brokerage, top amenities.">
+    <meta name="keywords" content="PG in Jaipur, Room for rent, Mansarovar PGs, Boys PG, Girls PG, Stay100">
+    <meta name="robots" content="index, follow">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="details.css">
     <link rel="stylesheet" href="detialsapp.css">
-     <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
     
     <style>
         /* Modern Structural Enhancements for Micro-Interactions */
@@ -47,7 +51,7 @@
             opacity: 0.6;
             cursor: not-allowed !important;
         }
-        /* New Specification Grid Styling */
+        /* 99Acres Premium Style Specification Layouts */
         .spec-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -78,6 +82,51 @@
             font-size: 14px;
             color: #475569;
         }
+
+        /* PREMIUM CENTRAL POPUP MODAL COMPONENT (Amenities Panel) */
+        .stay100-modal-mask {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .stay100-modal-mask.modal-open {
+            opacity: 1; pointer-events: auto;
+        }
+        .stay100-popup-box {
+            background: #ffffff;
+            width: 90%; max-width: 650px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 24px;
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 85vh; overflow-y: auto;
+        }
+        .stay100-modal-mask.modal-open .stay100-popup-box {
+            transform: scale(1);
+        }
+        .popup-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px;
+        }
+        .popup-close-trigger {
+            background: #f1f5f9; border: none; width: 36px; height: 36px;
+            border-radius: 50%; font-size: 16px; color: #475569; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        }
+        .popup-close-trigger:hover {
+            background: #e2e8f0; color: #0f172a;
+        }
+        .popup-amenities-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px;
+        }
     </style>
 </head>
 <body>
@@ -90,7 +139,11 @@
             <div class="meta-left">
                 <h1 id="lbl-title">Loading Premium Property Details...</h1>
                 <p class="location-registry">
-                    <i class="fa-solid fa-location-dot"></i> <span id="lbl-location">Please wait...</span>
+                    <i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> 
+                    <span id="lbl-location" style="font-weight: 600;">Please wait...</span>
+                </p>
+                <p id="lbl-full-address" style="font-size: 13px; color: #64748b; margin-top: -4px; padding-left: 18px; line-height: 1.4;">
+                    Checking comprehensive landmark directions layout...
                 </p>
                 <div class="quick-config-row">
                     <span><i class="fa-solid fa-bed"></i> <span id="lbl-config-rooms">-</span></span>
@@ -156,22 +209,31 @@
                     <div class="spec-item"><strong>Floor Number</strong><span id="lbl-spec-floor-number">-</span></div>
                     <div class="spec-item"><strong>Flooring Type</strong><span id="lbl-spec-flooring">-</span></div>
                     <div class="spec-item"><strong>Suitable For</strong><span id="lbl-spec-suitable-for">-</span></div>
-                    <div class="spec-item"><strong>Parking</strong><span id="lbl-spec-parking">-</span></div>
+                    <div class="spec-item"><strong>Parking Lot Space</strong><span id="lbl-spec-parking">-</span></div>
                     <div class="spec-item"><strong>Min. Contract</strong><span id="lbl-spec-contract">-</span></div>
                     <div class="spec-item"><strong>Early Leaving Charges</strong><span id="lbl-spec-early-leaving">-</span></div>
                     <div class="spec-item"><strong>Attached Bathroom</strong><span id="lbl-spec-attached-bathroom">-</span></div>
                     <div class="spec-item"><strong>Attached Balcony</strong><span id="lbl-spec-attached-balcony">-</span></div>
-                    <div class="spec-item"><strong>Power Backup</strong><span id="lbl-spec-power-backup">-</span></div>
-                    <div class="spec-item"><strong>Property Age</strong><span id="lbl-spec-property-age">-</span></div>
+                    <div class="spec-item"><strong>Power Backup Status</strong><span id="lbl-spec-power-backup">-</span></div>
+                    <div class="spec-item"><strong>Property Structure Age</strong><span id="lbl-spec-property-age">-</span></div>
+                    <div class="spec-item"><strong>Notice Period</strong><span id="lbl-spec-notice-period">1 Month</span></div>
+                    <div class="spec-item"><strong>Gate Closing Time</strong><span id="lbl-spec-gate-time">11:00 PM</span></div>
+                    <div class="spec-item"><strong>Electricity Charges</strong><span id="lbl-spec-electricity-rules">Per Unit Metered</span></div>
+                    <div class="spec-item"><strong>Meal Plans Available</strong><span id="lbl-spec-meal-type">Veg Only / Non-Veg Option</span></div>
                 </div>
             </div>
 
             <div class="content-card-box">
                 <h3 class="section-title"><i class="fa-solid fa-bolt"></i> Premium Standard Facilities Available</h3>
                 <div class="facilities-grid" id="amenities-collapsible-grid"></div>
-                <button class="collapse-trigger-btn" id="btn-facilities-expand" style="margin-top: 15px;">
-                    <span>Show More Facilities</span> <i class="fa-solid fa-chevron-down"></i>
+                <button class="collapse-trigger-btn" id="btn-facilities-expand" style="margin-top: 15px; cursor: pointer; background: #e0e7ff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; color: #4f46e5; display: inline-flex; align-items: center; gap: 8px;">
+                    <span>Show Full Facilities Blueprint</span> <i class="fa-solid fa-expand"></i>
                 </button>
+            </div>
+
+            <div class="content-card-box" id="map-visualization-box" style="display:none;">
+                <h3 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Virtual Geo Location Mapping</h3>
+                <div style="width:100%; height:300px; border-radius:12px; overflow:hidden; border:1px solid #cbd5e1;" id="map-iframe-wrapper"></div>
             </div>
 
             <div class="content-card-box">
@@ -222,6 +284,7 @@
                         <i class="fa-solid fa-phone-flip"></i> Direct Call Owner
                     </a>
                 </div>
+                
 
                 <div class="inquiry-form-card">
                     <h3 style="margin: 0 0 18px 0; font-size: 18px;"><i class="fa-regular fa-paper-plane"></i> Inquiry Now</h3>
@@ -244,6 +307,16 @@
             </div>
         </section>
     </main>
+
+    <div class="stay100-modal-mask" id="amenities-popup-mask">
+        <div class="stay100-popup-box">
+            <div class="popup-header">
+                <h3 style="margin:0; font-size: 18px; color:#0f172a; font-weight:700;"><i class="fa-solid fa-shield-halved" style="color:#4f46e5; margin-right:6px;"></i> All Premium Facilities Blueprint Matrix</h3>
+                <button class="popup-close-trigger" id="btn-popup-close" aria-label="Close Container">&times;</button>
+            </div>
+            <div class="popup-amenities-grid" id="modal-amenities-target-row"></div>
+        </div>
+    </div>
 
     <footer id="dynamic-desktop-footer-container"></footer>
     <footer id="dynamic-footer-container"></footer>

@@ -1,6 +1,6 @@
 /**
  * StayPremium - Advanced Realtime Data Management & Speech Recognition Pipeline (pg.js)
- * Upgraded & Synchronized Production Version with Localized City-Wise Realtime Filters & Fixed Ranking Matrix Engine
+ * Cleaned & Synchronized Production Version with Enhanced Filtering Systems
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -45,15 +45,15 @@ onAuthStateChanged(auth, (user) => {
     renderPGDataViewGrid();
 });
 
-// --- GLOBAL CUSTOM CITY INTERCEPTOR PIPELINE ---
+// GLOBAL CUSTOM CITY INTERCEPTOR PIPELINE
 window.addEventListener('cityChanged', (e) => {
     if (e.detail && e.detail.cityId) {
         currentSelectedCity = e.detail.cityId;
-        renderPGDataViewGrid(); // Trigger view rendering immediately upon switch
+        renderPGDataViewGrid();
     }
 });
 
-// --- CENTERED TOAST NOTIFICATION GENERATOR ---
+// CENTERED TOAST NOTIFICATION GENERATOR
 function showCenteredToast(htmlMessage) {
     let container = document.getElementById('toast-center-box-container');
     if (!container) {
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // --- STREAM CONNECTOR NODE: DATABASE FETCH POOL ---
+    // STREAM CONNECTOR NODE: DATABASE FETCH POOL
     const propertiesNodeRef = ref(database, 'properties');
     onValue(propertiesNodeRef, (snapshot) => {
         const rawPayload = snapshot.val();
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- CORE RENDERING MATRIX PIPELINE ---
+// CORE RENDERING MATRIX PIPELINE
 function renderPGDataViewGrid() {
     const container = document.getElementById('pg-cards-container');
     if(!container) return;
@@ -216,26 +216,22 @@ function renderPGDataViewGrid() {
     // Local Storage Reactive City Verification Fallback (Normalized)
     currentSelectedCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
-    // --- 🛠️ UPGRADE: DYNAMIC HEADING LOGIC FOR FILTERS ---
+    // DYNAMIC HEADING LOGIC FOR FILTERS
     const headingNode = document.getElementById('listings-heading');
     if (headingNode) {
         let headingParts = [];
 
-        // 1. Check Active Tag Filter (Single Room, AC, etc.)
         if (selectedActiveTagFilter && selectedActiveTagFilter !== "all") {
             headingParts.push(selectedActiveTagFilter);
         }
 
-        // 2. Main Identity Word
         headingParts.push("PGs");
 
-        // 3. Check Active Global City Filter
         if (currentSelectedCity && currentSelectedCity !== "all" && currentSelectedCity !== "all cities") {
             const formattedCity = currentSelectedCity.charAt(0).toUpperCase() + currentSelectedCity.slice(1);
             headingParts.push(`in ${formattedCity}`);
         }
 
-        // 4. Update the Text based on configuration conditions
         const totalText = headingParts.join(' ');
         if (totalText === "PGs" || (selectedActiveTagFilter === "all" && (currentSelectedCity === "all" || currentSelectedCity === "all cities"))) {
             headingNode.innerText = "Recommended Spaces";
@@ -244,7 +240,7 @@ function renderPGDataViewGrid() {
         }
     }
 
-    // --- 1. GLOBAL RANKING & VIEWS CALCULATION ENGINE ---
+    // GLOBAL RANKING & VIEWS CALCULATION ENGINE
     const cityBasedRecords = masterPGRecords.filter(post => {
         const propertyCity = (post.city || "").toLowerCase().trim();
         if (currentSelectedCity !== "all" && currentSelectedCity !== "all cities" && currentSelectedCity !== "") {
@@ -253,7 +249,6 @@ function renderPGDataViewGrid() {
         return true;
     });
 
-    // Views count ke basis par sort karein ranking lock karne ke liye
     const sortedGlobalViews = [...cityBasedRecords].sort((a, b) => {
         const viewsA = parseInt(a.viewsCount || a.views || 0, 10);
         const viewsB = parseInt(b.viewsCount || b.views || 0, 10);
@@ -263,7 +258,7 @@ function renderPGDataViewGrid() {
     const topRank1Id = sortedGlobalViews[0] && parseInt(sortedGlobalViews[0].viewsCount || sortedGlobalViews[0].views || 0, 10) > 0 ? sortedGlobalViews[0].id : null;
     const topRank2Id = sortedGlobalViews[1] && parseInt(sortedGlobalViews[1].viewsCount || sortedGlobalViews[1].views || 0, 10) > 0 ? sortedGlobalViews[1].id : null;
 
-    // --- 2. EVALUATE COMPLETE INTERACTIVE FILTERS ---
+    // EVALUATE COMPLETE INTERACTIVE FILTERS
     const evaluatedResultGrid = cityBasedRecords.filter(post => {
         const nameMatch = (post.name || post.title || "").toLowerCase().includes(keywordStr);
         const areaMatch = (post.area || post.location || "").toLowerCase().includes(keywordStr);
@@ -271,15 +266,27 @@ function renderPGDataViewGrid() {
 
         if(!searchValidity) return false;
 
-        if(selectedActiveTagFilter === "all") return true;
-        if(selectedActiveTagFilter === "Single Room") return post.sharingType && post.sharingType.toLowerCase() === 'single';
-        if(selectedActiveTagFilter === "Double Sharing") return post.sharingType && post.sharingType.toLowerCase() === 'double';
-        if(selectedActiveTagFilter === "Triple Sharing") return post.sharingType && post.sharingType.toLowerCase() === 'triple';
-        if(selectedActiveTagFilter === "Food Included") return post.food === true || post.mess === true;
-        if(selectedActiveTagFilter === "AC") return post.ac === true;
+        const filterTypeNormalized = selectedActiveTagFilter.toLowerCase().trim();
+
+        if(filterTypeNormalized === "all") return true;
+        
+        // SHARING TYPE FILTERS
+        if(filterTypeNormalized === "single room") return post.sharingType && post.sharingType.toLowerCase().includes('single');
+        if(filterTypeNormalized === "double sharing") return post.sharingType && post.sharingType.toLowerCase().includes('double');
+        if(filterTypeNormalized === "triple sharing") return post.sharingType && post.sharingType.toLowerCase().includes('triple');
+        
+        // FURNISHED TYPE FILTERS
+        if(filterTypeNormalized === "fully furnished") return post.furnishedType && post.furnishedType.toLowerCase().includes('fully');
+        if(filterTypeNormalized === "semi furnished") return post.furnishedType && post.furnishedType.toLowerCase().includes('semi');
+        
+        // AMENITIES FILTERS
+        if(filterTypeNormalized === "food included") return post.food === true || post.mess === true || post.foodIncluded === true;
+        if(filterTypeNormalized === "ac") return post.ac === true || post.airConditioner === true;
+        
         return true;
     });
 
+    // ORIGINAL EMPTY SCREEN FALLBACK ENGINE WITH PROPER GRAPHIC LAYOUT
     if(evaluatedResultGrid.length === 0) {
         container.innerHTML = `
             <div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; padding:60px 20px; background:#fff; border-radius:16px; text-align:center; width: 100%; box-sizing: border-box; max-width: 600px; margin: 30px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
@@ -291,18 +298,18 @@ function renderPGDataViewGrid() {
         return;
     }
 
-    // --- 3. DYNAMIC RENDER PIPELINE VIA COMPONENT COMPATIBILITY ---
+    // DYNAMIC RENDER PIPELINE VIA COMPONENT COMPATIBILITY
     if (window.PropertyCardComponent && typeof window.PropertyCardComponent.render === 'function') {
         container.innerHTML = evaluatedResultGrid.map(item => {
             let isVerifiedVendorProperty = (item.isVerified === true || item.verified === true || item.verificationPlan);
             let labelBadge = item.badge || "Premium PG";
 
             if (item.id === topRank1Id) {
-                labelBadge = "🔥 Most Viewed Rank 1";
+                labelBadge = "Most Viewed Rank 1";
             } else if (item.id === topRank2Id) {
-                labelBadge = "⚡ Most Viewed Rank 2";
+                labelBadge = "Most Viewed Rank 2";
             } else if (isVerifiedVendorProperty) {
-                labelBadge = "✅ Verified Space";
+                labelBadge = "Verified Space";
             }
 
             const structuralRenderClone = {
@@ -315,17 +322,35 @@ function renderPGDataViewGrid() {
 
             return window.PropertyCardComponent.render(structuralRenderClone, savedList);
         }).join('');
+
+        // AUTO-SWIPER METHOD EXECUTION TO PREVENT EMPTY SLIDERS OR BROKEN CLICKS
+        if (typeof window.PropertyCardComponent.initAutoswipe === 'function') {
+            window.PropertyCardComponent.initAutoswipe();
+        }
     } else {
-        // Fallback UI rendering pattern to safeguard structural system bugs if component is unreachable
+        // Dynamic Fallback UI rendering pattern to safeguard structural system fields dynamically
         container.innerHTML = evaluatedResultGrid.map(item => {
             const isSaved = savedList.includes(item.id);
+            const displaySharing = item.sharingType ? `${item.sharingType.charAt(0).toUpperCase() + item.sharingType.slice(1)} Sharing` : 'Standard Sharing';
+            const displayFurnished = item.furnishedType ? `${item.furnishedType.charAt(0).toUpperCase() + item.furnishedType.slice(1)} Furnished` : 'Furnished';
+            const foodStatus = (item.food || item.mess) ? 'Food Included' : 'Food Not Included';
+            const acStatus = item.ac ? 'AC Available' : 'Non-AC';
+
             return `
                 <div class="property-card" data-view-id="${item.id}" style="position:relative; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.05); cursor:pointer;">
                     <img src="${item.image || item.imageUrl || 'https://via.placeholder.com/400x250'}" style="width:100%; height:200px; object-fit:cover;">
                     <div style="padding:16px;">
-                        <h4 style="margin:0 0 8px 0; font-size:16px; color:#1e293b;">${item.name || item.title || 'Premium Accommodation'}</h4>
-                        <p style="margin:0 0 12px 0; font-size:13px; color:#64748b;"><i class="fa-solid fa-location-dot"></i> ${item.location || item.area || 'Premium Location'}</p>
-                        <div style="display:flex; justify-content:between; align-items:center;">
+                        <h4 style="margin:0 0 8px 0; font-size:16px; color:#1e293b; font-weight:700;">${item.name || item.title || 'Premium Accommodation'}</h4>
+                        <p style="margin:0 0 8px 0; font-size:13px; color:#64748b;"><i class="fa-solid fa-location-dot"></i> ${item.location || item.area || 'Premium Location'}</p>
+                        
+                        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+                            <span style="font-size:11px; background:#f1f5f9; color:#475569; padding:3px 8px; border-radius:4px; font-weight:500;">${displaySharing}</span>
+                            <span style="font-size:11px; background:#f1f5f9; color:#475569; padding:3px 8px; border-radius:4px; font-weight:500;">${displayFurnished}</span>
+                            <span style="font-size:11px; background:#f1f5f9; color:#475569; padding:3px 8px; border-radius:4px; font-weight:500;">${acStatus}</span>
+                            <span style="font-size:11px; background:#f1f5f9; color:#475569; padding:3px 8px; border-radius:4px; font-weight:500;">${foodStatus}</span>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span style="font-weight:700; color:#b91c1c; font-size:16px;">₹${item.price || item.rent || 'N/A'}/mo</span>
                             <div style="display:flex; gap:8px; margin-left:auto;">
                                 <button data-save-id="${item.id}" style="background:none; border:none; cursor:pointer; font-size:18px; color:${isSaved ? '#ef4444' : '#cbd5e1'}"><i class="fa-${isSaved ? 'solid' : 'regular'} fa-heart"></i></button>
@@ -338,7 +363,7 @@ function renderPGDataViewGrid() {
         }).join('');
     }
 
-    // --- 4. RUN-TIME DIRECT DOM OVERRIDE INTERCEPTOR (CRITICAL FORCE PATCH) ---
+    // RUN-TIME DIRECT DOM OVERRIDE INTERCEPTOR (CRITICAL FORCE PATCH)
     setTimeout(() => {
         evaluatedResultGrid.forEach(item => {
             const cardDOM = container.querySelector(`[data-view-id="${item.id}"]`);
@@ -348,14 +373,14 @@ function renderPGDataViewGrid() {
                 let isVerifiedVendorProperty = (item.isVerified === true || item.verified === true || item.verificationPlan);
 
                 if (item.id === topRank1Id) {
-                    badgeHTMLText = "🔥 Most Viewed Rank 1";
-                    badgeBgColor = "#dc2626"; // Crimson Red
+                    badgeHTMLText = "<i class='fa-solid fa-fire'></i> Most Viewed Rank 1";
+                    badgeBgColor = "#dc2626"; 
                 } else if (item.id === topRank2Id) {
-                    badgeHTMLText = "⚡ Most Viewed Rank 2";
-                    badgeBgColor = "#ea580c"; // Burning Orange
+                    badgeHTMLText = "<i class='fa-solid fa-bolt'></i> Most Viewed Rank 2";
+                    badgeBgColor = "#ea580c"; 
                 } else if (isVerifiedVendorProperty) {
-                    badgeHTMLText = "✅ Verified Space";
-                    badgeBgColor = "#16a34a"; // Green Badge
+                    badgeHTMLText = "<i class='fa-solid fa-circle-check'></i> Verified Space";
+                    badgeBgColor = "#16a34a"; 
                 }
 
                 if (badgeHTMLText !== "") {
@@ -399,7 +424,6 @@ if (cardsContainer) {
         const inquiryHandle = event.target.closest('[data-inquiry-id]');
         const saveHandle = event.target.closest('[data-save-id]');
 
-        // Avoid triggering card navigation loop if child actions are targeted
         if(saveHandle || inquiryHandle) {
             return; 
         }
@@ -453,7 +477,7 @@ if (cardsContainer) {
                 remove(userSavedRefNode).then(() => {
                     savedList = savedList.filter(id => id !== targetPropId);
                     localStorage.setItem('staypremium_saved_properties', JSON.stringify(savedList));
-                    showCenteredToast("<i class='fa-solid fa-heart-broken' style='color:#64748b; margin-right:6px;'></i> Removed from Bookmarks Vault.");
+                    showCenteredToast("<i class='fa-solid fa-heart-crack' style='color:#64748b; margin-right:6px;'></i> Removed from Bookmarks Vault.");
                     renderPGDataViewGrid();
                 });
             }
@@ -496,7 +520,7 @@ function commitInquiryPayloadCloud() {
     const clientMsg = document.getElementById('inq-client-msg').value.trim();
 
     if(!propertyId || !clientName || !clientPhone) {
-        showCenteredToast("<i class='fa-solid fa-triangle-exclamation' style='color:#f59e0b;'></i> Form parameters verification incomplete.");
+        showCenteredToast("<i class='fa-solid fa-triangle-exclamation' style='color:#f59e0b; margin-right:6px;'></i> Form parameters verification incomplete.");
         return;
     }
 

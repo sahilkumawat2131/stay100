@@ -24,12 +24,12 @@ const db = firebase.database();
 let allPosts = [];
 let vendorsSubscriptionData = {}; 
 let currentCategory = 'all';
-let currentSessionUID = localStorage.getItem('staypremium_uid') || null;
+let currentSessionUID = localStorage.getItem('stay100%_uid') || null;
 
 // --- GLOBAL FILTER STATE MATRIX ---
 window.filterState = {
     maxBudget: Infinity,
-    area: "",
+    area: "all",
     gender: "all",
     sharingType: [],     
     furnishing: [],      
@@ -402,7 +402,7 @@ window.renderPostsDataPipeline = function() {
         // Agar filters default hain toh "Recommended Spaces", nahi toh dynamic text
         const totalText = headingParts.join(' ');
         if (totalText === "Spaces" || totalText === "Spaces in all") {
-            headingNode.innerText = "Recommended Spaces";
+            headingNode.innerText = "Stay100% Spaces";
         } else {
             headingNode.innerText = `Results for ${totalText}`;
         }
@@ -1208,18 +1208,53 @@ function handleSliderResize() {
     });
 }
 
-// SEARCH BAR PLACEHOLDER ROTATION
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("search-input");
     if (!searchInput) return;
-    
-    const keywords = ["Search by Jaipur...", "Search by Gurugram...", "Search by Premium Rooms...", "Search by Luxury Flats..."];
-    let currentIndex = 0;
+
+    const keywords = [
+        "Search Jaipur Properties",
+        "Search Gurugram Apartments",
+        "Search Premium Rooms",
+        "Search Luxury Flats",
+        "Search Villas",
+        "Search Commercial Spaces"
+    ];
+
+    let word = 0;
+    let letter = 0;
+    let deleting = false;
+    let cursor = true;
 
     setInterval(() => {
-        searchInput.placeholder = keywords[currentIndex];
-        currentIndex = (currentIndex + 1) % keywords.length;
-    }, 2500);
+        cursor = !cursor;
+    }, 500);
+
+    function animate() {
+        let text = keywords[word];
+
+        if (!deleting) {
+            letter++;
+            if (letter >= text.length) {
+                deleting = true;
+                setTimeout(animate, 1800);
+                return;
+            }
+        } else {
+            letter--;
+            if (letter <= 0) {
+                deleting = false;
+                word = (word + 1) % keywords.length;
+            }
+        }
+
+        searchInput.placeholder =
+            text.substring(0, letter) + (cursor ? "|" : "");
+
+        setTimeout(animate, deleting ? 40 : 70);
+    }
+
+    animate();
 });
 
 function executeInquirySubmission() {

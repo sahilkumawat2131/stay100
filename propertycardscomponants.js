@@ -550,9 +550,7 @@ window.PropertyCardComponent = {
         document.head.appendChild(styleBlock);
     },
 
-    /**
-     * STANDARD GRID CARD RENDERER
-     */
+    
     render: function(post, savedItemsList = []) {
         this.injectStyles();
         const heading = post.name || post.title || "Premium Rental Space";
@@ -578,47 +576,47 @@ window.PropertyCardComponent = {
         const isBookmarked = savedItemsList.includes(post.id);
         const isVerified = post.isVerified === true || post.isVerified === "true" || post.verified === true || post.verified === "true" || post.isVendorVerified === true;
         
- const inlineVerificationBadge = isVerified 
-    ? `<div class="premium-verified-container" 
-            style="position: relative; display: inline-block; cursor: pointer;"
-            onmouseenter="this.querySelector('.badge-hover-tooltip').style.display='block'"
-            onmouseleave="this.querySelector('.badge-hover-tooltip').style.display='none'">
-           
-           <img src="assets/verified-baidge.png" alt="Stay100% Verified" class="premium-verified-badge" style="display: block;">
-           <span class="sunlight-reflection-sweep"></span>
-           
-           <div class="badge-hover-tooltip" style="
-               display: none;
-               position: absolute;
-               bottom: 125%;
-               left: 50%;
-               transform: translateX(-50%);
-               background-color: rgba(0, 0, 0, 0.85);
-               color: #fff;
-               padding: 6px 12px;
-               border-radius: 4px;
-               font-size: 13px;
-               font-family: sans-serif;
-               white-space: nowrap;
-               z-index: 999;
-               box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-           ">
-               <span>Verified Badge.</span>
-               <a href="#" onclick="openVerificationPopup(event)" style="
-                   color: #00d2ff;
-                   text-decoration: underline;
-                   margin-left: 6px;
-               ">Learn more</a>
-           </div>
-       </div>` 
-    : '';
-let amenitiesHTML = '';
+        const inlineVerificationBadge = isVerified 
+            ? `<div class="premium-verified-container" 
+                style="position: relative; display: inline-block; cursor: pointer;"
+                onmouseenter="this.querySelector('.badge-hover-tooltip').style.display='block'"
+                onmouseleave="this.querySelector('.badge-hover-tooltip').style.display='none'">
+               
+               <img src="assets/verified-baidge.png" alt="Stay100% Verified" class="premium-verified-badge" style="display: block;">
+               <span class="sunlight-reflection-sweep"></span>
+               
+               <div class="badge-hover-tooltip" style="
+                   display: none;
+                   position: absolute;
+                   bottom: 125%;
+                   left: 50%;
+                   transform: translateX(-50%);
+                   background-color: rgba(0, 0, 0, 0.85);
+                   color: #fff;
+                   padding: 6px 12px;
+                   border-radius: 4px;
+                   font-size: 13px;
+                   font-family: sans-serif;
+                   white-space: nowrap;
+                   z-index: 999;
+                   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+               ">
+                   <span>Verified Badge.</span>
+                   <a href="#" onclick="openVerificationPopup(event)" style="
+                       color: #00d2ff;
+                       text-decoration: underline;
+                       margin-left: 6px;
+                   ">Learn more</a>
+               </div>
+           </div>` 
+            : '';
+
+        let amenitiesHTML = '';
         if (post.wifi || (Array.isArray(post.amenities) && post.amenities.includes("High Speed Wi-Fi"))) amenitiesHTML += `<span class="amenity-tag"><i class="fa-solid fa-wifi"></i> Wifi</span>`;
         if (post.ac || (Array.isArray(post.amenities) && post.amenities.includes("Air Conditioner"))) amenitiesHTML += `<span class="amenity-tag"><i class="fa-solid fa-snowflake"></i> AC</span>`;
         if (post.food || post.mess || post.foodIncluded || (Array.isArray(post.amenities) && post.amenities.includes("Homely Food"))) amenitiesHTML += `<span class="amenity-tag"><i class="fa-solid fa-utensils"></i> Food</span>`;
         if (post.parking || (Array.isArray(post.amenities) && post.amenities.includes("Vehicle Parking"))) amenitiesHTML += `<span class="amenity-tag"><i class="fa-solid fa-car"></i> Parking</span>`;
 
-        // Media List Compile Strategy (Sabse pehle high bitrate 4K Video check aur list me placement)
         let slidesHTML = '';
         let dotsHTML = '';
         let mediaNodeCount = 0;
@@ -640,7 +638,6 @@ let amenitiesHTML = '';
                     <img src="${imgUrl}" alt="${heading} view image" loading="${calculatedIndex === 0 ? 'eager' : 'lazy'}">
                 </div>
             `;
-            // Agar video pehle active ho chuki h to targets dynamic update honge
             const isFirstNodeTotal = calculatedIndex === 0;
             dotsHTML += `<span class="carousel-dot-bubble ${isFirstNodeTotal ? 'active-slide' : ''}" data-target-idx="${calculatedIndex}"></span>`;
             mediaNodeCount++;
@@ -648,9 +645,6 @@ let amenitiesHTML = '';
 
         const sliderInstanceKey = `slider-${post.id.replace(/[^a-zA-Z0-9]/g, '')}`;
 
-        // =========================================================================
-        // 🎯 INTERACTIVE CONFIGURATION & FURNISHING PATRIC NORMALIZATION ENGINE
-        // =========================================================================
         function determineNormalizedPropertyType(postObject) {
             let configTag = "";
             const titleStr = (postObject.name || postObject.title || "").toLowerCase();
@@ -658,7 +652,6 @@ let amenitiesHTML = '';
             const typeStr = (postObject.type || "").toLowerCase();
             const categoryStr = (postObject.category || "").toLowerCase();
 
-            // 1. Strict Configuration Scanning Layer (1RK, 1BHK, 2BHK, 3BHK, 4BHK)
             if (flatTypeStr.includes("1rk") || titleStr.includes("1rk") || titleStr.includes("1r k") || typeStr.includes("1rk")) {
                 configTag = "1 RK";
             } else if (flatTypeStr.includes("1bhk") || titleStr.includes("1bhk") || titleStr.includes("1 bhk") || typeStr.includes("1bhk")) {
@@ -671,7 +664,6 @@ let amenitiesHTML = '';
                 configTag = "4 BHK";
             }
 
-            // 2. Premium Furnishing Status Checking Layer
             let furnishingTag = "";
             if (postObject.furnished === true || String(postObject.furnished).toLowerCase() === 'true' || titleStr.includes("fully furnished") || flatTypeStr.includes("fully furnished") || typeStr.includes("fully furnished")) {
                 furnishingTag = "Fully Furnished";
@@ -679,23 +671,16 @@ let amenitiesHTML = '';
                 furnishingTag = "Furnished";
             }
 
-            // 3. Structural Combinations & Fallback Builders
-            if (configTag && furnishingTag) {
-                return `${configTag} • ${furnishingTag}`;
-            } else if (configTag) {
-                return configTag;
-            } else if (furnishingTag) {
-                return furnishingTag;
-            }
+            if (configTag && furnishingTag) return `${configTag} • ${furnishingTag}`;
+            if (configTag) return configTag;
+            if (furnishingTag) return furnishingTag;
 
-            // 4. Fallback checking for Flat / Room / Default Categories
             if (categoryStr.includes("flat") || typeStr.includes("flat") || titleStr.includes("flat") || flatTypeStr.includes("flat")) {
                 return "PREMIUM FLAT";
             } else if (categoryStr.includes("room") || typeStr.includes("room") || titleStr.includes("room") || flatTypeStr.includes("room")) {
                 return "PREMIUM ROOM";
             }
 
-            // Absolute Fallback
             return (postObject.flatType || postObject.category || postObject.type || "PREMIUM SPACE").toUpperCase();
         }
 
@@ -704,25 +689,16 @@ let amenitiesHTML = '';
         return `
             <div class="property-card" data-city="${rawCityNode}" id="card-root-${sliderInstanceKey}">
                 <div class="image-container" id="${sliderInstanceKey}">
-                    
-                    <span class="property-type-tag-left-badge">
-                        ${calculatedPropertyType}
-                    </span>
-
+                    <span class="property-type-tag-left-badge">${calculatedPropertyType}</span>
                     ${post.badge ? `<span class="offer-badge" style="right: 12px; left: auto;">${post.badge}</span>` : ''}
-                    
                     <button class="card-save-trigger" data-save-id="${post.id}" style="background:${isBookmarked ? '#fee2e2' : 'rgba(255,255,255,0.9)'};">
                         <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark" style="font-size:15px; color:${isBookmarked ? '#ef4444' : '#475569'};"></i>
                     </button>
-                    <div class="carousel-viewport-track">
-                        ${slidesHTML}
-                    </div>
+                    <div class="carousel-viewport-track">${slidesHTML}</div>
                     ${mediaNodeCount > 1 ? `
                         <button class="carousel-nav-arrow arrow-prev-left" type="button"><i class="fa-solid fa-chevron-left"></i></button>
                         <button class="carousel-nav-arrow arrow-next-right" type="button"><i class="fa-solid fa-chevron-right"></i></button>
-                        <div class="carousel-dots-indicator-bar">
-                            ${dotsHTML}
-                        </div>
+                        <div class="carousel-dots-indicator-bar">${dotsHTML}</div>
                     ` : ''}
                     <div class="views-counter-pill">
                         <i class="fa-solid fa-eye" style="color:#00bcd4;"></i>
@@ -740,7 +716,12 @@ let amenitiesHTML = '';
                         <i class="fa-solid fa-star"></i> ${post.rating || '4.4'} 
                         <span class="review-count">(${post.reviewsCount || 0} reviews)</span>
                     </div>
-                    <p class="location-text"><i class="fa-solid fa-location-dot" style="color:#556b2f;"></i> <span>${microLoc}</span></p>
+                    
+                    <p class="location-text" onclick="PropertyCardComponent.openLocationNavigation(event, '${encodeURIComponent(microLoc)}')">
+                        <i class="fa-solid fa-location-dot" style="color:#556b2f;"></i> 
+                        <span>${microLoc}</span>
+                    </p>
+                    
                     <div class="facilities-grid">${amenitiesHTML}</div>
                     <div class="card-actions">
                         <button class="btn-card-outline" data-view-id="${post.id}">View Details</button>
@@ -768,7 +749,6 @@ let amenitiesHTML = '';
         let slidesHTML = '';
         let mediaNodeCount = 0;
 
-        // Video verification first check landscape model
         if (post.videoUrl && post.videoUrl.trim() !== "") {
             slidesHTML += `
                 <div class="carousel-slide-node" data-media-type="video">
@@ -795,7 +775,6 @@ let amenitiesHTML = '';
         else if (customBadgeType === 'RECOMMENDED') { badgeClass = 'tag-recommended'; badgeLabel = 'Recommended 🌟'; }
         else if (customBadgeType === 'POPULAR') { badgeClass = 'tag-popular'; badgeLabel = 'Popular ✨'; }
 
-        // Same Engine used here for complete layout consistency
         function determineNormalizedPropertyType(postObject) {
             let configTag = "";
             const titleStr = (postObject.name || postObject.title || "").toLowerCase();
@@ -822,13 +801,9 @@ let amenitiesHTML = '';
                 furnishingTag = "Furnished";
             }
 
-            if (configTag && furnishingTag) {
-                return `${configTag} • ${furnishingTag}`;
-            } else if (configTag) {
-                return configTag;
-            } else if (furnishingTag) {
-                return furnishingTag;
-            }
+            if (configTag && furnishingTag) return `${configTag} • ${furnishingTag}`;
+            if (configTag) return configTag;
+            if (furnishingTag) return furnishingTag;
 
             if (categoryStr.includes("flat") || typeStr.includes("flat") || titleStr.includes("flat") || flatTypeStr.includes("flat")) {
                 return "PREMIUM FLAT";
@@ -844,19 +819,12 @@ let amenitiesHTML = '';
         return `
             <div class="premium-landscape-card" id="card-root-${sliderInstanceKey}">
                 <div class="image-container" id="${sliderInstanceKey}">
-                    
-                    <span class="property-type-tag-left-badge">
-                        ${calculatedPropertyType}
-                    </span>
-
+                    <span class="property-type-tag-left-badge">${calculatedPropertyType}</span>
                     <span class="offer-badge ${badgeClass}" style="right: 12px; left: auto;">${badgeLabel}</span>
-                    
                     <button class="card-save-trigger" data-save-id="${post.id}" style="background:${isBookmarked ? '#fee2e2' : 'rgba(255,255,255,0.9)'};">
                         <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark" style="color:${isBookmarked ? '#ef4444' : '#475569'};"></i>
                     </button>
-                    <div class="carousel-viewport-track">
-                        ${slidesHTML}
-                    </div>
+                    <div class="carousel-viewport-track">${slidesHTML}</div>
                     ${mediaNodeCount > 1 ? `
                         <button class="carousel-nav-arrow arrow-prev-left" type="button"><i class="fa-solid fa-chevron-left"></i></button>
                         <button class="carousel-nav-arrow arrow-next-right" type="button"><i class="fa-solid fa-chevron-right"></i></button>
@@ -875,7 +843,11 @@ let amenitiesHTML = '';
                         <div class="rating-row">
                             <i class="fa-solid fa-star"></i> ${post.rating || '4.5'}
                         </div>
-                        <p class="location-text" style="margin-top: 6px;"><i class="fa-solid fa-location-dot"></i> ${microLoc}</p>
+                        
+                        <p class="location-text" style="margin-top: 6px;" onclick="PropertyCardComponent.openLocationNavigation(event, '${encodeURIComponent(microLoc)}')">
+                            <i class="fa-solid fa-location-dot"></i> ${microLoc}
+                        </p>
+                        
                     </div>
                     <div class="card-actions">
                         <button class="btn-card-outline" data-view-id="${post.id}">Details</button>
@@ -951,7 +923,6 @@ let amenitiesHTML = '';
 
                 trackingTrack.style.transform = `translateX(-${structuralActiveIndex * 100}%)`;
                 
-                // Active Dot State Controller
                 const dotsNodes = container.querySelectorAll('.carousel-dot-bubble');
                 dotsNodes.forEach((dot, dIdx) => {
                     if(dIdx === structuralActiveIndex) {
@@ -961,23 +932,20 @@ let amenitiesHTML = '';
                     }
                 });
 
-                // Video Auto Play/Pause Handler dynamically based on viewport mapping
                 const currentSlideNode = container.querySelectorAll('.carousel-slide-node')[structuralActiveIndex];
                 if (currentSlideNode && currentSlideNode.getAttribute('data-media-type') === 'video') {
                     const videoTag = currentSlideNode.querySelector('video');
                     if (videoTag) {
                         videoTag.currentTime = 0;
                         videoTag.play().catch(e => console.log('Autoplay deferred:', e));
-                        breakTimerLoop(); // Video play time par swipe clock pause rahegi.
+                        breakTimerLoop();
                     }
                 } else {
-                    // Agar normal image pr shift hua hai to sliding timeline loop start karein
                     initializeTimerLoop();
                 }
             }
 
             function initializeTimerLoop() {
-                // Agar pehla node video hai aur current state video par hai to auto-timer overwrite hone se rokenge
                 const currentSlideNode = container.querySelectorAll('.carousel-slide-node')[structuralActiveIndex];
                 if (currentSlideNode && currentSlideNode.getAttribute('data-media-type') === 'video') return;
 
@@ -1012,7 +980,6 @@ let amenitiesHTML = '';
             container.addEventListener('mouseenter', breakTimerLoop);
             container.addEventListener('mouseleave', initializeTimerLoop);
 
-            // Initial verification flow execution
             const initialNode = container.querySelectorAll('.carousel-slide-node')[0];
             if (initialNode && initialNode.getAttribute('data-media-type') === 'video') {
                 const video = initialNode.querySelector('video');
@@ -1025,3 +992,6 @@ let amenitiesHTML = '';
         });
     }
 };
+
+// Make sure the globally referenced window context is correct
+window.PropertyCardComponent = PropertyCardComponent;

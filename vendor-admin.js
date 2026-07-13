@@ -2,6 +2,7 @@
  * StayPremium - Unified Property Card UI Component Engine (Upgraded Version)
  * Extended with Desktop & Mobile Support for "Recommended", "Popular", "Latest Rent", and "Trending".
  * Integrated with 4K Property Video uploads via Cloudinary & Runtime Schema.
+ * Fully Upgraded with 99Acres Fields, Premium Field Configurations, Address Specs & Details Sync Layer.
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -98,7 +99,7 @@ window.injectGalleryField = function(existingUrl = "") {
     wrappingBlock.className = 'repeater-box';
     wrappingBlock.innerHTML = `
         <input type="file" class="gallery-file-field" accept="image/*" data-existing="${existingUrl}">
-        ${existingUrl ? `<img src="${existingUrl}" class="img-preview-bubble">` : ''}
+        ${existingUrl ? `<img src="${existingUrl}" class="img-preview-bubble" style="width:50px; height:40px; object-fit:cover; border-radius:4px;">` : ''}
         <button type="button" class="btn-small btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
     `;
     container.appendChild(wrappingBlock);
@@ -197,13 +198,16 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
         }
     }
 
-    const targetCategory = document.getElementById('p-category').value;
+  const targetCategory = document.getElementById('p-category').value;
     const basePrice = parseFloat(document.getElementById('p-price').value) || 0;
     const rawMrp = parseFloat(document.getElementById('p-mrp').value) || 0;
     
     let savedPostedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    let isPropertyVerified = true; 
+    
+    // Sahi Logic: Default false rahega (Agar vendor verified nahi hai toh unverified rahega)
+    let isPropertyVerified = false; 
 
+    // Agar property pehle se database me hai aur uska status check karna hai (Edit mode me)
     if (editId && localPropertiesCache[editId]) {
         if (localPropertiesCache[editId].postedDate) {
             savedPostedDate = localPropertiesCache[editId].postedDate;
@@ -211,8 +215,12 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
         if (localPropertiesCache[editId].isVerified !== undefined) {
             isPropertyVerified = localPropertiesCache[editId].isVerified;
         }
+    } else {
+        // Nayi property ke liye: Agar aapke paas vendor ki profile ka verification variable hai (jaise: currentVendorVerified)
+        // toh aap yahan likh sakte hain: isPropertyVerified = currentVendorVerified || false;
+        // Abhi ke liye naye vendors ki property hamesha pehle check/unverified (false) hi submit hogi.
+        isPropertyVerified = false;
     }
-
     // Amenities Capture Pipeline
     const amenitiesArray = [];
     if(document.getElementById('v-wifi')?.checked) amenitiesArray.push("High Speed Wi-Fi");
@@ -237,6 +245,8 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
     const propertySchemaPayload = {
         id: propertyUniqueId,
         vendorId: currentVendorId, 
+        uid: currentVendorId, 
+        userId: currentVendorId,
         category: targetCategory,
         type: targetCategory,
         flatType: targetCategory.toLowerCase() === 'apartment' ? document.getElementById('p-flat-type').value : "",
@@ -254,7 +264,8 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
         sharingType: document.getElementById('p-sharing').value,
         furnishing: document.getElementById('p-furnishing').value,
         genderType: document.getElementById('p-gender').value,
-        availableFrom: document.getElementById('p-available-from')?.value.trim() || "",
+        suitableForGender: document.getElementById('p-gender').value,
+        availableFrom: document.getElementById('p-available-from')?.value.trim() || "Immediate",
         suitableFor: document.getElementById('p-suitable-for')?.value.trim() || "",
         
         roomsCount: document.getElementById('p-count-rooms').value.trim(),
@@ -267,18 +278,28 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
         powerBackup: document.getElementById('p-power-backup').value.trim(),
         attachedBathroom: document.getElementById('p-attached-bathroom').value,
         attachedBalcony: document.getElementById('p-attached-balcony').value,
+        
+        // Premium 99Acres Dynamic Properties Mappings
         minimumContract: document.getElementById('p-contract')?.value.trim() || "",
         earlyLeavingCharges: document.getElementById('p-leaving-charges')?.value.trim() || "",
+        noticePeriod: document.getElementById('p-notice-period')?.value.trim() || "",
+        gateClosingTime: document.getElementById('p-gate-time')?.value.trim() || "",
+        electricityPolicy: document.getElementById('p-electricity-rules')?.value.trim() || "",
+        mealsConfig: document.getElementById('p-meal-type')?.value.trim() || "",
         propertyAge: document.getElementById('p-age').value.trim(),
 
+        // Address Field Mappings Sync
+        address: document.getElementById('p-address').value.trim(),
+        fullAddress: document.getElementById('p-address').value.trim(),
         location: `${document.getElementById('p-area').value.trim()}, ${document.getElementById('p-city').value.trim()}`,
         area: document.getElementById('p-area').value.trim(),
         city: document.getElementById('p-city').value.trim(),
+        googleMapsEmbedUrl: document.getElementById('p-map').value.trim(), 
         mapLink: document.getElementById('p-map').value.trim(),
         
         image: uploadedHeroUrl,
         imageUrl: uploadedHeroUrl,
-        videoUrl: uploadedVideoUrl, // Extracted Cloudinary high bitrate node references
+        videoUrl: uploadedVideoUrl, 
         allImages: imagesCluster,
         amenities: amenitiesArray,
         
@@ -403,6 +424,8 @@ window.triggerPropertyFormEdit = function(targetKey) {
     document.getElementById('p-sharing').value = nodeData.sharingType || "Single Sharing";
     document.getElementById('p-furnishing').value = nodeData.furnishing || "Fully Furnished";
     document.getElementById('p-gender').value = nodeData.genderType || "Both";
+    document.getElementById('p-available-from').value = nodeData.availableFrom || "Immediate";
+    document.getElementById('p-suitable-for').value = nodeData.suitableFor || "";
     
     document.getElementById('p-price').value = nodeData.price || "";
     document.getElementById('p-mrp').value = nodeData.mrp || "";
@@ -410,12 +433,46 @@ window.triggerPropertyFormEdit = function(targetKey) {
     
     document.getElementById('p-area').value = nodeData.area || "";
     document.getElementById('p-city').value = nodeData.city || "";
-    document.getElementById('p-map').value = nodeData.mapLink || "";
+    document.getElementById('p-map').value = nodeData.googleMapsEmbedUrl || nodeData.mapLink || "";
+    document.getElementById('p-address').value = nodeData.address || nodeData.fullAddress || "";
     
+    document.getElementById('p-count-rooms').value = nodeData.roomsCount || "";
+    document.getElementById('p-count-bathrooms').value = nodeData.bathroomsCount || "";
+    document.getElementById('p-count-balconies').value = nodeData.balconiesCount || "";
+    document.getElementById('p-floor').value = nodeData.floorNumber || "";
+    document.getElementById('p-age').value = nodeData.propertyAge || "";
+    document.getElementById('p-flooring-type').value = nodeData.flooring || "";
+    document.getElementById('p-parking').value = nodeData.parking || "";
+    document.getElementById('p-power-backup').value = nodeData.powerBackup || "";
+    document.getElementById('p-attached-bathroom').value = nodeData.attachedBathroom || "Yes";
+    document.getElementById('p-attached-balcony').value = nodeData.attachedBalcony || "No";
+
+    // Premium 99Acres Data Rehydration Engine
+    document.getElementById('p-contract').value = nodeData.minimumContract || "";
+    document.getElementById('p-leaving-charges').value = nodeData.earlyLeavingCharges || "";
+    document.getElementById('p-notice-period').value = nodeData.noticePeriod || "";
+    document.getElementById('p-gate-time').value = nodeData.gateClosingTime || "";
+    document.getElementById('p-electricity-rules').value = nodeData.electricityPolicy || "";
+    document.getElementById('p-meal-type').value = nodeData.mealsConfig || "";
+
     document.getElementById('p-owner-name').value = nodeData.ownerName || "";
     document.getElementById('p-owner-phone').value = nodeData.ownerPhone || "";
+    document.getElementById('p-type-meta').value = nodeData.propertyTypeMeta || "";
+    document.getElementById('p-badge').value = nodeData.badge || "";
     document.getElementById('p-desc').value = nodeData.description || "";
     document.getElementById('p-rules').value = nodeData.houseRules || "";
+
+    // Gallery Images Pipeline Rehydration Loop
+    const container = document.getElementById('gallery-repeater-root');
+    if (container) {
+        container.innerHTML = ""; // Wipe default
+        const existingImages = nodeData.allImages || [];
+        if(existingImages.length > 1) {
+            for(let i = 1; i < existingImages.length; i++) {
+                window.injectGalleryField(existingImages[i]);
+            }
+        }
+    }
 
     // Amenities State Rehydration
     const currentAmenities = nodeData.amenities || [];
@@ -457,7 +514,14 @@ window.terminateFormEditMode = function() {
     });
 
     const container = document.getElementById('gallery-repeater-root');
-    if (container) container.innerHTML = "";
+    if (container) {
+        container.innerHTML = `
+            <div class="repeater-box">
+                <input type="file" class="gallery-file-field" accept="image/*">
+                <button type="button" class="btn-small btn-add" onclick="injectGalleryField()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        `;
+    }
 
     document.getElementById('form-main-heading').innerText = "Deploy New Living Asset";
     document.getElementById('submit-btn-text').innerText = "Deploy Asset Node System";
@@ -472,7 +536,7 @@ window.triggerPropertyDeletion = function(targetKey) {
 };
 
 // Lead Pipeline Inbox Sync Engine
-void function synchronizeUnifiedInbox() {
+window.synchronizeUnifiedInbox = function() {
     onValue(ref(db, 'inquiries'), (snapshot) => {
         const inboxTerminal = document.getElementById('inbox-cards-terminal');
         if (!inboxTerminal) return;
@@ -508,7 +572,7 @@ void function synchronizeUnifiedInbox() {
                     <span><i class="fa-solid fa-clock"></i> ${cleanDate}</span>
                 </div>
                 <div style="font-size:13px; font-weight:700; color:var(--olive); margin-bottom:8px;">Target Unit: ${lead.propertyName || 'N/A'}</div>
-                <p class="msg-text">"${lead.message || 'No specific remarks written.'}"</p>
+                <p class="msg-text">"${lead.clientMessage || lead.message || 'No specific remarks written.'}"</p>
                 <div class="response-box">
                     <a href="${waLink}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Initiate WhatsApp Sync</a>
                 </div>
@@ -516,39 +580,6 @@ void function synchronizeUnifiedInbox() {
             inboxTerminal.appendChild(leadCard);
         });
     });
-}();
-
-// Marketing Banner Sync Node
-window.deployBannerMatrixNode = async function() {
-    const file = document.getElementById('b-img-file').files[0];
-    if(!file) return fireNoticeToast("⚠️ Graphic file is requested.");
-
-    const bBtn = document.getElementById('b-submit-btn');
-    bBtn.disabled = true;
-
-    const bannerUrl = await processCloudinaryFileUpload(file);
-    if(!bannerUrl) {
-        fireNoticeToast("❌ Cloudinary uploading crashed.");
-        bBtn.disabled = false;
-        return;
-    }
-
-    const newBannerRef = push(ref(db, 'banners'));
-    const bannerPayload = {
-        id: newBannerRef.key,
-        vendorId: currentVendorId,
-        image: bannerUrl,
-        title: document.getElementById('b-title').value.trim() || "Exclusive Co-Living Hub",
-        subtitle: document.getElementById('b-subtitle').value.trim() || "Discount System Active",
-        link: document.getElementById('b-link').value.trim() || "#"
-    };
-
-    set(newBannerRef, bannerPayload)
-        .then(() => {
-            fireNoticeToast("🎉 Marketing Banner added to system pipeline!");
-            document.getElementById('b-img-file').value = "";
-        })
-        .finally(() => bBtn.disabled = false);
 };
 
 // Global Interceptor session handler
@@ -557,10 +588,11 @@ onAuthStateChanged(auth, (user) => {
         currentVendorId = user.uid; 
         console.log("🔒 Access Granted! UID:", currentVendorId);
         fetchLivePropertiesStream();
+        window.synchronizeUnifiedInbox();
     } else {
         currentVendorId = null;
         console.warn("🚨 Session mismatched! Redirecting.");
-        window.location.href = "login.html"; 
+        window.location.href = "vendor-registration.html"; 
     }
 });
 

@@ -2,7 +2,9 @@
  * STAY100% (Formerly StayPremium) - Independent Property & Room Details Logic Controller Engine
  * Upgraded Version - Enhanced Property Fields, Premium Unified Verified Badge & Upgraded Facility Matrix
  * Extended with Inline Auto-Play Property Video Node Support inside Carousel Track before Image Sequences.
- * Bug Fix: Stabilized Amenities Grid Show More / Show Less Toggling UI Workflow.
+ * Bug Fix: Stabilized Amenities Grid Show More / Center Modal Popup View Toggling System.
+ * Advanced Features: 99Acres Premium Layout Matrix Mapping, Complex Address Blocks & Automated Search String SEO Mask.
+ * FIX: Redirection link corrected in Horizontal Recommendation Card to fix broken clicks.
  */
 
 // --- 1. FIREBASE INITIALIZATION MATRIX ---
@@ -36,6 +38,9 @@ let isAmenitiesExpandedState = false; // Tracks explicit local toggle state for 
 
 // On DOM Core System Initialized
 document.addEventListener('DOMContentLoaded', () => {
+    // Execution of Pure Clean URL Rewrite Execution Sequence to mask details.html parameters
+    enforceCleanSeoRoutingStructure();
+
     if (window.LayoutEngine) {
         window.customPageContextSet = true;
         window.LayoutEngine.init("pg");
@@ -56,6 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
     bindInteractiveUIElements();
     updateSaveButtonUI(); 
 });
+
+/**
+ * SEO Engine URL Router Mask Optimization Rule
+ * Converts raw dirty routing configurations like 'details.html?id=xyz' into search optimized structures locally.
+ */
+function enforceCleanSeoRoutingStructure() {
+    const currentPath = window.location.pathname;
+    if (currentPath.endsWith('.html')) {
+        const structuralCleanPath = currentPath.replace('.html', '');
+        // Rewrite location history without firing hard reload browser loops
+        window.history.replaceState(null, '', structuralCleanPath + window.location.search);
+    }
+}
 
 // Layout alignments aur premium badge visual animations head me inject karne ke liye function
 function injectResponsiveAndBadgeStyles() {
@@ -184,7 +202,7 @@ const attachLiveSynchronizedDataStream = (branchPath, targetId) => {
         const data = snapshot.val();
         if (!data) {
             if (branchPath === "properties") {
-                attachLiveSynchronizedDataStream("rooms", targetId);
+                attachLiveSynchronizedDataStream("room", targetId);
             } else {
                 loadLocalMockPropertyDataPackage();
             }
@@ -263,9 +281,23 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     const propertyTitle = targetPropertyObject.name || targetPropertyObject.title || "Premium Co-Living Space";
     const baseOriginalPrice = targetPropertyObject.mrp || targetPropertyObject.originalPrice || targetPropertyObject.price || 0;
     const baseCurrentPrice = targetPropertyObject.price || targetPropertyObject.currentPrice || 0;
-
-    document.title = `${propertyTitle} - STAY100% Executive Co-Living`;
     
+    // Core SEO parameters tracking extracted safely from system properties
+    const locCity = targetPropertyObject.city || "Jaipur";
+    const locArea = targetPropertyObject.area || targetPropertyObject.localArea || "Mansarovar";
+    const targetGender = targetPropertyObject.genderType || "Boys";
+    const parsedShortPrice = Math.round(baseCurrentPrice / 1000);
+
+    // DYNAMIC INJECTION RULE: Google Optimization indexing syntax structure mapping rules
+    const targetSeoTitle = `65+ PGs for ${targetGender} in ${locArea} ${locCity} under ${parsedShortPrice}k | STAY100%`;
+    document.title = targetSeoTitle;
+    
+    // Update structural header metadata targets globally for crawling bots
+    const headDescription = document.querySelector('meta[name="description"]');
+    if (headDescription) {
+        headDescription.setAttribute("content", `Find verified flat listings. Best PGs for ${targetGender} in ${locArea} ${locCity} under ${baseCurrentPrice}/mo. Equipped with high speed Wi-Fi, Food, AC & Power Backup.`);
+    }
+
     const updateText = (id, text) => {
         const el = document.getElementById(id);
         if (el) el.innerText = text;
@@ -276,7 +308,33 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         titleLabel.innerHTML = `<span>${propertyTitle}</span> ${getVerifiedBadgeMarkup(isVerified)}`;
     }
 
-    updateText('lbl-location', targetPropertyObject.location || "Location unassigned");
+    // Dynamic Address Binding Logic Blocks
+// 1. पूरा एड्रेस टेक्स्ट तैयार करें
+const cleanFullAddressText = targetPropertyObject.address || `${targetPropertyObject.landmark || 'Near Metro Station'}, ${locArea}, ${locCity}, Rajasthan`;
+
+// 2. Google Maps URL जनरेट करें
+const googleMapsNavUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanFullAddressText)}`;
+
+// 3. एड्रेस के साथ ऑलिव कलर का "Get Direction" आइकॉन और स्टाइलिंग स्ट्रक्चर
+const fullAddressWithDirectionHTML = `
+    <span style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" 
+          onclick="window.open('${googleMapsNavUrl}', '_blank', 'noopener,noreferrer');"
+          onmouseenter="this.querySelector('i').style.opacity='0.8'" 
+          onmouseleave="this.querySelector('i').style.opacity='1'">
+        <span>${cleanFullAddressText}</span>
+        <i class="fa-solid fa-diamond-turn-right" style="color: #808000; font-size: 14px;" title="Get Directions"></i>
+    </span>
+`;
+
+// 4. लोकेशन और एड्रेस एलिमेंट अपडेट करें
+updateText('lbl-location', `${locArea}, ${locCity}`);
+
+const addressElement = document.getElementById('lbl-full-address');
+if (addressElement) {
+    addressElement.innerHTML = fullAddressWithDirectionHTML;
+} else {
+    updateText('lbl-full-address', cleanFullAddressText);
+}
     updateText('lbl-orig-price', baseOriginalPrice ? `₹${baseOriginalPrice.toLocaleString('en-IN')}` : '');
     updateText('lbl-curr-price', `₹${baseCurrentPrice.toLocaleString('en-IN')}/mo`);
     updateText('lbl-description', targetPropertyObject.description || "Premium architectural living setup spaces.");
@@ -307,6 +365,20 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     updateText('lbl-spec-attached-balcony', targetPropertyObject.attachedBalcony || "No");
     updateText('lbl-spec-power-backup', targetPropertyObject.powerBackup || "None");
     updateText('lbl-spec-property-age', targetPropertyObject.propertyAge || "1 to 5 Year Old");
+
+    // Dynamic Extra Parameters for 99Acres Feel
+    if (targetPropertyObject.noticePeriod) updateText('lbl-spec-notice-period', targetPropertyObject.noticePeriod);
+    if (targetPropertyObject.gateClosingTime) updateText('lbl-spec-gate-time', targetPropertyObject.gateClosingTime);
+    if (targetPropertyObject.electricityPolicy) updateText('lbl-spec-electricity-rules', targetPropertyObject.electricityPolicy);
+    if (targetPropertyObject.mealsConfig) updateText('lbl-spec-meal-type', targetPropertyObject.mealsConfig);
+
+    // Google Maps Iframe Injector Logic Block
+    const mapWrapper = document.getElementById('map-iframe-wrapper');
+    const mapContainerBox = document.getElementById('map-visualization-box');
+    if (mapWrapper && mapContainerBox && targetPropertyObject.googleMapsEmbedUrl) {
+        mapWrapper.innerHTML = `<iframe src="${targetPropertyObject.googleMapsEmbedUrl}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+        mapContainerBox.style.display = "block";
+    }
 
     const phoneBtn = document.getElementById('btn-owner-phone');
     if (phoneBtn) phoneBtn.href = `tel:${targetPropertyObject.ownerPhone || ''}`;
@@ -430,18 +502,12 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
 // --- CORRECTED & IMMUTABLE AMENITIES RENDERING MATRIX ENGINE ---
 const renderAmenitiesGridMatrix = () => {
     const facGrid = document.getElementById('amenities-collapsible-grid');
-    const expandBtn = document.getElementById('btn-facilities-expand');
     if (!facGrid) return;
 
     const facilitiesList = globalGeneratedFacilitiesArray || [];
-    const limitCount = 6;
-    
-    let itemsToRender = [];
-    if (isAmenitiesExpandedState || facilitiesList.length <= limitCount) {
-        itemsToRender = facilitiesList;
-    } else {
-        itemsToRender = facilitiesList.slice(0, limitCount);
-    }
+    // Always list top 6 elements inside plain preview baseline
+    const initialPreviewLimit = 6;
+    let itemsToRender = facilitiesList.slice(0, initialPreviewLimit);
 
     // Grid nodes update
     facGrid.innerHTML = itemsToRender.map(item => `
@@ -450,20 +516,26 @@ const renderAmenitiesGridMatrix = () => {
             <span style="font-size: 14px; font-weight: 600; color: #334155;">${item.text}</span>
         </div>
     `).join('');
+};
 
-    // Toggle trigger visibility calculation logic fixed
-    if (expandBtn) {
-        if (facilitiesList.length <= limitCount) {
-            expandBtn.style.display = "none"; 
-        } else {
-            expandBtn.style.display = "inline-flex";
-            if (isAmenitiesExpandedState) {
-                expandBtn.innerHTML = `<span>Show Less Facilities</span> <i class="fa-solid fa-chevron-up" style="margin-left: 6px;"></i>`;
-            } else {
-                const hiddenDiff = facilitiesList.length - limitCount;
-                expandBtn.innerHTML = `<span>+${hiddenDiff} More Facilities</span> <i class="fa-solid fa-chevron-down" style="margin-left: 6px;"></i>`;
-            }
-        }
+// POPUP INTERACTIVE ACTIONS SYSTEM CONTROL INJECTIONS
+const toggleCentralAmenitiesModalPopup = (showFlag) => {
+    const mask = document.getElementById('amenities-popup-mask');
+    const modalTargetGrid = document.getElementById('modal-amenities-target-row');
+    
+    if (!mask || !modalTargetGrid) return;
+    
+    if (showFlag) {
+        const facilitiesList = globalGeneratedFacilitiesArray || [];
+        modalTargetGrid.innerHTML = facilitiesList.map(item => `
+            <div class="facility-item-node" style="box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <i class="fa-solid ${item.icon || 'fa-circle-check'}" style="color: #4f46e5; font-size: 18px;"></i> 
+                <span style="font-size: 14px; font-weight: 600; color: #1e293b;">${item.text}</span>
+            </div>
+        `).join('');
+        mask.classList.add('modal-open');
+    } else {
+        mask.classList.remove('modal-open');
     }
 };
 
@@ -500,13 +572,15 @@ const bindInteractiveUIElements = () => {
     bindClick('btn-slide-prev', () => shiftSliderStep(-1));
     bindClick('btn-slide-next', () => shiftSliderStep(1));
 
-    // Refactored dynamic click interceptor hook for explicit "Show More" functionality
-    const expandBtn = document.getElementById('btn-facilities-expand');
-    if (expandBtn) {
-        expandBtn.onclick = (e) => {
-            e.preventDefault();
-            isAmenitiesExpandedState = !isAmenitiesExpandedState; // Toggles core true tracking status
-            renderAmenitiesGridMatrix(); // Performs safe re-render of array bounds without DOM breaks
+    // Refactored dynamic click interceptor hook for explicit "Show More Modal Popup" functionality
+    bindClick('btn-facilities-expand', () => toggleCentralAmenitiesModalPopup(true));
+    bindClick('btn-popup-close', () => toggleCentralAmenitiesModalPopup(false));
+    
+    // Close modal when user clicks outside the core template container body box
+    const maskElement = document.getElementById('amenities-popup-mask');
+    if (maskElement) {
+        maskElement.onclick = (e) => {
+            if (e.target === maskElement) toggleCentralAmenitiesModalPopup(false);
         };
     }
 
@@ -742,6 +816,7 @@ const generateHorizontalRecommendationCard = (item) => {
         cardImageSrc = cardImageSrc.split('?')[0] + "?auto=format&fit=crop&w=800&q=90";
     }
 
+    // FIX: window.location.href me details?id ke jagah 'details.html?id=${item.id}' lagaya hai safe execution ke liye
     return `
         <div class="mini-property-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.03); padding-bottom: 4px; cursor:pointer;" onclick="window.location.href='details.html?id=${item.id}'">
             <div style="width:100%; height:160px; background:#0f172a; display:flex; align-items:center; justify-content:center; overflow:hidden;">
@@ -845,11 +920,15 @@ const loadLocalMockPropertyDataPackage = () => {
     targetPropertyObject = {
         name: "Stanza Living Boston House (Fallback Spec)",
         location: "Mansarovar, Jaipur",
+        address: "Plot 45, Near Mansarovar Metro Station, Jaipur, Rajasthan - 302020",
+        googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.8971638166415!2d75.7591653!3d26.8447814!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db5da1e2d4f87%3A0x6a053c8c7c9ad0b!2sMansarovar%2C%20Jaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000",
         mrp: 12000,
-        price: 10800,
-        deposit: 10800,
-        genderType: "Both",
-        suitableForGender: "Working Professionals, Students (Boys & Girls Both)",
+        price: 6800,
+        deposit: 6800,
+        city: "Jaipur",
+        area: "Mansarovar",
+        genderType: "Boys",
+        suitableForGender: "Working Professionals, Students (Boys)",
         availableFrom: "Immediate",
         postedBy: "Owner",
         postedDate: "May 30, 2026",
@@ -869,13 +948,17 @@ const loadLocalMockPropertyDataPackage = () => {
         attachedBalcony: "No",
         powerBackup: "None",
         propertyAge: "1 to 5 Year Old",
+        noticePeriod: "1 Month",
+        gateClosingTime: "11:00 PM",
+        electricityPolicy: "₹8 Per Unit Metered Consumption",
+        mealsConfig: "Pure Vegetarian Breakfast & Dinner Included",
         ownerName: "Amit Choudhary (Premium Partner)",
         ownerPhone: "+919876543210",
         wifi: true,
         ac: true,
         food: true,
         security: true,
-        amenities: ["Wifi", "AC Attached", "Food Included", "Power Backup", "Security"],
+        amenities: ["Wifi", "AC Attached", "Food Included", "Power Backup", "Security", "Laundry Unit", "CCTV Security", "RO Drinking Water"],
         allImages: [
             "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80"
