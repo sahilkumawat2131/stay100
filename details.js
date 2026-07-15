@@ -145,29 +145,79 @@ function injectResponsiveAndBadgeStyles() {
             transform: translateY(-1px);
         }
 
-        /* Responsive Overrides for Call Button Mobile Overlay Layout */
+        /* Contact Options Wrapper & Action Buttons */
+        .action-communication-wrap {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn-comm-call {
+            flex: 1;
+            background: #4f46e5;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
+        }
+        .btn-comm-call:hover {
+            background: #4338ca;
+        }
+
+        .btn-comm-whatsapp {
+            flex: 1;
+            background: #25d366;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(37, 211, 102, 0.1);
+        }
+        .btn-comm-whatsapp:hover {
+            background: #20ba5a;
+        }
+
+        /* Responsive Overrides for Call and WhatsApp Button Mobile Overlay Layout */
         @media (max-width: 768px) {
-            #btn-owner-phone {
+            .action-communication-wrap {
                 position: fixed !important;
-                bottom: 20px !important;
-                right: 20px !important;
-                left: 20px !important;
+                bottom: 16px !important;
+                right: 16px !important;
+                left: 16px !important;
                 z-index: 99999 !important;
-                padding: 14px 24px !important;
-                border-radius: 30px !important;
-                box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35) !important;
-                font-size: 16px !important;
-                text-align: center !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                background: #4f46e5 !important;
-                color: #ffffff !important;
-                text-decoration: none !important;
-                font-weight: 700 !important;
+                width: auto !important;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(8px);
+                padding: 10px;
+                border-radius: 16px;
+                box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1), 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+                margin-top: 0 !important;
+            }
+            .btn-comm-call, .btn-comm-whatsapp {
+                padding: 14px 16px !important;
+                border-radius: 10px !important;
+                font-size: 15px !important;
             }
             body {
-                padding-bottom: 90px !important;
+                padding-bottom: 100px !important;
             }
         }
     `;
@@ -309,32 +359,32 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     }
 
     // Dynamic Address Binding Logic Blocks
-// 1. पूरा एड्रेस टेक्स्ट तैयार करें
-const cleanFullAddressText = targetPropertyObject.address || `${targetPropertyObject.landmark || 'Near Metro Station'}, ${locArea}, ${locCity}, Rajasthan`;
+    // 1. Full Address Text Configuration
+    const cleanFullAddressText = targetPropertyObject.address || `${targetPropertyObject.landmark || 'Near Metro Station'}, ${locArea}, ${locCity}, Rajasthan`;
 
-// 2. Google Maps URL जनरेट करें
-const googleMapsNavUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanFullAddressText)}`;
+    // 2. Google Maps Search Redirect URL Compilation
+    const googleMapsNavUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanFullAddressText)}`;
 
-// 3. एड्रेस के साथ ऑलिव कलर का "Get Direction" आइकॉन और स्टाइलिंग स्ट्रक्चर
-const fullAddressWithDirectionHTML = `
-    <span style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" 
-          onclick="window.open('${googleMapsNavUrl}', '_blank', 'noopener,noreferrer');"
-          onmouseenter="this.querySelector('i').style.opacity='0.8'" 
-          onmouseleave="this.querySelector('i').style.opacity='1'">
-        <span>${cleanFullAddressText}</span>
-        <i class="fa-solid fa-diamond-turn-right" style="color: #808000; font-size: 14px;" title="Get Directions"></i>
-    </span>
-`;
+    // 3. Address layout element configuration with direction route injection
+    const fullAddressWithDirectionHTML = `
+        <span style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" 
+              onclick="window.open('${googleMapsNavUrl}', '_blank', 'noopener,noreferrer');"
+              onmouseenter="this.querySelector('i').style.opacity='0.8'" 
+              onmouseleave="this.querySelector('i').style.opacity='1'">
+            <span>${cleanFullAddressText}</span>
+            <i class="fa-solid fa-diamond-turn-right" style="color: #808000; font-size: 14px;" title="Get Directions"></i>
+        </span>
+    `;
 
-// 4. लोकेशन और एड्रेस एलिमेंट अपडेट करें
-updateText('lbl-location', `${locArea}, ${locCity}`);
+    // 4. Update address nodes inside active layouts
+    updateText('lbl-location', `${locArea}, ${locCity}`);
 
-const addressElement = document.getElementById('lbl-full-address');
-if (addressElement) {
-    addressElement.innerHTML = fullAddressWithDirectionHTML;
-} else {
-    updateText('lbl-full-address', cleanFullAddressText);
-}
+    const addressElement = document.getElementById('lbl-full-address');
+    if (addressElement) {
+        addressElement.innerHTML = fullAddressWithDirectionHTML;
+    } else {
+        updateText('lbl-full-address', cleanFullAddressText);
+    }
     updateText('lbl-orig-price', baseOriginalPrice ? `₹${baseOriginalPrice.toLocaleString('en-IN')}` : '');
     updateText('lbl-curr-price', `₹${baseCurrentPrice.toLocaleString('en-IN')}/mo`);
     updateText('lbl-description', targetPropertyObject.description || "Premium architectural living setup spaces.");
@@ -380,8 +430,32 @@ if (addressElement) {
         mapContainerBox.style.display = "block";
     }
 
-    const phoneBtn = document.getElementById('btn-owner-phone');
-    if (phoneBtn) phoneBtn.href = `tel:${targetPropertyObject.ownerPhone || ''}`;
+    // --- RESTRUCTURED CONTACT BUTTON LAYOUT MATRIX ---
+    // Target action container box dynamically or restructure previous call element setup
+    let phoneBtn = document.getElementById('btn-owner-phone');
+    if (phoneBtn) {
+        let commWrap = document.getElementById('comm-action-group-wrapper');
+        if (!commWrap) {
+            commWrap = document.createElement('div');
+            commWrap.id = 'comm-action-group-wrapper';
+            commWrap.className = 'action-communication-wrap';
+            phoneBtn.parentNode.insertBefore(commWrap, phoneBtn);
+        }
+        
+        // Assemble highly clean authenticated, responsive Call and WhatsApp elements 
+        commWrap.innerHTML = `
+            <a href="javascript:void(0);" onclick="triggerSecureCall()" class="btn-comm-call" id="btn-owner-phone">
+                <i class="fa-solid fa-phone"></i> Call Vendor
+            </a>
+            <a href="javascript:void(0);" onclick="triggerSecureWhatsApp()" class="btn-comm-whatsapp" id="btn-owner-whatsapp">
+                <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i> WhatsApp
+            </a>
+        `;
+        // Safely remove redundant legacy isolated button if detached
+        if (phoneBtn.parentNode && phoneBtn.parentNode !== commWrap) {
+            phoneBtn.remove();
+        }
+    }
     
     const savingsAmt = baseOriginalPrice - baseCurrentPrice;
     const offerBadge = document.getElementById('lbl-offer-text');
@@ -399,7 +473,7 @@ if (addressElement) {
     if (track) {
         let slidesHTMLArray = [];
         
-        // 1. Sabse pehle video placement aur mounting check
+        // 1. First inject autoplaying visual video feeds if hosted online
         if (targetPropertyObject.videoUrl && targetPropertyObject.videoUrl.trim() !== "") {
             slidesHTMLArray.push(`
                 <div class="slide-unit" style="min-width:100%; width:100%; flex-shrink:0; position:relative; background:#000; display:flex; align-items:center; justify-content:center; height:56.25vw; max-height:500px; min-height:250px; overflow:hidden;">
@@ -411,7 +485,7 @@ if (addressElement) {
             `);
         }
 
-        // 2. Uske baad baki standard image arrays load honge
+        // 2. Process sequential property photography assets
         let imagesList = [];
         if (targetPropertyObject.allImages) {
             imagesList = Array.isArray(targetPropertyObject.allImages) 
@@ -478,7 +552,7 @@ if (addressElement) {
         }
     });
 
-    // Fallback sync strategy agar direct schema records na milein
+    // Fallback sync strategy for raw schemas
     if (globalGeneratedFacilitiesArray.length === 0) {
         if (targetPropertyObject.amenities) {
             const rawAmenities = Array.isArray(targetPropertyObject.amenities) ? targetPropertyObject.amenities : Object.values(targetPropertyObject.amenities);
@@ -498,6 +572,48 @@ if (addressElement) {
     renderAmenitiesGridMatrix();
     if (typeof updateReviewsUIRenderBlocks === 'function') updateReviewsUIRenderBlocks();
 };
+
+// --- AUTHENTICATED COMMUNICATION TRIGGERS ---
+function triggerSecureCall() {
+    const currentSessionUID = localStorage.getItem('staypremium_uid');
+    if (!currentSessionUID) {
+        alert("🔒 Access Protected! Please sign in to verify your account and contact the owner.");
+        window.location.href = 'login.html';
+        return;
+    }
+    if (targetPropertyObject && targetPropertyObject.ownerPhone) {
+        window.location.href = `tel:${targetPropertyObject.ownerPhone}`;
+    } else {
+        alert("Owner phone contact detail is unavailable at this moment.");
+    }
+}
+
+function triggerSecureWhatsApp() {
+    const currentSessionUID = localStorage.getItem('staypremium_uid');
+    if (!currentSessionUID) {
+        alert("🔒 Access Protected! Please sign in to verify your account and contact the owner on WhatsApp.");
+        window.location.href = 'login.html';
+        return;
+    }
+    if (targetPropertyObject && targetPropertyObject.ownerPhone) {
+        const propTitle = targetPropertyObject.name || targetPropertyObject.title || "Premium Co-Living Space";
+        const propPrice = targetPropertyObject.price || targetPropertyObject.currentPrice || 0;
+        const propGender = targetPropertyObject.genderType || "Boys/Girls";
+        const propLocation = targetPropertyObject.area || "Mansarovar";
+        const cleanUrl = window.location.href;
+
+        // Structured, highly converting text fallback template message
+        const compiledMessageText = `Hi, I tried calling you regarding your listing: *${propTitle}* (${propGender} PG in ${propLocation}) listed on STAY100% at ₹${propPrice.toLocaleString('en-IN')}/mo.\n\nI couldn't reach you over the call. Please share if this space is still available for booking.\n\nListing link: ${cleanUrl}`;
+        
+        const cleanPhoneNo = targetPropertyObject.ownerPhone.replace(/[^0-9]/g, '');
+        // Append dynamic international dialing parameter safely
+        const targetWhatsAppNumber = cleanPhoneNo.length === 10 ? `91${cleanPhoneNo}` : cleanPhoneNo;
+
+        window.open(`https://wa.me/${targetWhatsAppNumber}?text=${encodeURIComponent(compiledMessageText)}`, '_blank');
+    } else {
+        alert("Owner WhatsApp contact detail is unavailable at this moment.");
+    }
+}
 
 // --- CORRECTED & IMMUTABLE AMENITIES RENDERING MATRIX ENGINE ---
 const renderAmenitiesGridMatrix = () => {
@@ -816,7 +932,6 @@ const generateHorizontalRecommendationCard = (item) => {
         cardImageSrc = cardImageSrc.split('?')[0] + "?auto=format&fit=crop&w=800&q=90";
     }
 
-    // FIX: window.location.href me details?id ke jagah 'details.html?id=${item.id}' lagaya hai safe execution ke liye
     return `
         <div class="mini-property-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.03); padding-bottom: 4px; cursor:pointer;" onclick="window.location.href='details.html?id=${item.id}'">
             <div style="width:100%; height:160px; background:#0f172a; display:flex; align-items:center; justify-content:center; overflow:hidden;">

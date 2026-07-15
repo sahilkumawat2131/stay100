@@ -1,10 +1,8 @@
 /**
- * StayPremium - Unified Property Card UI Component Engine (Upgraded & Verified Version)
- * Extended with Desktop & Mobile Support for "Recommended", "Popular", "Latest Rent", and "Trending".
- * Upgraded with Inline 4K Auto-Play Property Video Node Support before Image Sequences.
+ * StayPremium - Advanced Property Card UI Component Engine (Highly Optimized & Native Adaptive)
+ * Verification Layer Included with Safe Auto-Play Video Cycle & Flexible Memory Cleaning
  */
 
-// Global Property Card Component Module
 window.PropertyCardComponent = {
     // Registered interval map for background memory cleaning of active autoswipers
     _activeSwipers: new Map(),
@@ -313,18 +311,10 @@ window.PropertyCardComponent = {
                 display: flex;
                 align-items: center;
                 gap: 4px;
+                cursor: pointer;
             }
-            .map-link {
-                font-size: 12px;
-                color: #0288d1;
-                text-decoration: none;
-                font-weight: 600;
-                width: fit-content;
-                transition: color 0.2s;
-            }
-            .map-link:hover {
-                color: #01579b;
-                text-decoration: underline;
+            .location-text:hover {
+                color: var(--primary-burgundy);
             }
 
             /* Amenities Micro Chips Grid */
@@ -464,7 +454,7 @@ window.PropertyCardComponent = {
 
             /* Elite Horizontal Card Design */
             .premium-landscape-card {
-                flex: 0 0 620px; /* Slightly widened for better horizontal breathing space */
+                flex: 0 0 620px; /* Widened for horizontal breathing space */
                 display: flex;
                 background: #ffffff;
                 border-radius: var(--radius-lg);
@@ -546,11 +536,76 @@ window.PropertyCardComponent = {
             .tag-trending { background: linear-gradient(135deg, #ff4500, #cc3700) !important; }
             .tag-recommended { background: linear-gradient(135deg, #4f46e5, #3730a3) !important; }
             .tag-popular { background: linear-gradient(135deg, #db2777, #a21caf) !important; }
+
+            /* Tooltip verification styles */
+            .badge-hover-tooltip {
+                display: none;
+                position: absolute;
+                bottom: 125%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(0, 0, 0, 0.85);
+                color: #fff;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-size: 13px;
+                font-family: sans-serif;
+                white-space: nowrap;
+                z-index: 999;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
         `;
         document.head.appendChild(styleBlock);
     },
 
-    
+    /**
+     * Helper to safely extract Normalized property types based on JSON mapping
+     */
+    _determineNormalizedPropertyType: function(postObject) {
+        let configTag = "";
+        const titleStr = (postObject.name || postObject.title || "").toLowerCase();
+        const flatTypeStr = (postObject.flatType || "").toLowerCase();
+        const typeStr = (postObject.type || "").toLowerCase();
+        const categoryStr = (postObject.category || "").toLowerCase();
+
+        if (flatTypeStr.includes("1rk") || titleStr.includes("1rk") || titleStr.includes("1r k") || typeStr.includes("1rk")) {
+            configTag = "1 RK";
+        } else if (flatTypeStr.includes("1bhk") || titleStr.includes("1bhk") || titleStr.includes("1 bhk") || typeStr.includes("1bhk")) {
+            configTag = "1 BHK";
+        } else if (flatTypeStr.includes("2bhk") || titleStr.includes("2bhk") || titleStr.includes("2 bhk") || typeStr.includes("2bhk")) {
+            configTag = "2 BHK";
+        } else if (flatTypeStr.includes("3bhk") || titleStr.includes("3bhk") || titleStr.includes("3 bhk") || typeStr.includes("3bhk")) {
+            configTag = "3 BHK";
+        } else if (flatTypeStr.includes("4bhk") || titleStr.includes("4bhk") || titleStr.includes("4 bhk") || typeStr.includes("4bhk")) {
+            configTag = "4 BHK";
+        }
+
+        let furnishingTag = "";
+        if (postObject.furnished === true || String(postObject.furnished).toLowerCase() === 'true' || titleStr.includes("fully furnished") || flatTypeStr.includes("fully furnished") || typeStr.includes("fully furnished")) {
+            furnishingTag = "Fully Furnished";
+        } else if (titleStr.includes("furnished") || flatTypeStr.includes("furnished") || typeStr.includes("furnished") || categoryStr.includes("furnished")) {
+            furnishingTag = "Furnished";
+        }
+
+        if (configTag && furnishingTag) return `${configTag} • ${furnishingTag}`;
+        if (configTag) return configTag;
+        if (furnishingTag) return furnishingTag;
+
+        if (categoryStr.includes("flat") || typeStr.includes("flat") || titleStr.includes("flat") || flatTypeStr.includes("flat")) {
+            return "PREMIUM FLAT";
+        } else if (categoryStr.includes("room") || typeStr.includes("room") || titleStr.includes("room") || flatTypeStr.includes("room")) {
+            return "PREMIUM ROOM";
+        }
+
+        return (postObject.flatType || postObject.category || postObject.type || "PREMIUM SPACE").toUpperCase();
+    },
+
+    openLocationNavigation: function(event, encodedLoc) {
+        event.stopPropagation();
+        const location = decodeURIComponent(encodedLoc);
+        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`, '_blank');
+    },
+
     render: function(post, savedItemsList = []) {
         this.injectStyles();
         const heading = post.name || post.title || "Premium Rental Space";
@@ -578,35 +633,15 @@ window.PropertyCardComponent = {
         
         const inlineVerificationBadge = isVerified 
             ? `<div class="premium-verified-container" 
-                style="position: relative; display: inline-block; cursor: pointer;"
                 onmouseenter="this.querySelector('.badge-hover-tooltip').style.display='block'"
                 onmouseleave="this.querySelector('.badge-hover-tooltip').style.display='none'">
                
-               <img src="assets/verified-baidge.png" alt="Stay100% Verified" class="premium-verified-badge" style="display: block;">
+               <img src="assets/verified-baidge.png" alt="Stay100% Verified" class="premium-verified-badge">
                <span class="sunlight-reflection-sweep"></span>
                
-               <div class="badge-hover-tooltip" style="
-                   display: none;
-                   position: absolute;
-                   bottom: 125%;
-                   left: 50%;
-                   transform: translateX(-50%);
-                   background-color: rgba(0, 0, 0, 0.85);
-                   color: #fff;
-                   padding: 6px 12px;
-                   border-radius: 4px;
-                   font-size: 13px;
-                   font-family: sans-serif;
-                   white-space: nowrap;
-                   z-index: 999;
-                   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-               ">
+               <div class="badge-hover-tooltip">
                    <span>Verified Badge.</span>
-                   <a href="#" onclick="openVerificationPopup(event)" style="
-                       color: #00d2ff;
-                       text-decoration: underline;
-                       margin-left: 6px;
-                   ">Learn more</a>
+                   <a href="#" style="color: #00d2ff; text-decoration: underline; margin-left: 6px;">Learn more</a>
                </div>
            </div>` 
             : '';
@@ -631,7 +666,7 @@ window.PropertyCardComponent = {
             mediaNodeCount++;
         }
 
-        imagesArray.forEach((imgUrl, idx) => {
+        imagesArray.forEach((imgUrl) => {
             const calculatedIndex = mediaNodeCount;
             slidesHTML += `
                 <div class="carousel-slide-node" data-media-type="image">
@@ -643,48 +678,8 @@ window.PropertyCardComponent = {
             mediaNodeCount++;
         });
 
-        const sliderInstanceKey = `slider-${post.id.replace(/[^a-zA-Z0-9]/g, '')}`;
-
-        function determineNormalizedPropertyType(postObject) {
-            let configTag = "";
-            const titleStr = (postObject.name || postObject.title || "").toLowerCase();
-            const flatTypeStr = (postObject.flatType || "").toLowerCase();
-            const typeStr = (postObject.type || "").toLowerCase();
-            const categoryStr = (postObject.category || "").toLowerCase();
-
-            if (flatTypeStr.includes("1rk") || titleStr.includes("1rk") || titleStr.includes("1r k") || typeStr.includes("1rk")) {
-                configTag = "1 RK";
-            } else if (flatTypeStr.includes("1bhk") || titleStr.includes("1bhk") || titleStr.includes("1 bhk") || typeStr.includes("1bhk")) {
-                configTag = "1 BHK";
-            } else if (flatTypeStr.includes("2bhk") || titleStr.includes("2bhk") || titleStr.includes("2 bhk") || typeStr.includes("2bhk")) {
-                configTag = "2 BHK";
-            } else if (flatTypeStr.includes("3bhk") || titleStr.includes("3bhk") || titleStr.includes("3 bhk") || typeStr.includes("3bhk")) {
-                configTag = "3 BHK";
-            } else if (flatTypeStr.includes("4bhk") || titleStr.includes("4bhk") || titleStr.includes("4 bhk") || typeStr.includes("4bhk")) {
-                configTag = "4 BHK";
-            }
-
-            let furnishingTag = "";
-            if (postObject.furnished === true || String(postObject.furnished).toLowerCase() === 'true' || titleStr.includes("fully furnished") || flatTypeStr.includes("fully furnished") || typeStr.includes("fully furnished")) {
-                furnishingTag = "Fully Furnished";
-            } else if (titleStr.includes("furnished") || flatTypeStr.includes("furnished") || typeStr.includes("furnished") || categoryStr.includes("furnished")) {
-                furnishingTag = "Furnished";
-            }
-
-            if (configTag && furnishingTag) return `${configTag} • ${furnishingTag}`;
-            if (configTag) return configTag;
-            if (furnishingTag) return furnishingTag;
-
-            if (categoryStr.includes("flat") || typeStr.includes("flat") || titleStr.includes("flat") || flatTypeStr.includes("flat")) {
-                return "PREMIUM FLAT";
-            } else if (categoryStr.includes("room") || typeStr.includes("room") || titleStr.includes("room") || flatTypeStr.includes("room")) {
-                return "PREMIUM ROOM";
-            }
-
-            return (postObject.flatType || postObject.category || postObject.type || "PREMIUM SPACE").toUpperCase();
-        }
-
-        const calculatedPropertyType = determineNormalizedPropertyType(post);
+        const sliderInstanceKey = `slider-${String(post.id).replace(/[^a-zA-Z0-9]/g, '')}`;
+        const calculatedPropertyType = this._determineNormalizedPropertyType(post);
 
         return `
             <div class="property-card" data-city="${rawCityNode}" id="card-root-${sliderInstanceKey}">
@@ -732,9 +727,6 @@ window.PropertyCardComponent = {
         `;
     },
 
-    /**
-     * UNIQUE ELITE RENDER ENGINE FOR LANDSCAPE ROW CARDS
-     */
     renderLandscapeCard: function(post, customBadgeType, savedItemsList = []) {
         this.injectStyles();
         const heading = post.name || post.title || "Premium Rental Space";
@@ -767,7 +759,7 @@ window.PropertyCardComponent = {
             mediaNodeCount++;
         });
 
-        const sliderInstanceKey = `slider-landscape-${post.id.replace(/[^a-zA-Z0-9]/g, '')}`;
+        const sliderInstanceKey = `slider-landscape-${String(post.id).replace(/[^a-zA-Z0-9]/g, '')}`;
         
         let badgeClass = 'tag-latest-rent';
         let badgeLabel = 'New Launch';
@@ -775,46 +767,7 @@ window.PropertyCardComponent = {
         else if (customBadgeType === 'RECOMMENDED') { badgeClass = 'tag-recommended'; badgeLabel = 'Recommended 🌟'; }
         else if (customBadgeType === 'POPULAR') { badgeClass = 'tag-popular'; badgeLabel = 'Popular ✨'; }
 
-        function determineNormalizedPropertyType(postObject) {
-            let configTag = "";
-            const titleStr = (postObject.name || postObject.title || "").toLowerCase();
-            const flatTypeStr = (postObject.flatType || "").toLowerCase();
-            const typeStr = (postObject.type || "").toLowerCase();
-            const categoryStr = (postObject.category || "").toLowerCase();
-
-            if (flatTypeStr.includes("1rk") || titleStr.includes("1rk") || titleStr.includes("1r k") || typeStr.includes("1rk")) {
-                configTag = "1 RK";
-            } else if (flatTypeStr.includes("1bhk") || titleStr.includes("1bhk") || titleStr.includes("1 bhk") || typeStr.includes("1bhk")) {
-                configTag = "1 BHK";
-            } else if (flatTypeStr.includes("2bhk") || titleStr.includes("2bhk") || titleStr.includes("2 bhk") || typeStr.includes("2bhk")) {
-                configTag = "2 BHK";
-            } else if (flatTypeStr.includes("3bhk") || titleStr.includes("3bhk") || titleStr.includes("3 bhk") || typeStr.includes("3bhk")) {
-                configTag = "3 BHK";
-            } else if (flatTypeStr.includes("4bhk") || titleStr.includes("4bhk") || titleStr.includes("4 bhk") || typeStr.includes("4bhk")) {
-                configTag = "4 BHK";
-            }
-
-            let furnishingTag = "";
-            if (postObject.furnished === true || String(postObject.furnished).toLowerCase() === 'true' || titleStr.includes("fully furnished") || flatTypeStr.includes("fully furnished") || typeStr.includes("fully furnished")) {
-                furnishingTag = "Fully Furnished";
-            } else if (titleStr.includes("furnished") || flatTypeStr.includes("furnished") || typeStr.includes("furnished") || categoryStr.includes("furnished")) {
-                furnishingTag = "Furnished";
-            }
-
-            if (configTag && furnishingTag) return `${configTag} • ${furnishingTag}`;
-            if (configTag) return configTag;
-            if (furnishingTag) return furnishingTag;
-
-            if (categoryStr.includes("flat") || typeStr.includes("flat") || titleStr.includes("flat") || flatTypeStr.includes("flat")) {
-                return "PREMIUM FLAT";
-            } else if (categoryStr.includes("room") || typeStr.includes("room") || titleStr.includes("room") || flatTypeStr.includes("room")) {
-                return "PREMIUM ROOM";
-            }
-
-            return (postObject.flatType || postObject.category || postObject.type || "PREMIUM SPACE").toUpperCase();
-        }
-
-        const calculatedPropertyType = determineNormalizedPropertyType(post);
+        const calculatedPropertyType = this._determineNormalizedPropertyType(post);
 
         return `
             <div class="premium-landscape-card" id="card-root-${sliderInstanceKey}">
@@ -858,9 +811,6 @@ window.PropertyCardComponent = {
         `;
     },
 
-    /**
-     * COMPILER SECTION HTML GENERATOR
-     */
     generateLandscapeSectionHTML: function(sectionTitle, propertiesList, modeType = 'LATEST', savedItemsList = []) {
         if(!propertiesList || propertiesList.length === 0) return '';
         
@@ -889,19 +839,16 @@ window.PropertyCardComponent = {
                     ${modeType === 'RECOMMENDED' ? '🌟' : modeType === 'POPULAR' ? '✨' : modeType === 'LATEST' ? '💎' : '🔥'} ${sectionTitle}
                 </h3>
                 <div class="landscape-viewport-wrapper">
-                    <button class="landscape-nav-btn landscape-prev" onclick="document.getElementById('${uniqueTrackId}').scrollLeft -= 500"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="landscape-nav-btn landscape-prev" data-target="${uniqueTrackId}"><i class="fa-solid fa-chevron-left"></i></button>
                     <div class="landscape-scroll-track" id="${uniqueTrackId}">
                         ${landscapeCardsHTML}
                     </div>
-                    <button class="landscape-nav-btn landscape-next" onclick="document.getElementById('${uniqueTrackId}').scrollLeft += 500"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="landscape-nav-btn landscape-next" data-target="${uniqueTrackId}"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
             </div>
         `;
     },
 
-    /**
-     * RUN-TIME IMAGE/VIDEO SLIDER CONTROLLER
-     */
     initAutoswipe: function() {
         const structuralContainers = document.querySelectorAll('.image-container[id^="slider-"]');
         
@@ -931,6 +878,9 @@ window.PropertyCardComponent = {
                         dot.classList.remove('active-slide');
                     }
                 });
+
+                // Control and optimize running videos safely
+                container.querySelectorAll('.carousel-slide-node video').forEach(v => v.pause());
 
                 const currentSlideNode = container.querySelectorAll('.carousel-slide-node')[structuralActiveIndex];
                 if (currentSlideNode && currentSlideNode.getAttribute('data-media-type') === 'video') {
@@ -990,8 +940,20 @@ window.PropertyCardComponent = {
             
             window.PropertyCardComponent._activeSwipers.set(container.id, autoswipeEngineInterval);
         });
+
+        // Safe Initialization for Desktop Section Horizontal Nav Track Scroll Triggers
+        document.querySelectorAll('.landscape-nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const trackId = btn.getAttribute('data-target');
+                const trackEl = document.getElementById(trackId);
+                if (trackEl) {
+                    const direction = btn.classList.contains('landscape-next') ? 1 : -1;
+                    trackEl.scrollLeft += direction * 450;
+                }
+            });
+        });
     }
 };
 
-// Make sure the globally referenced window context is correct
 window.PropertyCardComponent = PropertyCardComponent;

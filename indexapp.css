@@ -15,24 +15,44 @@
     --app-elevation-1: 0 2px 8px rgba(15, 23, 42, 0.04);
     --app-elevation-2: 0 8px 24px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.02);
     --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* iOS-like smooth spring cubic curve */
+    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Haptic spring bounce */
 }
 
-/* --- STRUCTURAL APP RESET --- */
+/* --- STRUCTURAL APP RESET & NATIVE BEHAVIORS --- */
 * {
     margin: 0;
     padding: 0;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent; /* Removes blue tapping flash common on browsers */
+    -webkit-tap-highlight-color: transparent; /* Removes blue/gray tapping flash on mobile browsers */
 }
 
-body {
+html, body {
     background-color: var(--bg-olive);
     color: var(--text-black);
-    padding-bottom: 84px; /* Reserved bottom spacing for floating/sticky mobile nav bar */
     overflow-x: hidden;
     width: 100%;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevents rubber-banding/bounce scrolling on outer HTML on iOS */
+    position: relative;
+    overscroll-behavior-y: none; 
+}
+
+body {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)); /* Dynamic safety spacer for Apple home-indicator bar */
+}
+
+/* Force elements to behave like native assets: non-selectable, non-draggable */
+img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+a, button, .category-card, .nav-item {
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation; /* Optimizes tap delays */
 }
 
 /* --- TYPOGRAPHY & BUTTON FEEDBACKS --- */
@@ -43,12 +63,12 @@ h2, h3, h4 {
     word-break: break-word;
 }
 
-/* Flutter Elevated Button System */
+/* Flutter Elevated Button System with active physical press state */
 .btn-mehrum {
     background-color: var(--mehrum);
     color: var(--white);
     border: none;
-    padding: 12px 22px;
+    padding: 14px 22px;
     border-radius: var(--app-radius-sm);
     font-weight: 700;
     font-size: 14px;
@@ -58,7 +78,8 @@ h2, h3, h4 {
 }
 
 .btn-mehrum:active {
-    transform: scale(0.96); /* Native push/click tactile response feedback */
+    transform: scale(0.95) translateY(1px); /* High tactile drop response */
+    box-shadow: 0 2px 6px rgba(128, 0, 32, 0.15);
 }
 
 /* Flutter Outlined Button System */
@@ -66,7 +87,7 @@ h2, h3, h4 {
     background: transparent;
     border: 1.5px solid var(--mehrum);
     color: var(--mehrum);
-    padding: 11px 22px;
+    padding: 13px 22px;
     border-radius: var(--app-radius-sm);
     font-weight: 700;
     font-size: 14px;
@@ -75,7 +96,8 @@ h2, h3, h4 {
 }
 
 .btn-outline:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
+    background-color: rgba(128, 0, 32, 0.03);
 }
 
 /* --- NATIVE DESKTOP TOP HEADER --- */
@@ -140,7 +162,7 @@ h2, h3, h4 {
     display: flex;
     align-items: center;
     background: var(--white);
-    padding: 8px 16px;
+    padding: 10px 18px;
     border-radius: 30px;
     box-shadow: var(--app-elevation-2);
     width: 100%;
@@ -162,6 +184,7 @@ h2, h3, h4 {
     color: var(--text-black);
     padding: 8px;
     min-width: 0;
+    background: transparent;
 }
 
 #search-input::placeholder {
@@ -180,15 +203,18 @@ h2, h3, h4 {
     font-size: 16px;
     color: var(--mehrum);
     cursor: pointer;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition);
 }
-.voice-btn:active { transform: scale(0.9); }
+.voice-btn:active { 
+    transform: scale(0.9); 
+    background: #ffe4e6;
+}
 
 /* --- HERO BANNER SLIDER --- */
 .banner-section {
@@ -234,27 +260,30 @@ h2, h3, h4 {
     font-weight: 800;
 }
 
+/* High performance horizontal list with rubber-band physics */
 .category-grid {
     display: flex;
     gap: 12px;
     overflow-x: auto;
-    padding: 4px 4px 16px 4px;
-    width: 100%;
-    scrollbar-width: none; /* Firefox hide default scroll tracks */
-    -webkit-overflow-scrolling: touch;
+    padding: 4px 16px 16px 16px;
+    margin: 0 -16px; /* Bleed layout edges to feel infinite on mobile screen margins */
+    width: calc(100% + 32px);
+    scrollbar-width: none; /* Hide default scroll bar */
+    -webkit-overflow-scrolling: touch; /* Native iOS deceleration physics */
+    scroll-snap-type: x proximity;
 }
 
 .category-grid::-webkit-scrollbar {
     display: none; /* Webkit browser hide */
 }
 
-/* App Filter Segment Chips Design */
+/* App Filter Segment Chips Design with snap align points */
 .category-card {
     background: var(--white);
     padding: 12px 20px;
     border-radius: var(--app-radius-sm);
     display: flex;
-    flex-direction: row; /* Horizontal layout looks identical to standard app chips */
+    flex-direction: row; 
     align-items: center;
     gap: 8px;
     min-width: max-content;
@@ -262,7 +291,8 @@ h2, h3, h4 {
     cursor: pointer;
     box-shadow: var(--app-elevation-1);
     border: 1px solid #f1f5f9;
-    transition: var(--transition);
+    transition: var(--transition-bounce);
+    scroll-snap-align: start;
 }
 
 .category-card i {
@@ -282,10 +312,16 @@ h2, h3, h4 {
     background-color: var(--mehrum);
     border-color: var(--mehrum);
     box-shadow: 0 6px 16px rgba(128, 0, 32, 0.25);
+    transform: translateY(-2px);
 }
 
 .category-card.active i, .category-card.active span {
     color: var(--white);
+}
+
+/* Interactive click shrink */
+.category-card:active {
+    transform: scale(0.94);
 }
 
 /* --- PROPERTY CARDS FEED GRID --- */
@@ -309,16 +345,23 @@ h2, h3, h4 {
     transition: var(--transition);
 }
 
+/* Subtle swell effect on native cards */
+.property-card:active {
+    transform: scale(0.995);
+}
+
 .image-container {
     position: relative;
     width: 100%;
     height: 220px;
+    overflow: hidden;
 }
 
 .image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
 .offer-badge {
@@ -383,7 +426,7 @@ h2, h3, h4 {
 }
 
 .rating-row {
-    color: var(--mehrum); /* Swapped gold to corporate deep branding system counters */
+    color: var(--mehrum); 
     font-size: 13px;
     font-weight: 700;
     margin-bottom: 10px;
@@ -393,7 +436,7 @@ h2, h3, h4 {
 }
 
 .rating-row i {
-    color: #f59e0b; /* Star remains standard deep gold accent */
+    color: #f59e0b; 
 }
 
 .rating-row .review-count {
@@ -445,22 +488,22 @@ h2, h3, h4 {
     margin-top: auto;
 }
 
-/* --- BOTTOM STICKY NAVIGATION CONTROLLER (MOBILE) --- */
+/* --- STICKY NAVIGATION CONTROLLER (MOBILE PORTRAIT EXCLUSIVE) --- */
 .mobile-bottom-nav {
     display: none; 
     position: fixed;
-    bottom: 16px; /* Floating pill design like Spotify/Premium Mobile UIs */
+    bottom: calc(16px + env(safe-area-inset-bottom)); /* Dynamic offset safety to clear OS home pill swipe triggers */
     left: 16px;
     right: 16px;
-    background-color: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px); /* Hardware accelerated iOS transparent blurred background */
     border-radius: 24px;
     box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
     justify-content: space-around;
-    padding: 10px 0;
+    padding: 12px 0 10px 0;
     z-index: 1000;
-    border: 1px solid rgba(255,255,255,0.6);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .nav-item {
@@ -469,44 +512,67 @@ h2, h3, h4 {
     align-items: center;
     text-decoration: none;
     color: #94a3b8;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    transition: var(--transition);
+    transition: var(--transition-bounce);
 }
 
 .nav-item i {
-    font-size: 20px;
-    margin-bottom: 3px;
+    font-size: 22px;
+    margin-bottom: 4px;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .nav-item.active {
     color: var(--mehrum);
 }
 
-/* --- FLUTTER STYLE SLIDE BOTTOM-SHEET FILTER --- */
+/* Native tab bouncy select feedback */
+.nav-item.active i {
+    transform: scale(1.15) translateY(-2px);
+}
+
+.nav-item:active {
+    transform: scale(0.9);
+}
+
+/* --- MOBILE BOTTOM-SHEET FILTER DIALOG (PORTALS) --- */
 #filter-modal {
     display: none; 
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100dvh; /* Dynamic viewport units prevents safari height offset failures */
     background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 9999;
-    align-items: flex-end; /* Slides open from bottom edge natively */
+    align-items: flex-end; 
 }
 
 .modal-content {
     background: var(--white);
     width: 100%;
-    max-height: 80vh;
+    max-height: 85svh; /* Secure screen real estate for interactive sheets */
     border-radius: var(--app-radius-lg) var(--app-radius-lg) 0 0;
-    padding: 24px;
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom)) 24px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 -10px 32px rgba(15, 23, 42, 0.1);
-    animation: appSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 32px rgba(15, 23, 42, 0.15);
+    animation: appSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Drag indicator bar to look exactly like native iOS sheets */
+.modal-content::before {
+    content: '';
+    width: 40px;
+    height: 5px;
+    background-color: #cbd5e1;
+    border-radius: 3px;
+    align-self: center;
+    margin-top: -12px;
+    margin-bottom: 20px;
 }
 
 @keyframes appSlideUp {
@@ -544,6 +610,7 @@ h2, h3, h4 {
 .modal-body {
     overflow-y: auto;
     padding-right: 4px;
+    overscroll-behavior: contain; /* Prevents scroll leakage to underlying web pages */
 }
 
 .modal-body::-webkit-scrollbar {
@@ -577,7 +644,7 @@ h2, h3, h4 {
     background: var(--white);
     border-radius: var(--app-radius-sm);
     box-shadow: 0 12px 36px rgba(15, 23, 42, 0.12);
-    transition: all 0.65s cubic-bezier(0.34, 1.56, 0.64, 1); /* High tactile bouncing spring response curve */
+    transition: all 0.65s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy physics curve */
     max-width: 340px;
     width: calc(100% - 48px);
     opacity: 0;
@@ -586,7 +653,7 @@ h2, h3, h4 {
 }
 
 .property-popup-bubble.show {
-    top: 24px; /* Floating natively over top bar items */
+    top: calc(24px + env(safe-area-inset-top)); /* Clear safe notch space on native screens */
     opacity: 1;
     pointer-events: auto;
 }
@@ -651,217 +718,37 @@ h2, h3, h4 {
     cursor: pointer;
 }
 
-/* --- SCALING & VIEWS RESPONSIVENESS BREAKPOINTS --- */
-@media (max-width: 768px) {
-    body {
-        padding-bottom: 96px; /* Native protection for mobile sticky bottom navbar overlaying bounds */
-    }
-
-    .container {
-        padding: 16px 16px;
-    }
-
-    .desktop-header .header-center {
-        display: none;
-    }
-    
-    .mobile-bottom-nav {
-        display: flex;
-    }
-
-    /* Scaling Banner Layout */
-    .slider {
-        height: 150px;
-        border-radius: var(--app-radius-sm);
-    }
-
-    .slide {
-        padding: 0 20px;
-    }
-
-    .slide-content h2 {
-        font-size: 20px;
-    }
-
-    .slide-content p {
-        font-size: 13px;
-    }
-
-    .listings-grid {
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 16px;
-    }
-
-    .card-details {
-        padding: 16px;
-    }
-    
-    .property-popup-bubble.show {
-        top: 16px; /* Floating alignment configurations across tight screen displays */
-        left: 16px;
-        right: 16px;
-        width: auto;
-    }
-}
-
-@media (max-width: 360px) {
-    .card-actions {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-}
-
-/* --- HERO BANNER SLIDER (UPDATED & EXPANDED) --- */
-.banner-section {
-    margin-bottom: 32px;
-    width: 100%;
-}
-
-.slider {
-    width: 100%;
-    height: 360px; /* INCREASED PIXELS: Height badha kar images ko bada aur clear kiya */
-    border-radius: var(--app-radius-lg); /* More premium smooth curves */
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-    border: 1px solid rgba(15, 23, 42, 0.05);
-    position: relative;
-}
-
-.slide {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: flex-end; /* Text bottom-left me native styles ki tarah align hoga */
-    padding: 48px;
-    position: relative;
-}
-
-/* Premium Gradient Mask for High Text Contrast */
-.slide::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0) 30%, rgba(15, 23, 42, 0.75) 100%);
-    z-index: 1;
-}
-
-.slide-content {
-    position: relative;
-    z-index: 2; /* Content gradient mesh ke upar rahega */
-    max-width: 600px;
-}
-
-.slide-content h2 {
-    color: var(--white);
-    font-size: 36px; /* Bigger bold typographic scale */
-    font-weight: 900;
-    letter-spacing: -1px;
-    line-height: 1.2;
-    margin-bottom: 12px;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-}
-
-.slide-content p {
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: -0.1px;
-    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* --- SCALING & VIEWS RESPONSIVENESS BREAKPOINTS (UPDATED) --- */
-@media (max-width: 768px) {
-    body {
-        padding-bottom: 96px;
-    }
-
-    .container {
-        padding: 16px 16px;
-    }
-
-    .desktop-header .header-center {
-        display: none;
-    }
-    
-    .mobile-bottom-nav {
-        display: flex;
-    }
-
-    /* Scaling Banner Layout for Mobile Screens */
-    .slider {
-        height: 220px; /* INCREASED MOBILE PIXELS: Content tight nahi dikhega */
-        border-radius: var(--app-radius-md);
-    }
-
-    .slide {
-        padding: 24px;
-    }
-
-    .slide-content h2 {
-        font-size: 22px;
-        line-height: 1.3;
-        margin-bottom: 6px;
-    }
-
-    .slide-content p {
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.85);
-    }
-
-    .listings-grid {
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 16px;
-    }
-
-    .card-details {
-        padding: 16px;
-    }
-    
-    .property-popup-bubble.show {
-        top: 16px;
-        left: 16px;
-        right: 16px;
-        width: auto;
-    }
-}
-
-/* --- Full Width Hero Viewport Container --- */
+/* --- HERO BANNER SLIDER (EXPANDED DUAL DYNAMICS) --- */
 .hero-viewport-container {
     position: relative;
-    width: 100vw;              /* पूरी स्क्रीन की चौड़ाई */
+    width: 100vw;
     left: 50%;
     right: 50%;
-    margin-left: -50vw;        /* पैरेंट कंटेनर मार्जिन ब्रेक करने की ट्रिक */
+    margin-left: -50vw;
     margin-right: -50vw;
-    height: 380px;             /* डेस्कटॉप पर बैनर की हाइट */
-    margin-bottom: 70px;       /* नीचे वाले ग्रिड के लिए स्पेस */
+    height: 380px;
+    margin-bottom: 70px;
     background-color: #111827;
     transition: height 0.3s ease;
 }
 
-/* --- Floating Search Card Matrix --- */
+/* Floating Search Card Matrix with modern design tokens */
 .search-card-wrapper {
     position: absolute;
-    bottom: -35px;             /* बैनर इमेज से आधा बाहर लटकाने के लिए */
+    bottom: -35px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
     max-width: 920px;          
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-radius: var(--app-radius-md);
+    box-shadow: var(--app-elevation-2);
     z-index: 5;
     box-sizing: border-box;
     overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.05);
 }
 
-/* --- Search Controls Row --- */
 .search-bar-row {
     display: flex;
     align-items: center;
@@ -886,7 +773,9 @@ h2, h3, h4 {
     border: none;
     outline: none;
     font-size: 15px;
+    font-weight: 600;
     color: #091e42;
+    background: transparent;
 }
 
 .search-actions {
@@ -906,44 +795,142 @@ h2, h3, h4 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #800020;            /* महरून कलर */
+    color: var(--mehrum);
     font-size: 15px;
+    transition: var(--transition);
+}
+
+.action-icon-btn:active {
+    transform: scale(0.9);
 }
 
 .search-maroon-btn {
-    background-color: #800020; /* महरून कलर */
+    background-color: var(--mehrum);
     color: #ffffff;
     border: none;
     padding: 10px 28px;
     font-size: 15px;
-    font-weight: 600;
-    border-radius: 4px;
+    font-weight: 700;
+    border-radius: var(--app-radius-sm);
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.15);
+    transition: var(--transition);
 }
 
-/* 📱 MOBILE RESPONSIVE: यहाँ इमेजेस को कटने से बचाने के लिए हाइट फिक्स हटा दी गई है */
+.search-maroon-btn:active {
+    transform: scale(0.96);
+}
+
+/* ==========================================
+   📱 MOBILE NATIVE EXCLUSIVE SCALING VIEWPORT
+   ========================================== */
 @media (max-width: 767px) {
+    body {
+        padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    }
+
+    .container {
+        padding: 16px;
+    }
+
+    /* Remove Desktop elements on mobile */
+    .desktop-header .header-center {
+        display: none;
+    }
+    
+    /* Reveal float tab navigation */
+    .mobile-bottom-nav {
+        display: flex;
+    }
+
+    /* Immersive adaptive aspect ratios prevents asset degradation on small screens */
     .hero-viewport-container {
-        height: auto;          /* मोबाइल पर इमेज के रेशियो के हिसाब से हाइट खुद तय होगी */
-        aspect-ratio: 16 / 9;  /* मोबाइल बैनर का स्टैंडर्ड आस्पेक्ट रेशियो ताकि इमेज न कटे */
-        margin-bottom: 110px;  /* मोबाइल पर सर्च बॉक्स नीचे खिसकने के कारण एक्स्ट्रा स्पेस */
+        height: auto;
+        aspect-ratio: 1.5; /* Premium height proportion */
+        margin-bottom: 120px;
     }
+
     .search-card-wrapper {
-        bottom: -90px;         /* मोबाइल पर सर्च कार्ड को सही जगह फिट करने के लिए */
+        bottom: -100px;
         width: 92%;
+        border-radius: var(--app-radius-md);
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
     }
+
     .search-bar-row {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
-        padding: 15px;
+        gap: 14px;
+        padding: 16px;
     }
+
+    .search-input-container {
+        padding-bottom: 8px;
+        border-bottom: 1.5px solid #f1f5f9;
+    }
+
     .search-actions {
         justify-content: space-between;
         margin-left: 0;
     }
+
     .search-maroon-btn {
         flex-grow: 1;
         text-align: center;
+        padding: 12px;
+    }
+
+    /* Scaling Banner Layout */
+    .slider {
+        height: 200px;
+        border-radius: var(--app-radius-md);
+    }
+
+    .slide {
+        padding: 24px;
+    }
+
+    .slide-content h2 {
+        font-size: 22px;
+        line-height: 1.3;
+        margin-bottom: 6px;
+    }
+
+    .slide-content p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Grid configuration matching native application feeds (Dual Column Viewports) */
+    .listings-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .property-card {
+        border-radius: var(--app-radius-md);
+    }
+
+    .image-container {
+        height: 200px;
+    }
+
+    .card-details {
+        padding: 16px;
+    }
+    
+    .property-popup-bubble.show {
+        top: calc(16px + env(safe-area-inset-top));
+        left: 16px;
+        right: 16px;
+        width: auto;
+    }
+}
+
+/* Micro devices compatibility resets */
+@media (max-width: 360px) {
+    .card-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 }

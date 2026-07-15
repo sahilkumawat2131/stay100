@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stay100% | Budget & Luxury Rooms, PG's 1BHK, 2BHK ,3BHK ,4BHK for Rent</title>
+    <title>Stay100% Jaipur: Best Rental Properties, PGs & Rooms | Budget & Luxury</title>
     <meta name="description" content="Find and book premium PGs, luxury flats, co-living spaces, and private rooms across India. Real-time availability, verified listings, and zero brokerage options on Stay100%.">
     <meta name="keywords" content="premium pg, luxury flats, private rooms, co-living spaces, hostels near me, stay100, verified property rent">
     <meta name="robots" content="index, follow">
@@ -29,6 +29,7 @@
     <main class="container">
         <h1 style="display: none;">Verified Premium PGs, Luxury Flats & Co-Living Spaces Across India</h1>
 
+        <!-- Fraud Alert Modal -->
         <div id="fraud-alert-modal" class="modal-overlay" style="display: none;">
             <div class="modal-content" style="max-width: 450px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
                 <div class="modal-banner-image-wrapper" style="width: 100%; text-align: center; background: #fff1f3; padding: 20px 0 10px 0;">
@@ -56,6 +57,7 @@
             </div>
         </div>
 
+        <!-- Hero Viewport -->
         <div class="hero-viewport-container">
             <div id="dynamic-banners-container" class="slider-wrapper-container"></div>
             <div class="search-card-wrapper">
@@ -77,6 +79,14 @@
             </div>
         </div>
 
+        <!-- Mobile Quick Filters Toggle Trigger -->
+        <div class="mobile-filter-trigger-container" style="margin: 15px 0; display: none;">
+            <button id="filter-btn" class="btn-mehrum" style="width: 100%; padding: 12px; font-size: 14px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-solid fa-sliders"></i> Filter Properties Matrix
+            </button>
+        </div>
+
+        <!-- Accommodation Category Filter Tabs -->
         <section class="categories-section" aria-label="Accommodation Categories">
             <div class="category-grid">
                 <div class="category-card active" data-category="all" role="button" aria-label="View All Spaces">
@@ -98,14 +108,21 @@
             </div>
         </section>
 
+        <!-- Main Marketplace Body Layout -->
         <div class="main-layout">
+            
+            <!-- Desktop Filters Sidebar Matrix -->
             <aside class="desktop-filters-sidebar" aria-label="Filter Properties Matrix">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3>Filters Matrix</h3>
-                    <button type="button" class="clear-all-btn" onclick="clearAllFilters()">Clear All</button>
+                    <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">Filters Matrix</h3>
+                    <button type="button" class="clear-all-btn" onclick="clearAllFilters()" style="background: none; border: none; color: #800020; font-weight: 600; font-size: 13px; cursor: pointer;">Clear All</button>
                 </div>
-                <div class="active-filters-container" id="desktop-active-chips"></div>
-
+                <div class="active-filters-container" id="desktop-active-chips" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;"></div>
+  
+                <!-- फ़िल्टर साइडबार के अंदर सबसे ऊपर ये बटन डालें -->
+<button id="toggle-filter-btn" class="toggle-filter-btn">
+    <i class="fas fa-chevron-left"></i> Hide Filters
+</button>
                 <div class="filter-group">
                     <h4>Budget (Max)</h4>
                     <select class="filter-select" id="filter-budget" aria-label="Select Maximum Budget">
@@ -128,7 +145,7 @@
 
                 <div class="filter-group">
                     <h4>Locality / Area</h4>
-                    <input type="text" class="filter-input" id="filter-locality" placeholder="e.g., Malviya Nagar" aria-label="Filter by locality or area name">
+                    <input type="text" class="filter-input" id="filter-locality" placeholder="e.g., Mansarovar, Malviya Nagar" aria-label="Filter by locality or area name">
                 </div>
 
                 <div class="filter-group">
@@ -141,7 +158,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h4>Furnishing</h4>
+                    <h4>Furnishing Status</h4>
                     <div class="filter-options">
                         <label><input type="checkbox" class="filter-furnishing" value="unfurnished"> Unfurnished</label>
                         <label><input type="checkbox" class="filter-furnishing" value="semi-furnished"> Semi-Furnished</label>
@@ -157,7 +174,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h4>Nearby Hubs</h4>
+                    <h4>Nearby Hubs & Transit</h4>
                     <div class="filter-options">
                         <label><input type="checkbox" class="filter-landmark" value="near-school"> Near Schools/Colleges</label>
                         <label><input type="checkbox" class="filter-landmark" value="near-hospital"> Near Hospitals</label>
@@ -174,9 +191,11 @@
                 </div>
             </aside>
 
+            <!-- Content Area Output Listings Grid -->
             <section class="content-area" aria-label="Recommended Accommodations Listings">
-                <h2 id="listings-heading">Stay100% Properties </h2> 
+                <h2 id="listings-heading">Stay100% Properties</h2> 
                 
+                <!-- Hero Banner Box -->
                 <section class="hero-banner">
                     <div class="banner-container">
                         <div class="banner-content">
@@ -204,19 +223,23 @@
         </div>
     </main>
 
+    <!-- Mobile Filtering Selection Modal Frame -->
     <div id="filter-modal" class="modal" role="dialog" aria-labelledby="modal-title-filter" aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modal-title-filter">Filters Selection Matrix</h3>
                 <span class="close-modal" role="button" aria-label="Close Filter Modal">&times;</span>
             </div>
-            <div class="modal-body" id="mobile-filter-body-container"></div>
+            <div class="modal-body" id="mobile-filter-body-container">
+                <!-- Programmatically populated inputs align completely with JS requirements -->
+            </div>
             <div class="modal-footer" style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
                 <button class="btn-mehrum w-100" onclick="applyFilters()">Apply Filters</button>
             </div>
         </div>
     </div>
 
+    <!-- Bottom Navigation Layer Dynamic Injection -->
     <div id="dynamic-footer-container">
         <nav class="mobile-bottom-nav">
             <a href="index.html" class="nav-item active-nav" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
@@ -226,129 +249,8 @@
         </nav>
     </div>
 
-    <div id="dynamic-desktop-footer-container">
-        <div class="footer-toggle-wrapper">
-            <button id="btn-global-footer-toggle" class="btn-footer-toggle">
-                <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
-                <span id="toggle-text">Show Full Directory</span>
-            </button>
-        </div>
-
-        <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
-            <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
-                <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
-                <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
-                <g transform="translate(150, 220) scale(0.85)">
-                    <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
-                    <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
-                    <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
-                    <circle cx="132" cy="172" r="2" fill="#ffffff" />
-                </g>
-                <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
-            </svg>
-
-            <div class="footer-grid-container">
-                <div class="footer-brand-column">
-                    <a href="index.html" class="footer-logo-link">
-                        <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
-                    </a>
-                    <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
-                    <div class="footer-social-icons">
-                        <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
-                        <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <ul class="footer-links-list">
-                        <li><a href="aboutus.html">About Corporate Group</a></li>
-                        <li><a href="ecosystem.html">Premium Ecosystem</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms & Conditions</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Partners</h4>
-                    <ul class="footer-links-list">
-                        <li><a href="admin.html">Admin Hub</a></li>
-                        <li><a href="corporate.html">Corporate Tie-ups</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Contact Info</h4>
-                    <div class="footer-address-info">
-                        <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
-                        <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
-                        <p><i class="fa-solid fa-envelope"></i> <span>support@staypremium.in</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-seo-tabs-container">
-                <div class="seo-tabs-nav">
-                    <button class="seo-tab-trigger active-tab" data-target="panel-flats-rent">Flats for Rent</button>
-                    <button class="seo-tab-trigger" data-target="panel-pg-hostels">PG / Hostels</button>
-                    <button class="seo-tab-trigger" data-target="panel-flatmates">Flatmates</button>
-                </div>
-
-                <div class="seo-tabs-content-body">
-                    <div id="panel-flats-rent" class="seo-tab-panel active-panel">
-                        <div class="seo-column-group">
-                            <h5>Flats for Rent in Jaipur</h5>
-                            <div class="seo-links-list">
-                                <a href="index.html?location=jaipur&type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
-                                <a href="index.html?location=jaipur&type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
-                                <a href="index.html?location=jaipur&type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
-                                <a href="index.html?location=jaipur&type=flat&area=station">Rental Rooms near Jaipur Junction</a>
-                                <a href="index.html?location=jaipur&type=flat&budget=10k">Budget Rental Flats under 10k</a>
-                            </div>
-                        </div>
-                        <div class="seo-column-group">
-                            <h5>Flats for Rent in Delhi NCR</h5>
-                            <div class="seo-links-list">
-                                <a href="index.html?location=delhi&type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
-                                <a href="index.html?location=delhi&type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
-                                <a href="index.html?location=delhi&type=flat&area=northcampus">Student Flats near DU North Campus</a>
-                                <a href="index.html?location=delhi&type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
-                                <a href="index.html?location=delhi&type=flat&area=ndls">Properties near New Delhi Station</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="panel-pg-hostels" class="seo-tab-panel">
-                        <div class="seo-column-group">
-                            <h5>PG / Hostels in Mumbai</h5>
-                            <div class="seo-links-list">
-                                <a href="index.html?location=mumbai&type=pg&area=andheri">Executive Co-living in Andheri West</a>
-                                <a href="index.html?location=mumbai&type=pg&area=powai">IIT Tech Circle PG in Powai</a>
-                                <a href="index.html?location=mumbai&type=pg&area=bandra">Premium Single Rooms Bandra Complex</a>
-                                <a href="index.html?location=mumbai&type=pg&budget=12k">Managed Spaces under 12k</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="panel-flatmates" class="seo-tab-panel">
-                        <div class="seo-column-group">
-                            <h5>Flatmates in Metro Zones</h5>
-                            <div class="seo-links-list">
-                                <a href="index.html?type=flatmate&location=bangalore">Shared Rooms in Bangalore</a>
-                                <a href="index.html?type=flatmate&location=mumbai">Room Sharing Mumbai West</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom-bar">
-                <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network.</div>
-            </div>
-        </footer>
-    </div>
+    <!-- Desktop Complex SEO Footer System Layout -->
+    <div id="dynamic-desktop-footer-container"></div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -359,5 +261,30 @@
     <script type="module" src="footer.js"></script>
     <script type="module" src="indexextra.js"></script>
     
+
+<script>document.addEventListener("DOMContentLoaded", function() {
+    const toggleBtn = document.getElementById("toggle-filter-btn");
+    const sidebar = document.querySelector(".desktop-filters-sidebar");
+    
+    // अगर आप शो बटन लगाना चाहते हैं तो डायनामिकली बॉडी में ऐड कर सकते हैं
+    const showBtn = document.createElement("button");
+    showBtn.className = "show-filter-floating-btn";
+    showBtn.innerHTML = "🔍 Show Filters";
+    document.body.appendChild(showBtn);
+
+    toggleBtn.addEventListener("click", function() {
+        sidebar.classList.add("collapsed");
+        document.body.classList.add("filter-hidden");
+    });
+
+    showBtn.addEventListener("click", function() {
+        sidebar.classList.remove("collapsed");
+        document.body.classList.remove("filter-hidden");
+    });
+});</script>
+
+
+
+
 </body>
 </html>

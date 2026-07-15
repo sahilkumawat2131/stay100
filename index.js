@@ -1,5 +1,5 @@
 /**
- * StayPremium - Enhanced Realtime Engine (Next-Gen Production Build)
+ * StayPremium - Enhanced Realtime Engine (Next-Gen Production Build with AI Search & Inline Ads)
  * Features Auto-sliding Interactive Center Banner Matrix, Category Filters Sync & Global City Selector Linkage
  * Integrated with PropertyCardComponent Dynamic Autoswipe Loop Handler
  */
@@ -23,14 +23,13 @@ const db = firebase.database();
 
 // Application State Parameters
 let allPosts = [];
-let vendorsSubscriptionData = {}; 
 let currentCategory = 'all';
-let currentSessionUID = localStorage.getItem('stay100%_uid') || null;
+let currentSessionUID = localStorage.getItem('stayprimium_uid') || null;
 
 // --- GLOBAL FILTER STATE MATRIX ---
 window.filterState = {
     maxBudget: Infinity,
-    area: "all",
+    area: "",
     gender: "all",
     sharingType: [],     
     furnishing: [],      
@@ -117,18 +116,14 @@ function updateUserProfileUI() {
 
 // --- FILTER CORE SYNC ENGINE ---
 window.syncAndRenderFilters = function() {
-    // 1. Budget Filter Sync
     const dBudget = document.getElementById('filter-budget')?.value;
     window.filterState.maxBudget = dBudget ? parseFloat(dBudget) : Infinity;
 
-    // 2. Locality/Area Filter Sync
     window.filterState.area = document.getElementById('filter-locality')?.value?.toLowerCase().trim() || "";
     
-    // 3. Gender Filter Sync
-    const genderActive = document.querySelector('input[name="desktop-gender"]:checked') || document.getElementById('filter-gender');
+    const genderActive = document.querySelector('input[name="desktop-gender"]:checked') || document.querySelector('input[name="mobile-gender"]:checked');
     window.filterState.gender = (genderActive && genderActive.value) ? genderActive.value : "all";
 
-    // 4. Sharing Type Array Sync
     window.filterState.sharingType = [];
     document.querySelectorAll('.filter-sharing:checked, .m-filter-sharing:checked').forEach(cb => {
         if(!window.filterState.sharingType.includes(cb.value)) {
@@ -136,7 +131,6 @@ window.syncAndRenderFilters = function() {
         }
     });
 
-    // 5. Furnishing Status Array Sync
     window.filterState.furnishing = [];
     document.querySelectorAll('.filter-furnishing:checked, .m-filter-furnishing:checked').forEach(cb => {
         if(!window.filterState.furnishing.includes(cb.value)) {
@@ -144,10 +138,8 @@ window.syncAndRenderFilters = function() {
         }
     });
 
-    // 6. Food Included / Mess Status
     window.filterState.foodIncluded = document.getElementById('filter-food')?.checked || document.getElementById('m-filter-food')?.checked || false;
 
-    // 7. Nearby Hubs / Landmarks Checklist
     window.filterState.nearbyHubs = [];
     document.querySelectorAll('.filter-landmark:checked, .m-filter-landmark:checked').forEach(cb => {
         if(!window.filterState.nearbyHubs.includes(cb.value)) {
@@ -155,7 +147,6 @@ window.syncAndRenderFilters = function() {
         }
     });
 
-    // 8. Verification & Recently Posted Flags
     window.filterState.verifiedOnly = document.getElementById('filter-verified')?.checked || document.getElementById('m-filter-verified')?.checked || false;
     window.filterState.recentlyPosted = document.getElementById('filter-recent')?.checked || document.getElementById('m-filter-recent')?.checked || false;
 
@@ -173,6 +164,7 @@ function renderActiveFilterChips() {
     const createChip = (label, removeActionCallback) => {
         const chip = document.createElement('div');
         chip.className = 'filter-chip';
+        chip.style.cssText = "display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 500; cursor: pointer;";
         chip.innerHTML = `${label} <i class="fa-solid fa-xmark"></i>`;
         chip.querySelector('i').addEventListener('click', () => {
             removeActionCallback();
@@ -197,8 +189,6 @@ function renderActiveFilterChips() {
 
     if (window.filterState.gender && window.filterState.gender !== "all") {
         createChip(`Gender: ${window.filterState.gender}`, () => {
-            const el = document.getElementById('filter-gender'); if(el) el.value = 'all';
-            const mel = document.getElementById('m-filter-gender'); if(mel) mel.value = 'all';
             document.querySelectorAll('input[name="desktop-gender"], input[name="mobile-gender"]').forEach(rb => rb.checked = false);
         });
     }
@@ -265,11 +255,10 @@ window.clearAllFilters = function() {
     window.renderPostsDataPipeline();
 };
 
-// --- EMPTY STATE RENDERING TEMPLATE ---
 function getEmptyStateHTML() {
     return `
         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 600px; margin: 30px auto;">
-            <img src="assets/stay100.png" alt="No Results" style="width: 100%; max-width: 280px; height: auto; margin-bottom: 25px; filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.08));">
+            <img src="assets/stay100.png" alt="No Results" style="width: 100%; max-width: 280px; height: auto; margin-bottom: 25px; filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.08));" onerror="this.src='https://placehold.co/280x200?text=No+Spaces+Available'">
             <h3 style="margin: 0 0 8px 0; color: #1e293b; font-family: sans-serif; font-size: 22px; font-weight: 700;">No Matching Spaces Found</h3>
             <p style="margin: 0 0 20px 0; color: #64748b; font-family: sans-serif; font-size: 14px; line-height: 1.5; max-width: 400px;">We couldn't find any properties matching your selected filters. Try widening your budget or clearing some filters to explore more options!</p>
             <button onclick="window.clearAllFilters()" style="background: #800020; color: #ffffff; border: none; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s; box-shadow: 0 4px 12px rgba(128,0,32,0.2);">
@@ -279,14 +268,10 @@ function getEmptyStateHTML() {
     `;
 }
 
-// --- PARSE URL PARAMETERS AND INJECT INTO STATE FIXED ---
 function parseAndApplyUrlFilters() {
     const urlParams = new URLSearchParams(window.location.search);
-    
-    // Global filterState structure safety check
     if (!window.filterState) window.filterState = {};
     
-    // 1. City Linkage
     const locationParam = urlParams.get('location');
     if (locationParam) {
         localStorage.setItem('staypremium_selected_city', locationParam.toLowerCase().trim());
@@ -297,10 +282,9 @@ function parseAndApplyUrlFilters() {
         window.dispatchEvent(new Event('cityChanged'));
     }
 
-    // 2. Category Tab Linkage
     const typeParam = urlParams.get('type');
     if (typeParam) {
-        const currentCategory = typeParam.toLowerCase().trim();
+        currentCategory = typeParam.toLowerCase().trim();
         document.querySelectorAll('.category-card').forEach(card => {
             if (card.dataset.category === currentCategory) {
                 card.classList.add('active');
@@ -310,7 +294,6 @@ function parseAndApplyUrlFilters() {
         });
     }
 
-    // 3. Locality / Area Ingest
     const areaParam = urlParams.get('area');
     if (areaParam) {
         window.filterState.area = areaParam.toLowerCase().trim();
@@ -318,7 +301,6 @@ function parseAndApplyUrlFilters() {
         const mel = document.getElementById('m-filter-locality'); if (mel) mel.value = areaParam;
     }
 
-    // 4. Budget Param Parsing (e.g., 10k, 12k, 15k)
     const budgetParam = urlParams.get('budget');
     if (budgetParam) {
         let cleanBudget = parseFloat(budgetParam.replace('k', '')) * 1000;
@@ -329,16 +311,13 @@ function parseAndApplyUrlFilters() {
         }
     }
 
-    // 5. Gender Param
     const genderParam = urlParams.get('gender');
     if (genderParam) {
         const cleanGender = genderParam.toLowerCase().trim();
         window.filterState.gender = cleanGender;
         document.querySelectorAll(`input[name="desktop-gender"][value="${cleanGender}"], input[name="mobile-gender"][value="${cleanGender}"]`).forEach(rb => rb.checked = true);
-        const el = document.getElementById('filter-gender'); if (el) el.value = cleanGender;
     }
 
-    // 6. Sharing Param
     const sharingParam = urlParams.get('sharing');
     if (sharingParam) {
         const cleanSharing = sharingParam.toLowerCase().trim();
@@ -346,7 +325,6 @@ function parseAndApplyUrlFilters() {
         document.querySelectorAll(`.filter-sharing[value="${cleanSharing}"], .m-filter-sharing[value="${cleanSharing}"]`).forEach(cb => cb.checked = true);
     }
 
-    // 7. Verified Badge Param
     const verifiedParam = urlParams.get('verified');
     if (verifiedParam === 'true') {
         window.filterState.verifiedOnly = true;
@@ -354,76 +332,81 @@ function parseAndApplyUrlFilters() {
         const mel = document.getElementById('m-filter-verified'); if (mel) mel.checked = true;
     }
 
-    // 8. Institutional Landmark Hubs Mapping
     const landmarkParam = urlParams.get('landmark');
     if (landmarkParam) {
         const cleanLandmark = landmarkParam.toLowerCase().trim();
-        // Mobile desktop targets mapping wrapper logic
         let matchedHubValue = cleanLandmark.startsWith('near-') ? cleanLandmark : "near-" + cleanLandmark;
-        
-        // Mobile markup uses direct strings like "coaching" / "metro" directly
         window.filterState.nearbyHubs = [matchedHubValue];
-        
-        // Select selectors smoothly
         document.querySelectorAll(`.filter-landmark[value="${matchedHubValue}"], .m-filter-landmark[value="${cleanLandmark}"]`).forEach(cb => cb.checked = true);
     }
 
-    // Call chip renderer safely if defined
     if (typeof renderActiveFilterChips === "function") {
         renderActiveFilterChips();
     }
 }
 
-// --- DATA FILTERING PIPELINE ENGINE ---
+// --- NATIVE SMART MAPPING / CASUAL LOCAL LANGUAGE DICTIONARY ---
+const AI_NLP_DICTIONARY = {
+    localities: ["mansarovar", "malviya nagar", "tonk road", "jagatpura", "raja park", "c scheme", "vaishali nagar", "sanganer", "pratap nagar", "sodala", "gopalpura"],
+    hubs: {
+        coaching: ["coaching", "allen", "fiitjee", "resonance", "pw", "physics wallah", "institutes", "classes", "padhai"],
+        college: ["college", "university", "school", "mnit", "inifd", "amity", "jecrc"],
+        hospital: ["hospital", "fortis", "ehcc", "sms", "doctor", "medical"],
+        office: ["office", "wipro", "hub", "infosys", "corporate", "sitapura", "mahindra world city"]
+    },
+    gender: {
+        boys: ["boys", "boy", "male", "ladke", "ladko"],
+        girls: ["girls", "girl", "female", "ladki", "ladkiyo", "working women"],
+        unisex: ["unisex", "family", "both", "couple", "sabke liye"]
+    }
+};
+
+// --- DATA FILTERING PIPELINE ENGINE (UPGRADED WITH INTUITY AI SEARCH ENGINE & FALLBACK RECOMMENDATIONS) ---
 window.renderPostsDataPipeline = function() {
     const listingsGrid = document.getElementById('listings-container');
     if (!listingsGrid) return;
     listingsGrid.innerHTML = '';
     
     const searchInput = document.getElementById('search-input');
-    const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const rawSearchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const activeSelectedGlobalCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
-    // --- DYNAMIC HEADING LOGIC ---
-    const headingNode = document.getElementById('listings-heading');
-    if (headingNode) {
-        let headingParts = [];
-        
-        if (window.filterState && window.filterState.gender && window.filterState.gender !== "all") {
-            headingParts.push(window.filterState.gender.charAt(0).toUpperCase() + window.filterState.gender.slice(1));
-        }
-        
-        if (typeof currentCategory !== 'undefined' && currentCategory && currentCategory !== 'all') {
-            let catText = currentCategory === 'pg' ? "PGs" : currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1) + "s";
-            headingParts.push(catText);
-        } else {
-            headingParts.push("Spaces"); 
-        }
-        
-        let activeLocation = "";
-        if (window.filterState && window.filterState.area) {
-            activeLocation = window.filterState.area;
-        } else if (activeSelectedGlobalCity && activeSelectedGlobalCity !== 'all' && activeSelectedGlobalCity !== 'all cities') {
-            activeLocation = activeSelectedGlobalCity;
-        }
-        
-        if (activeLocation) {
-            headingParts.push(`in ${activeLocation.charAt(0).toUpperCase() + activeLocation.slice(1)}`);
-        }
+    // --- 1. LOCAL SEARCH COOPERATIVE ENGINE ---
+    let aiExtractedState = {
+        detectedArea: "",
+        detectedGender: "all",
+        detectedHubs: [],
+        budgetLimit: Infinity
+    };
 
-        const totalText = headingParts.join(' ');
-        if (totalText === "Spaces" || totalText === "Spaces in all") {
-            headingNode.innerText = "Stay100% Spaces";
-        } else {
-            headingNode.innerText = `Results for ${totalText}`;
+    if (rawSearchQuery.length > 2) {
+        AI_NLP_DICTIONARY.localities.forEach(loc => {
+            if (rawSearchQuery.includes(loc)) aiExtractedState.detectedArea = loc;
+        });
+
+        Object.keys(AI_NLP_DICTIONARY.hubs).forEach(hubKey => {
+            AI_NLP_DICTIONARY.hubs[hubKey].forEach(alias => {
+                if (rawSearchQuery.includes(alias)) {
+                    aiExtractedState.detectedHubs.push(hubKey);
+                }
+            });
+        });
+
+        Object.keys(AI_NLP_DICTIONARY.gender).forEach(genderKey => {
+            AI_NLP_DICTIONARY.gender[genderKey].forEach(alias => {
+                if (rawSearchQuery.includes(alias)) aiExtractedState.detectedGender = genderKey;
+            });
+        });
+
+        const budgetMatches = rawSearchQuery.match(/(?:under|below|around|₹|\bsabse sasta\b)\s?(\d+)(k)?/i);
+        if (budgetMatches) {
+            let parsedVal = parseFloat(budgetMatches[1]);
+            if (budgetMatches[2] || parsedVal < 100) parsedVal = parsedVal * 1000; 
+            aiExtractedState.budgetLimit = parsedVal;
         }
     }
 
-    if (allPosts.length === 0) {
-        listingsGrid.innerHTML = getEmptyStateHTML();
-        return;
-    }
-
+    // --- 2. RUN EXTRACTION FILTER MATCHES PIPELINE ---
     const locallySavedItems = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
 
     let filteredOutputs = allPosts.filter(item => {
@@ -434,145 +417,184 @@ window.renderPostsDataPipeline = function() {
         const itemGender = (item.gender || "").toLowerCase().trim();
         const itemTags = Array.isArray(item.tags) ? item.tags.map(t => t.toLowerCase()) : [];
 
-        // Global City Logic Filter Match
         let matchesGlobalCity = false;
         if (activeSelectedGlobalCity === "all" || activeSelectedGlobalCity === "all cities" || activeSelectedGlobalCity === "") {
             matchesGlobalCity = true;
         } else if (itemCityNode !== "") {
-            matchesGlobalCity = (itemCityNode === activeSelectedGlobalCity || activeSelectedGlobalCity.includes(itemCityNode) || itemCityNode.includes(activeSelectedGlobalCity));
+            matchesGlobalCity = (itemCityNode === activeSelectedGlobalCity || activeSelectedGlobalCity.includes(itemCityNode));
         } else {
             matchesGlobalCity = placement.includes(activeSelectedGlobalCity) || title.includes(activeSelectedGlobalCity);
         }
+        if (!matchesGlobalCity) return false;
 
-        // Live Input Keyword Search Match
-        const isSearchMatch = !searchKeyword || title.includes(searchKeyword) || placement.includes(searchKeyword);
-        
-        // Category Sync Layout Configuration Validation
-        let isCategoryMatch = false;
-        if (currentCategory === 'all' || currentCategory === '') { 
-            isCategoryMatch = true;
-        } else if (currentCategory === 'flatmate') {
-            isCategoryMatch = (baseCategory === 'flatmate' || title.includes('flatmate') || title.includes('sharing') || title.includes('roommate'));
-        } else if (currentCategory === 'pg') {
-            isCategoryMatch = (baseCategory === 'pg' || title.includes('pg') || baseCategory === 'hostel');
-        } else if (currentCategory === 'flat') {
-            isCategoryMatch = (baseCategory === 'flat' || baseCategory === 'apartment' || title.includes('bhk') || title.includes('flat'));
-        } else if (currentCategory === 'room') {
-            isCategoryMatch = (baseCategory === 'room' || baseCategory === 'single room' || title.includes('room'));
+        if (rawSearchQuery && !aiExtractedState.detectedArea && aiExtractedState.detectedHubs.length === 0 && aiExtractedState.detectedGender === "all") {
+            const isPlainMatch = title.includes(rawSearchQuery) || placement.includes(rawSearchQuery);
+            if (!isPlainMatch) return false;
         }
 
-        // Deep Filters Criteria
-        const itemPrice = parseFloat(item.price || item.rent || 0);
-        const checkMaxBudget = itemPrice <= window.filterState.maxBudget;
-        
-        const checkArea = window.filterState.area === "" || 
-                            (item.area && item.area.toLowerCase().includes(window.filterState.area)) || 
-                            placement.includes(window.filterState.area);
-        
-        let checkGender = true;
-        if(window.filterState.gender && window.filterState.gender !== "all") {
-            checkGender = (itemGender === window.filterState.gender || title.includes(window.filterState.gender));
+        if (aiExtractedState.detectedArea && !placement.includes(aiExtractedState.detectedArea) && !title.includes(aiExtractedState.detectedArea)) {
+            return false;
         }
-
-        let checkSharing = true;
-        if (window.filterState.sharingType.length > 0) {
-            checkSharing = window.filterState.sharingType.some(type => {
-                const itemSharingStr = (item.sharingType || "").toLowerCase();
-                return itemSharingStr.includes(type) || title.includes(type);
-            });
+        if (aiExtractedState.detectedGender !== "all" && itemGender !== aiExtractedState.detectedGender && !title.includes(aiExtractedState.detectedGender)) {
+            return false;
         }
-
-        let checkFurnishing = true;
-        if (window.filterState.furnishing.length > 0) {
-            checkFurnishing = window.filterState.furnishing.some(furnishOpt => {
-                const itemFurnishingStr = (item.furnishing || "").toLowerCase().replace('-', '').replace(' ', '');
-                const cleanOpt = furnishOpt.replace('-', '').replace(' ', '');
-                return itemFurnishingStr.includes(cleanOpt);
-            });
+        if (aiExtractedState.budgetLimit !== Infinity && parseFloat(item.price || item.rent || 0) > aiExtractedState.budgetLimit) {
+            return false;
         }
-
-        let checkFood = true;
-        if (window.filterState.foodIncluded) {
-            checkFood = (item.foodIncluded === true || item.mess === true || title.includes('food') || title.includes('mess') || itemTags.includes('food included'));
-        }
-
-        let checkLandmarks = true;
-        if (window.filterState.nearbyHubs.length > 0) {
-            checkLandmarks = window.filterState.nearbyHubs.some(hub => {
-                if (hub === 'near-school' || hub === 'coaching') return title.includes('college') || title.includes('school') || title.includes('coaching') || title.includes('allen') || itemTags.includes('near school') || !!item.nearSchool;
-                if (hub === 'near-hospital') return title.includes('hospital') || itemTags.includes('near hospital') || !!item.nearHospital;
-                if (hub === 'near-office') return title.includes('office') || title.includes('hub') || itemTags.includes('near office') || !!item.nearOffice;
+        if (aiExtractedState.detectedHubs.length > 0) {
+            let matchedHub = aiExtractedState.detectedHubs.some(hub => {
+                if (hub === "coaching" || hub === "college") {
+                    return title.includes("coaching") || title.includes("allen") || title.includes("college") || title.includes("university") || !!item.nearSchool || itemTags.includes("near school");
+                }
+                if (hub === "hospital") return title.includes("hospital") || !!item.nearHospital || itemTags.includes("near hospital");
+                if (hub === "office") return title.includes("office") || title.includes("it park") || !!item.nearOffice || itemTags.includes("near office");
                 return false;
             });
+            if (!matchedHub) return false;
         }
 
-        let checkVerifiedOnly = true;
-        if (window.filterState.verifiedOnly) {
-            checkVerifiedOnly = (item.isVerified === true || checkVendorVerification(item.vendorId || item.userId));
+        if (currentCategory !== 'all' && currentCategory !== '') {
+            if (currentCategory === 'pg' && baseCategory !== 'pg' && baseCategory !== 'hostel') return false;
+            if (currentCategory === 'flat' && baseCategory !== 'flat' && baseCategory !== 'apartment') return false;
         }
+        if (window.filterState.maxBudget !== Infinity && parseFloat(item.price || item.rent || 0) > window.filterState.maxBudget) return false;
+        if (window.filterState.area !== "" && !placement.includes(window.filterState.area)) return false;
 
-        return matchesGlobalCity && isSearchMatch && isCategoryMatch && checkMaxBudget && checkArea && checkGender && checkSharing && checkFurnishing && checkFood && checkLandmarks && checkVerifiedOnly;
+        return true;
     });
 
     let scoredOutputs = filteredOutputs.map(post => {
         const isVendorVerified = checkVendorVerification(post.vendorId || post.userId) || post.isVerified === true;
         let sortingScore = (post.views || 0) + (isVendorVerified ? 100000 : 0);
-        
-        if (window.filterState.recentlyPosted && post.timestamp) {
-            sortingScore += post.timestamp / 1000000;
-        }
+        if (post.timestamp) sortingScore += post.timestamp / 1000000;
         return { ...post, isVendorVerified, sortingScore };
     });
-
     scoredOutputs.sort((a, b) => b.sortingScore - a.sortingScore);
 
-    if (typeof renderPosts === "function" && document.getElementById('postContainer')) {
-        renderPosts(scoredOutputs);
-        return;
+    let isShowingRecommended = false;
+    let finalDisplayItems = [...scoredOutputs];
+
+    if (finalDisplayItems.length === 0 && rawSearchQuery.length > 0) {
+        isShowingRecommended = true;
+        finalDisplayItems = allPosts.filter(item => {
+            const itemCityNode = (item.city || "").toLowerCase().trim();
+            const placement = (item.location || item.area || "").toLowerCase();
+            if (activeSelectedGlobalCity && activeSelectedGlobalCity !== "all") {
+                return itemCityNode === activeSelectedGlobalCity || placement.includes(activeSelectedGlobalCity);
+            }
+            return true;
+        }).slice(0, 6); 
     }
 
-    if (scoredOutputs.length === 0) {
+    let finalGridHTML = "";
+    
+    if (isShowingRecommended) {
+        finalGridHTML += `
+            <div style="grid-column: 1/-1; background: #fffbeb; border: 1px solid #fef3c7; color: #b45309; padding: 16px; border-radius: 12px; margin-bottom: 15px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Direct match not found. Showing smart recommended listings in ${activeSelectedGlobalCity.toUpperCase()}:
+            </div>
+        `;
+    }
+
+    // ==========================================
+    // 📢 DYNAMIC SPONSORED INLINE AD BANNER SYSTEM
+    // ==========================================
+    // [EDIT HERE] इमेज बदलने के लिए src और रीडायरेक्ट के लिए window.location.href बदलें
+    const targetAdBanner = `
+        <div class="inline-advertisement-card" style="grid-column: 1 / -1; width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px 0; cursor: pointer;" onclick="window.location.href='premium.html'">
+            <img src="https://placehold.co/1200x250?text=Premium+Managed+Stays+-+High+Quality+Banner" alt="Sponsored Ad" style="width: 100%; height: auto; display: block; object-fit: cover;">
+        </div>
+    `;
+
+    if (finalDisplayItems.length === 0) {
         listingsGrid.innerHTML = getEmptyStateHTML();
         return;
     }
 
-    listingsGrid.innerHTML = scoredOutputs.map(post => {
-        return window.PropertyCardComponent.render(post, locallySavedItems);
-    }).join('');
+    finalDisplayItems.forEach((post, idx) => {
+        if (idx > 0 && idx % 3 === 0) {
+            finalGridHTML += targetAdBanner;
+        }
 
-    if (window.PropertyCardComponent && typeof window.PropertyCardComponent.initAutoswipe === 'function') {
-        setTimeout(() => { window.PropertyCardComponent.initAutoswipe(); }, 50);
-    }
-};
+        let genderIconHTML = '<span class="gender-tag unisex"><i class="fa-solid fa-users"></i> Unisex</span>';
+        const cleanGender = (post.gender || "").toLowerCase().trim();
+        if (cleanGender === "boys" || cleanGender === "boy") {
+            genderIconHTML = '<span class="gender-tag boys" style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-mars"></i> Boys</span>';
+        } else if (cleanGender === "girls" || cleanGender === "girl") {
+            genderIconHTML = '<span class="gender-tag girls" style="background:#fce7f3; color:#b7064f; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-venus"></i> Girls</span>';
+        } else {
+            genderIconHTML = '<span class="gender-tag unisex" style="background:#f3f4f6; color:#374151; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-genderless"></i> Unisex</span>';
+        }
 
-function renderPosts(postsToRender) {
-    const postContainer = document.getElementById('postContainer');
-    if (!postContainer) return;
-    postContainer.innerHTML = '';
-
-    if (postsToRender.length === 0) {
-        postContainer.innerHTML = getEmptyStateHTML();
-        return;
-    }
-
-    const locallySavedItems = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
-    postsToRender.forEach(post => {
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = window.PropertyCardComponent.render(post, locallySavedItems);
-        postContainer.appendChild(wrapper.firstElementChild);
+        if (window.PropertyCardComponent && typeof window.PropertyCardComponent.render === "function") {
+            let generatedCard = window.PropertyCardComponent.render(post, locallySavedItems);
+            if (generatedCard.includes('</div>')) {
+                generatedCard = generatedCard.replace('</h3>', `</h3> <div style="margin-top: 5px; display:inline-block;">${genderIconHTML}</div>`);
+            }
+            finalGridHTML += generatedCard;
+        } else {
+            finalGridHTML += `
+                <div class="property-card" style="background:#fff; border-radius:12px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.08); position:relative;">
+                    <div style="position:absolute; top:12px; left:12px; z-index:10;">${genderIconHTML}</div>
+                    <h4 style="margin:40px 0 5px 0; font-size:17px;">${post.name || post.title}</h4>
+                    <p style="color:#666; font-size:13px; margin:0 0 10px 0;"><i class="fa-solid fa-location-dot"></i> ${post.location || post.area}</p>
+                    <div style="font-weight:700; color:#800020; font-size:16px;">₹${post.price || post.rent}/mo</div>
+                    <button data-view-id="${post.id}" style="margin-top:10px; width:100%; padding:8px; border:none; background:#800020; color:#fff; border-radius:6px; cursor:pointer;">View Details</button>
+                </div>
+            `;
+        }
     });
 
+    listingsGrid.innerHTML = finalGridHTML;
+    
     if (window.PropertyCardComponent && typeof window.PropertyCardComponent.initAutoswipe === 'function') {
         setTimeout(() => { window.PropertyCardComponent.initAutoswipe(); }, 50);
     }
+
+    renderAuxiliaryDataSections();
+};
+
+function renderAuxiliaryDataSections() {
+    let mainContainerEl = document.getElementById('listings-container')?.parentElement;
+    if (!mainContainerEl || document.getElementById('stay100-auxiliary-wrapper')) return;
+
+    const auxContainer = document.createElement('div');
+    auxContainer.id = "stay100-auxiliary-wrapper";
+    auxContainer.style.cssText = "margin-top: 50px; display: flex; flex-direction: column; gap: 40px; width: 100%; font-family: sans-serif;";
+
+    const latestListings = [...allPosts].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 4);
+    const recommendedListings = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 4);
+
+    const generateRowCards = (list) => {
+        if (list.length === 0) return `<p style="color:#666; font-size:14px;">No verified entries in this structural category.</p>`;
+        return list.map(item => `
+            <div onclick="window.location.href='details.html?id=${item.id}'" style="background:#fff; border: 1px solid #e2e8f0; border-radius:12px; padding:16px; min-width:260px; flex:1; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.03); transition: transform 0.2s;">
+                <h5 style="margin:0 0 6px 0; font-size:15px; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name || item.title}</h5>
+                <p style="margin:0 0 10px 0; font-size:12px; color:#64748b;"><i class="fa-solid fa-location-dot"></i> ${item.area || "Jaipur"}</p>
+                <div style="font-weight:700; color:#556b2f; font-size:15px;">₹${item.price || item.rent}<span style="font-size:11px; font-weight:400; color:#64748b;">/mo</span></div>
+            </div>
+        `).join('');
+    };
+
+    auxContainer.innerHTML = `
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+        <div>
+            <h3 style="font-size:20px; font-weight:700; color:#1e293b; margin-bottom:15px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-star" style="color:#eab308;"></i> Recommended Properties in City</h3>
+            <div style="display:flex; gap:20px; overflow-x:auto; padding-bottom:10px;">${generateRowCards(recommendedListings)}</div>
+        </div>
+        <div>
+            <h3 style="font-size:20px; font-weight:700; color:#1e293b; margin-bottom:15px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-clock-rotate-left" style="color:#0284c7;"></i> Latest Premium Listings</h3>
+            <div style="display:flex; gap:20px; overflow-x:auto; padding-bottom:10px;">${generateRowCards(latestListings)}</div>
+        </div>
+    `;
+
+    mainContainerEl.appendChild(auxContainer);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Sync current session UID securely
     currentSessionUID = localStorage.getItem('stay100%_uid') || null;
     if (typeof updateUserProfileUI === 'function') updateUserProfileUI();
 
-    // --- TOP LEVEL DOM ELEMENT DECLARATIONS ---
     const listingsGrid = document.getElementById('listings-container');
     const filterBtn = document.getElementById('filter-btn');
     const filterModal = document.getElementById('filter-modal');
@@ -581,244 +603,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const categoryCards = document.querySelectorAll('.category-card');
 
-    // --- MOBILE BOTTOM NAVIGATION SYSTEM INJECTION ---
-    const mobileContainer = document.getElementById('dynamic-footer-container');
-    if (mobileContainer) {
-        mobileContainer.innerHTML = `
-            <nav class="mobile-bottom-nav">
-                <a href="index.html" class="nav-item" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
-                <a href="pg.html" class="nav-item" data-page="pg"><i class="fa-solid fa-hotel"></i><span>PG's</span></a>
-                <a href="room.html" class="nav-item" data-page="rooms"><i class="fa-solid fa-bed"></i><span>Rooms</span></a>
-                <a href="profile.html" class="nav-item" data-page="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-            </nav>
-        `;
+    // ==========================================
+    // 🎛️ DEFAULT HIDE FILTER INIALIZATION LOGIC
+    // ==========================================
+    const sidebar = document.querySelector(".desktop-filters-sidebar");
+    if (sidebar) {
+        sidebar.classList.add("collapsed");
+        document.body.classList.add("filter-hidden");
     }
 
-    // --- DESKTOP FOOTER SYSTEM INJECTION WITH SEO LINK SYNC ---
-    const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
-    if (desktopFooterContainer) {
-        desktopFooterContainer.innerHTML = `
-            <div class="footer-toggle-wrapper">
-                <button id="btn-global-footer-toggle" class="btn-footer-toggle">
-                    <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
-                    <span id="toggle-text">Show Full Directory</span>
-                </button>
-            </div>
-
-            <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
-                <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
-                    <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
-                    <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
-                    <g transform="translate(150, 220) scale(0.85)">
-                        <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
-                        <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
-                        <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
-                        <circle cx="132" cy="172" r="2" fill="#ffffff" />
-                    </g>
-                    <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
-                </svg>
-
-                <div class="footer-grid-container">
-                    <div class="footer-brand-column">
-                        <a href="index.html" class="footer-logo-link">
-                            <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
-                        </a>
-                        <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
-                        <div class="footer-social-icons">
-                            <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
-                            <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <ul class="footer-links-list">
-                            <li><a href="aboutus.html">About Corporate Group</a></li>
-                            <li><a href="ecosystem.html">Premium Ecosystem</a></li>
-                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                            <li><a href="terms.html">Terms & Conditions</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Partners</h4>
-                        <ul class="footer-links-list">
-                            <li><a href="admin.html">Admin Hub</a></li>
-                            <li><a href="corporate.html">Corporate Tie-ups</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Contact Info</h4>
-                        <div class="footer-address-info">
-                            <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
-                            <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
-                            <p><i class="fa-solid fa-envelope"></i> <span>support@staypremium.in</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="footer-seo-tabs-container">
-                    <div class="seo-tabs-nav">
-                        <button class="seo-tab-trigger active-tab" data-target="panel-north-west-cities">North & West Directory</button>
-                        <button class="seo-tab-trigger" data-target="panel-south-cities">South Metro Directory</button>
-                        <button class="seo-tab-trigger" data-target="panel-flatmates">Configurations & Trust</button>
-                    </div>
-
-                    <div class="seo-tabs-content-body">
-                        <div id="panel-north-west-cities" class="seo-tab-panel active-panel">
-                            <div class="seo-column-group">
-                                <h5>Jaipur</h5>
-                                <div class="seo-links-list">
-                                    <a href="jaipur.html?type=flat&area=mansarovar">Flats in Mansarovar Main Road</a>
-                                    <a href="jaipur.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
-                                    <a href="jaipur.html?type=flat&area=malviyanagar">Furnished Apartments Malviya Nagar</a>
-                                    <a href="jaipur.html?type=flat&area=station">Rental Rooms near Jaipur Junction</a>
-                                    <a href="jaipur.html?type=flat&budget=10k">Budget Rental Flats under 10k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Delhi NCR</h5>
-                                <div class="seo-links-list">
-                                    <a href="delhi.html?type=flat&area=rajindernagar">UPSC Hub Flats Old Rajinder Nagar</a>
-                                    <a href="delhi.html?type=flat&area=laxminagar">1 BHK Apartments in Laxmi Nagar</a>
-                                    <a href="delhi.html?type=flat&area=northcampus">Student Flats near DU North Campus</a>
-                                    <a href="delhi.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
-                                    <a href="delhi.html?type=flat&area=ndls">Properties near New Delhi Station</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Gurugram</h5>
-                                <div class="seo-links-list">
-                                    <a href="gurugram.html?type=flat&area=cybercity">Corporate Suites near Cyber City</a>
-                                    <a href="gurugram.html?type=flat&area=sector48">Luxury 2 BHK Sector 48 Sohna Road</a>
-                                    <a href="gurugram.html?type=flat&area=hudacity">Studio Rooms near Millennium Metro</a>
-                                    <a href="gurugram.html?type=flat&area=sector21">Managed Flat Systems Sector 21</a>
-                                    <a href="gurugram.html?type=flat&budget=15k">Premium Flats under 15k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Noida</h5>
-                                <div class="seo-links-list">
-                                    <a href="noida.html?type=flat&area=sector62">IT Park Linked Flats Sector 62</a>
-                                    <a href="noida.html?type=flat&area=sector15">Metro Walk Apartments Sector 15</a>
-                                    <a href="noida.html?type=flat&area=knowledgepark">Greater Noida Knowledge Park Units</a>
-                                    <a href="noida.html?type=flat&area=amity">Independent Stays near Amity</a>
-                                    <a href="noida.html?type=flat&budget=12k">Fully Furnished Flats under 12k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Mumbai & Pune</h5>
-                                <div class="seo-links-list">
-                                    <a href="mumbai.html?type=pg&area=andheri">Executive Co-living in Andheri West</a>
-                                    <a href="mumbai.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
-                                    <a href="pune.html?type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3 PG</a>
-                                    <a href="pune.html?type=pg&area=vimannagar">Symbiosis Student Rooms Viman Nagar</a>
-                                    <a href="pune.html?type=pg&facility=food">Premium Food Attached PG Pune</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-south-cities" class="seo-tab-panel">
-                            <div class="seo-column-group">
-                                <h5>Bangalore</h5>
-                                <div class="seo-links-list">
-                                    <a href="bengluru.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
-                                    <a href="bengluru.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
-                                    <a href="bengluru.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
-                                    <a href="bengluru.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>
-                                    <a href="bengluru.html?type=flat&budget=15k">Fully Furnished Units under 15k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Hyderabad</h5>
-                                <div class="seo-links-list">
-                                    <a href="hyderabad.html?type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
-                                    <a href="hyderabad.html?type=pg&area=gachibowli">Professional Suites Gachibowli</a>
-                                    <a href="hyderabad.html?type=pg&area=ameerpet">Coaching Area Rooms Ameerpet Hub</a>
-                                    <a href="hyderabad.html?type=flat&area=madhapur">Managed Studio Flats Madhapur</a>
-                                    <a href="hyderabad.html?type=pg&budget=6k">Sharing Room Systems under 6k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Chennai</h5>
-                                <div class="seo-links-list">
-                                    <a href="chennai.html?type=flat&area=omr">IT Highway Rooms OMR Road</a>
-                                    <a href="chennai.html?type=pg&area=adyar">Student Co-living Hostels Adyar</a>
-                                    <a href="chennai.html?type=flat&area=velachery">1 & 2 BHK Apartments Velachery</a>
-                                    <a href="chennai.html?type=pg&area=anna-nagar">Executive Staying Units Anna Nagar</a>
-                                    <a href="chennai.html?type=flat&budget=10k">Budget Rental Rooms under 10k</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-flatmates" class="seo-tab-panel">
-                            <div class="seo-column-group">
-                                <h5>Configurations Directory</h5>
-                                <div class="seo-links-list">
-                                    <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
-                                    <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
-                                    <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
-                                    <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
-                                    <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="footer-bottom-bar">
-                    <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network.</div>
-                </div>
-            </footer>
-        `;
-    
-        // --- FOOTER TOGGLE ATTACHMENT ---
-        const toggleBtn = document.getElementById('btn-global-footer-toggle');
-        const footerCore = document.getElementById('staypremium-core-footer');
-        const toggleIcon = document.getElementById('toggle-icon');
-        const toggleText = document.getElementById('toggle-text');
-
-        if (toggleBtn && footerCore) {
-            toggleBtn.addEventListener('click', function() {
-                if (footerCore.style.display === 'none' || footerCore.style.display === '') {
-                    footerCore.style.display = 'block';
-                    setTimeout(() => { footerCore.style.opacity = '1'; }, 10);
-                    if(toggleIcon) toggleIcon.style.transform = 'rotate(180deg)';
-                    if(toggleText) toggleText.innerText = 'Hide Directory';
-                } else {
-                    footerCore.style.opacity = '0';
-                    footerCore.addEventListener('transitionend', function handler() {
-                        footerCore.style.display = 'none';
-                        footerCore.removeEventListener('transitionend', handler);
-                    }, { once: true });
-                    if(toggleIcon) toggleIcon.style.transform = 'rotate(0deg)';
-                    if(toggleText) toggleText.innerText = 'Show Full Directory';
-                }
-            });
-        }
-
-        // --- SEO TABS LOGIC ---
-        const tabButtons = document.querySelectorAll('.seo-tab-trigger');
-        const tabPanels = document.querySelectorAll('.seo-tab-panel');
-
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                tabButtons.forEach(b => b.classList.remove('active-tab'));
-                tabPanels.forEach(p => p.classList.remove('active-panel'));
-                this.classList.add('active-tab');
-                const targetId = this.getAttribute('data-target');
-                const targetPanel = document.getElementById(targetId);
-                if(targetPanel) targetPanel.classList.add('active-panel');
-            });
+    // Dynamic Filter Trigger Binding Logic
+    const toggleDesktopBtn = document.getElementById("toggle-filter-btn");
+    if (toggleDesktopBtn) {
+        toggleDesktopBtn.addEventListener("click", () => {
+            sidebar.classList.add("collapsed");
+            document.body.classList.add("filter-hidden");
         });
     }
 
-    // --- DYNAMIC MOBILE FILTER POPUP INJECTION ---
+    // Global Floating Show Trigger Node Injection
+    const floatingShowBtn = document.createElement("button");
+    floatingShowBtn.className = "show-filter-floating-btn";
+    floatingShowBtn.innerHTML = "🔍 Show Filters";
+    floatingShowBtn.style.cssText = "position: fixed; left: 20px; bottom: 80px; z-index: 999; background: #800020; color: #fff; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; display: none;";
+    document.body.appendChild(floatingShowBtn);
+
+    const checkFloatingButtonVisibility = () => {
+        if (window.innerWidth > 992 && document.body.classList.contains("filter-hidden")) {
+            floatingShowBtn.style.display = "block";
+        } else {
+            floatingShowBtn.style.display = "none";
+        }
+    };
+    
+    setTimeout(checkFloatingButtonVisibility, 100);
+    window.addEventListener("resize", checkFloatingButtonVisibility);
+
+    floatingShowBtn.addEventListener("click", () => {
+        if (sidebar) {
+            sidebar.classList.remove("collapsed");
+            document.body.classList.remove("filter-hidden");
+            floatingShowBtn.style.display = "none";
+        }
+    });
+
     if (filterModal) {
-        const bodyTarget = document.getElementById('mobile-filter-body-container') || filterModal.querySelector('.modal-body');
+        const bodyTarget = document.getElementById('mobile-filter-body-container');
         if (bodyTarget) {
             bodyTarget.innerHTML = `
                 <div class="filter-group">
@@ -868,10 +698,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="filter-group">
                     <h4>Nearby Hubs & Transit</h4>
                     <div class="filter-options">
-                        <label><input type="checkbox" class="m-filter-landmark" value="metro"> Near Metro Station</label>
-                        <label><input type="checkbox" class="m-filter-landmark" value="railway"> Near Railway Station</label>
-                        <label><input type="checkbox" class="m-filter-landmark" value="coaching"> Near Coaching Institutes (Allen/Reso etc.)</label>
-                        <label><input type="checkbox" class="m-filter-landmark" value="college"> Near Colleges / Universities</label>
+                        <label><input type="checkbox" class="m-filter-landmark" value="near-school"> Near Schools/Colleges</label>
+                        <label><input type="checkbox" class="m-filter-landmark" value="near-hospital"> Near Hospitals</label>
+                        <label><input type="checkbox" class="m-filter-landmark" value="near-office"> Near Corporate Offices</label>
                     </div>
                 </div>
                 <div class="filter-group">
@@ -885,7 +714,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- BIND SYNC EVENTS ---
     const bindSyncEvents = () => {
         document.getElementById('filter-budget')?.addEventListener('change', (e) => {
             const mel = document.getElementById('m-filter-budget'); if(mel) mel.value = e.target.value;
@@ -921,19 +749,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const syncCheckboxClasses = (desktopClass, mobileClass) => {
-            document.querySelectorAll('.' + desktopClass).forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const mCB = document.querySelector(`.${mobileClass}[value="${cb.value}"]`);
-                    if(mCB) mCB.checked = cb.checked;
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains(desktopClass)) {
+                    const matchedVal = e.target.value;
+                    const mCB = document.querySelector(`.${mobileClass}[value="${matchedVal}"]`);
+                    if(mCB) mCB.checked = e.target.checked;
                     window.syncAndRenderFilters();
-                });
-            });
-            document.querySelectorAll('.' + mobileClass).forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const dCB = document.querySelector(`.${desktopClass}[value="${cb.value}"]`);
-                    if(dCB) dCB.checked = cb.checked;
+                }
+                if (e.target.classList.contains(mobileClass)) {
+                    const matchedVal = e.target.value;
+                    const dCB = document.querySelector(`.${desktopClass}[value="${matchedVal}"]`);
+                    if(dCB) dCB.checked = e.target.checked;
                     window.syncAndRenderFilters();
-                });
+                }
             });
         };
 
@@ -964,20 +792,12 @@ document.addEventListener('DOMContentLoaded', () => {
         window.syncAndRenderFilters();
     };
 
-    // --- URL FILTERS ENGINE ---
     parseAndApplyUrlFilters();
 
-    if (window.LayoutEngine) {
-        window.LayoutEngine.applyCityClientSideFilter = () => {
-            if (typeof window.renderPostsDataPipeline === 'function') window.renderPostsDataPipeline();
-        };
-    }
-
     window.addEventListener('cityChanged', () => {
-        if (typeof window.renderPostsDataPipeline === 'function') window.renderPostsDataPipeline();
+        window.renderPostsDataPipeline();
     });
 
-    // --- INQUIRY MODAL ELEMENT ---
     const inquiryOverlayHtml = `
         <div id="inquiry-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; padding:15px;">
             <div style="background:#ffffff; width:100%; max-width:440px; border-radius:16px; overflow:hidden; box-shadow:0 12px 28px rgba(0,0,0,0.25);">
@@ -999,7 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label style="display:block; font-size:12px; font-weight:600; color:#666;">Your Message Requirement</label>
                         <textarea id="inquiry-msg" rows="3" placeholder="Sharing preference..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; resize:none;"></textarea>
                     </div>
-                    <button type="submit" class="btn-mehrum" style="width:100%; padding:12px; font-size:15px;">Send Secure Application</button>
+                    <button type="submit" class="btn-mehrum" style="width:100%; padding:12px; font-size:15px; border-radius: 8px; border:none; background:#800020; color:#fff; cursor:pointer;">Send Secure Application</button>
                 </form>
             </div>
         </div>
@@ -1022,7 +842,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LISTINGS GRID EVENT DELEGATION ---
     if (listingsGrid) {
         listingsGrid.addEventListener('click', (e) => {
             const targetViewBtn = e.target.closest('[data-view-id]');
@@ -1038,30 +857,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = `details.html?id=${targetPropId}`;
             }
 
-            if (targetSaveBtn) {
-                e.preventDefault(); e.stopPropagation();
-                if (!currentSessionUID) { alert("Please log in to bookmark spaces."); window.location.href = 'login.html'; return; }
+           if (targetSaveBtn) {
+    e.preventDefault(); e.stopPropagation();
 
-                const targetPropId = targetSaveBtn.getAttribute('data-save-id');
-                const matchedObj = allPosts.find(p => p.id === targetPropId);
-                if (!matchedObj) return;
+    const targetPropId = targetSaveBtn.getAttribute('data-save-id');
+    const matchedObj = allPosts.find(p => p.id === targetPropId);
+    if (!matchedObj) return;
 
-                let bookmarkArray = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
-                const pointerIdx = bookmarkArray.indexOf(targetPropId);
-                const userNodeReference = db.ref(`users_saved/${currentSessionUID}/${targetPropId}`);
+    let bookmarkArray = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
+    const pointerIdx = bookmarkArray.indexOf(targetPropId);
 
-                if (pointerIdx === -1) {
-                    userNodeReference.set({ id: targetPropId, name: matchedObj.name || matchedObj.title, price: matchedObj.price || 0, location: matchedObj.location || "" }).then(() => {
-                        bookmarkArray.push(targetPropId); localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
-                        window.showCenterToast("❤️ Space Bookmarked Safely!"); window.renderPostsDataPipeline();
-                    });
-                } else {
-                    userNodeReference.remove().then(() => {
-                        bookmarkArray = bookmarkArray.filter(id => id !== targetPropId); localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
-                        window.showCenterToast("💔 Space Removed from Dashboard."); window.renderPostsDataPipeline();
-                    });
-                }
-            }
+    // अगर यूजर लॉगिन है, तभी Firebase पर डेटा सिंक करें
+    if (currentSessionUID) {
+        const userNodeReference = db.ref(`users_saved/${currentSessionUID}/${targetPropId}`);
+        if (pointerIdx === -1) {
+            userNodeReference.set({ id: targetPropId, name: matchedObj.name || matchedObj.title, price: matchedObj.price || 0, location: matchedObj.location || "" });
+        } else {
+            userNodeReference.remove();
+        }
+    }
+
+    // LocalStorage अपडेट करें
+    if (pointerIdx === -1) {
+        bookmarkArray.push(targetPropId); 
+        localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
+        window.showCenterToast("❤️ Space Bookmarked Safely!");
+    } else {
+        bookmarkArray = bookmarkArray.filter(id => id !== targetPropId); 
+        localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
+        window.showCenterToast("💔 Space Removed from Dashboard.");
+    }
+    window.renderPostsDataPipeline();
+}
 
             if (targetInquiryBtn) {
                 if (!currentSessionUID) { window.showCenterToast("Authentication Required: Redirecting to Login...", false); setTimeout(() => window.location.href = 'login.html', 1000); return; }
@@ -1101,14 +928,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- REALTIME DATA FETCH STREAM FROM FIREBASE ---
 db.ref('properties').on('value', (snapshot) => {
     const response = snapshot.val();
     allPosts = response ? Object.keys(response).map(key => ({ id: key, views: 0, ...response[key] })) : [];
     window.renderPostsDataPipeline(); 
 });
 
-// --- BANNERS ATTACHMENT REALTIME MATRIX ---
 db.ref('banners').on('value', (snapshot) => {
     const rawData = snapshot.val();
     const bannersContainer = document.getElementById('dynamic-banners-container');
@@ -1133,7 +958,6 @@ db.ref('banners').on('value', (snapshot) => {
     }
 });
 
-// CLOUDINARY OPTIMIZER
 function optimizeCloudinaryUrl(url) {
     if (!url || !url.includes("cloudinary.com")) return url;
     if (url.includes("/upload/")) {
@@ -1142,7 +966,6 @@ function optimizeCloudinaryUrl(url) {
     return url;
 }
 
-// Banner Layout Generator
 function generateBannerSlidesLayout(banners) {
     const bannersContainer = document.getElementById('dynamic-banners-container');
     if (!bannersContainer) return;
@@ -1154,12 +977,8 @@ function generateBannerSlidesLayout(banners) {
             .slider-wrapper-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; background: #111827; z-index: 1; }
             .dynamic-banner-slide { display: none; width: 100%; height: 100%; text-decoration: none; background-position: center center; background-repeat: no-repeat; transition: opacity 0.7s ease-in-out; opacity: 0; }
             .dynamic-banner-slide.active { display: block !important; opacity: 1; }
-            @media (min-width: 768px) {
-                .dynamic-banner-slide { background-size: cover; }
-            }
-            @media (max-width: 767px) {
-                .dynamic-banner-slide { background-size: 100% 100%; } 
-            }
+            @media (min-width: 768px) { .dynamic-banner-slide { background-size: cover; } }
+            @media (max-width: 767px) { .dynamic-banner-slide { background-size: 100% 100%; } }
         `;
         document.head.appendChild(styleSheet);
     }
@@ -1218,12 +1037,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!searchInput) return;
 
     const keywords = [
-        "Search Jaipur Properties",
-        "Search Gurugram Apartments",
+        "Try 'PG near Mansarovar with coachings'",
+        "Try 'boys hostel in Jaipur under 7000'",
+        "Try 'girls flat near luxury areas'",
         "Search Premium Rooms",
-        "Search Luxury Flats",
-        "Search Villas",
-        "Search Commercial Spaces"
+        "Search Luxury Flats"
     ];
 
     let word = 0;
@@ -1231,13 +1049,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let deleting = false;
     let cursor = true;
 
-    setInterval(() => {
-        cursor = !cursor;
-    }, 500);
+    setInterval(() => { cursor = !cursor; }, 500);
 
     function animate() {
         let text = keywords[word];
-
         if (!deleting) {
             letter++;
             if (letter >= text.length) {
@@ -1252,11 +1067,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 word = (word + 1) % keywords.length;
             }
         }
-
         searchInput.placeholder = text.substring(0, letter) + (cursor ? "|" : "");
         setTimeout(animate, deleting ? 40 : 70);
     }
-
     animate();
 });
 
@@ -1283,57 +1096,4 @@ function executeInquirySubmission() {
         document.getElementById('inquiry-modal').style.display = 'none';
         document.getElementById('inquiry-form').reset();
     });
-}
-
-function openStay100MembershipPortal() {
-    const mainViewContainer = document.getElementById('listings-container');
-    if (!mainViewContainer) return;
-
-    if (!currentSessionUID) {
-        window.showCenterToast("Please login first to view vendor portal details.", false);
-        return;
-    }
-
-    mainViewContainer.style.display = 'block'; 
-    mainViewContainer.innerHTML = `
-        <div style="padding:30px; text-align:center; font-family:sans-serif; background:#ffffff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.12); border:1px solid #eaeaea; max-width:800px; margin:20px auto;">
-            <h2 style="color:#800020; margin-bottom:10px;"><i class="fa-solid fa-gem"></i> Join Stay100% Premium Vendor Club</h2>
-            <p style="color:#555; font-size:14px; margin-bottom:25px;">Activate your Premium Verification badge to instantly push your property rankings to the top queue layout!</p>
-            
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-bottom:25px;">
-                <div style="border:1px solid #ccc; border-radius:12px; padding:20px; width:200px; background:#fafafa; text-align:center; transition:transform 0.2s;">
-                    <h4 style="margin:0 0 10px 0;">Monthly Plan</h4>
-                    <h2 style="color:#2e7d32; margin:10px 0;">₹99<span style="font-size:13px; color:#666;"> / month</span></h2>
-                    <p style="font-size:11px; color:#888; min-height:30px;">Valid for exactly 30 Days</p>
-                    <button onclick="processMembershipPlanPurchase('99')" style="background:#800020; color:#fff; border:none; padding:10px; width:100%; border-radius:6px; font-weight:bold; cursor:pointer;">Select Plan</button>
-                </div>
-                <div style="border:2px solid #0288d1; border-radius:12px; padding:20px; width:200px; background:#e1f5fe; text-align:center; position:relative; transform: scale(1.05);">
-                    <span style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0288d1; color:#fff; font-size:9px; padding:2px 8px; border-radius:10px; font-weight:bold;">POPULAR</span>
-                    <h4 style="margin:10px 0 10px 0;">Quarterly Plan</h4>
-                    <h2 style="color:#2e7d32; margin:10px 0;">₹249<span style="font-size:13px; color:#666;"> / 3 mo</span></h2>
-                    <p style="font-size:11px; color:#888; min-height:30px;">Valid for exactly 90 Days</p>
-                    <button onclick="processMembershipPlanPurchase('249')" style="background:#0288d1; color:#fff; border:none; padding:10px; width:100%; border-radius:6px; font-weight:bold; cursor:pointer;">Select Plan</button>
-                </div>
-                <div style="border:1px solid #ccc; border-radius:12px; padding:20px; width:200px; background:#fafafa; text-align:center; transition:transform 0.2s;">
-                    <h4 style="margin:0 0 10px 0;">Annual Plan</h4>
-                    <h2 style="color:#2e7d32; margin:10px 0;">₹999<span style="font-size:13px; color:#666;"> / year</span></h2>
-                    <p style="font-size:11px; color:#888; min-height:30px;">Valid for 365 Days</p>
-                    <button onclick="processMembershipPlanPurchase('999')" style="background:#800020; color:#fff; border:none; padding:10px; width:100%; border-radius:6px; font-weight:bold; cursor:pointer;">Select Plan</button>
-                </div>
-            </div>
-            <button onclick="window.location.reload()" style="background:#6c757d; color:#fff; border:none; padding:8px 20px; border-radius:6px; cursor:pointer;">← Back to Home Marketplace</button>
-        </div>
-    `;
-}
-
-function processMembershipPlanPurchase(planAmount) {
-    window.showCenterToast(`Opening Secure Gateway for Amount ₹${planAmount}...`);
-    setTimeout(() => {
-        const timestampDateStr = new Date().toISOString().split('T')[0]; 
-        localStorage.setItem(`stay100_plan_${currentSessionUID}`, planAmount);
-        localStorage.setItem(`stay100_start_${currentSessionUID}`, timestampDateStr);
-        window.showCenterToast("🎉 Payment Confirmed! Stay100% Verification Badge Live.");
-        updateUserProfileUI();
-        window.location.reload();
-    }, 1500);
 }

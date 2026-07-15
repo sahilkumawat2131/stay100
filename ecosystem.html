@@ -6,18 +6,23 @@
     <title>Our Business Ecosystem | Stay100%</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="index.css">
-     <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
     <style>
-        /* Base Palette Uniform Mapping */
+        /* Base Palette Uniform Mapping - Stay100% Olive & Maroon Theme */
         :root {
-            --primary-brand: #ff385c; /* Matching your index.css branding */
-            --dark-surface: #2b3618;  /* Theme depth element */
-            --olive-light: rgba(85, 107, 47, 0.08);
-            --bg-slate: #f4f6f0;
+            --primary-olive: #556b2f;
+            --mehrum: #800020;
+            --olive-light: rgba(85, 107, 47, 0.06);
+            --maroon-light: rgba(128, 0, 32, 0.04);
+            --bg-slate: #f8fafc;
             --card-surface: #ffffff;
-            --text-primary: #1a1a1a;
-            --text-muted: #6b7280;
-            --border-line: #e5e7eb;
+            --text-black: #0f172a;
+            --text-muted: #64748b;
+            --border-line: #e2e8f0;
+            --radius-pill: 100px;
+            --radius-sheet: 24px;
+            --radius-item: 14px;
+            --hover-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* Ecosystem Content Layout Structure */
@@ -29,14 +34,15 @@
         .ecosystem-header {
             text-align: center;
             margin-bottom: 40px;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .ecosystem-header h1 {
             font-size: 32px;
             font-weight: 800;
-            color: #333;
+            color: var(--text-black);
             margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         .ecosystem-header p {
@@ -51,8 +57,8 @@
         .ecosystem-visual-map {
             background: #ffffff;
             padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: var(--radius-sheet);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -60,18 +66,20 @@
         }
 
         .center-hub {
-            background: var(--primary-brand);
-            color: white;
-            padding: 18px 36px;
-            border-radius: 30px;
-            font-size: 18px;
+            background: var(--primary-olive);
+            color: var(--white);
+            padding: 16px 32px;
+            border-radius: var(--radius-pill);
+            font-size: 17px;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(255, 56, 92, 0.25);
+            box-shadow: 0 8px 20px rgba(85, 107, 47, 0.2);
             z-index: 5;
             text-align: center;
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            color: #ffffff;
+            letter-spacing: -0.2px;
         }
 
         /* Main Modules Node Distribution Matrix Grid */
@@ -86,49 +94,56 @@
         .eco-card {
             background: var(--card-surface);
             border: 1px solid var(--border-line);
-            padding: 25px 20px;
-            border-radius: 12px;
+            padding: 28px 20px;
+            border-radius: var(--radius-item);
             text-align: center;
             cursor: pointer;
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            transition: var(--hover-transition);
         }
 
         .eco-card:hover {
             transform: translateY(-4px);
-            border-color: var(--primary-brand);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            border-color: var(--primary-olive);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
         }
 
         .eco-card.active {
-            border-color: var(--primary-brand);
-            background: rgba(255, 56, 92, 0.03);
-            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.05);
+            border-color: var(--mehrum);
+            background: var(--maroon-light);
+            box-shadow: 0 8px 20px rgba(128, 0, 32, 0.05);
         }
 
         .eco-icon-wrapper {
-            width: 55px;
-            height: 55px;
-            background: #f7f7f7;
-            color: #444;
+            width: 56px;
+            height: 56px;
+            background: #f8fafc;
+            color: var(--text-black);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            margin: 0 auto 15px auto;
-            transition: background 0.2s, color 0.2s;
+            margin: 0 auto 16px auto;
+            border: 1px solid #f1f5f9;
+            transition: var(--hover-transition);
         }
 
-        .eco-card:hover .eco-icon-wrapper,
+        .eco-card:hover .eco-icon-wrapper {
+            background: var(--primary-olive);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.15);
+        }
+
         .eco-card.active .eco-icon-wrapper {
-            background: var(--primary-brand);
-            color: white;
+            background: var(--mehrum);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.2);
         }
 
         .eco-card h3 {
             font-size: 16px;
             font-weight: 700;
-            color: #222;
+            color: var(--text-black);
             margin-bottom: 8px;
         }
 
@@ -138,31 +153,34 @@
             line-height: 1.5;
         }
 
-        /* Interactive Details Presentation Terminal */
+        /* Interactive Details Presentation Terminal (Deep Olive Background) */
         .ecosystem-details-panel {
-            background: #1e2513; /* Deep Slate Olive Accent */
-            color: white;
-            padding: 30px;
-            border-radius: 14px;
+            background: #1e2513; 
+            color: #ffffff;
+            padding: 35px;
+            border-radius: var(--radius-item);
             margin-top: 25px;
             display: flex;
             align-items: center;
-            gap: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            animation: fadeIn 0.3s ease-out;
+            gap: 28px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .panel-icon {
-            font-size: 38px;
-            color: rgba(255,255,255,0.95);
-            background: rgba(255,255,255,0.08);
-            width: 75px;
-            height: 75px;
+            font-size: 36px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+            width: 76px;
+            height: 76px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 12px;
             flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--hover-transition);
         }
 
         .panel-text h2 {
@@ -170,38 +188,53 @@
             font-weight: 700;
             margin-bottom: 6px;
             color: #ffffff;
+            letter-spacing: -0.2px;
         }
 
         .panel-text p {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
+            margin: 0;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.99); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: scale(0.98) translateY(5px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         /* Responsive Breakpoints Adaptive Rules */
         @media (max-width: 992px) {
             .ecosystem-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
             }
         }
 
         @media (max-width: 600px) {
+            .ecosystem-visual-map {
+                padding: 30px 16px;
+                border-radius: var(--radius-item);
+            }
             .ecosystem-grid {
                 grid-template-columns: 1fr;
+                gap: 14px;
+                margin-top: 30px;
             }
             .ecosystem-header h1 {
-                font-size: 26px;
+                font-size: 24px;
             }
             .ecosystem-details-panel {
                 flex-direction: column;
                 text-align: center;
-                gap: 15px;
-                padding: 25px 20px;
+                gap: 16px;
+                padding: 24px 20px;
+            }
+            .center-hub {
+                width: 100%;
+                box-sizing: border-box;
+                justify-content: center;
+                font-size: 15px;
             }
         }
     </style>

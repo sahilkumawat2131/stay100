@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties in Jaipur | Stay100%</title>
+    
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pg.css">
+    <link rel="stylesheet" href="pgapp.css">
+
+    <style>
+        /* Embedded styling ensuring high fidelity alignment to visual core layout rules */
+        :root {
+            --primary-olive: #556b2f;
+            --primary-hover: #3d4f22;
+            --bg-cream: #f4f6f0;
+            --text-dark: #1a1a1a;
+            --text-muted: #666666;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .search-filter-wrapper {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            margin-bottom: 30px;
+        }
+
+        .search-bar-core {
+            display: flex;
+            align-items: center;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 4px 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-bar-core:focus-within {
+            border-color: var(--primary-olive);
+            box-shadow: 0 0 0 4px rgba(85, 107, 47, 0.15);
+            background: var(--white);
+        }
+
+        .search-bar-core i {
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .search-bar-core input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 14px 16px;
+            font-size: 16px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .icon-btn:hover {
+            background: #e5e7eb;
+            color: var(--primary-olive);
+        }
+
+        .icon-btn.listening {
+            color: #dc2626;
+            animation: pulseRecord 1.5s infinite alternate;
+        }
+
+        @keyframes pulseRecord {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.15); opacity: 0.7; }
+        }
+
+        .ai-tags-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ai-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary-olive);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-tag {
+            padding: 8px 18px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .filter-tag:hover {
+            background: #e5e7eb;
+        }
+
+        .filter-tag.active {
+            background: var(--primary-olive);
+            color: var(--white);
+            border-color: var(--primary-olive);
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.2);
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            min-height: 400px;
+        }
+
+        .loader-text {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 0;
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Inquiry Modal Framework Styling */
+        .inq-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .inq-modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+        }
+
+        .inq-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .inq-modal-header h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .inq-form-group {
+            margin-bottom: 16px;
+        }
+
+        .inq-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .inq-form-group input, .inq-form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .inq-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-olive);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .inq-submit-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dynamic-header-container"></div>
+
+    <main class="main-container">
+        <h1 style="font-size: 28px; margin-bottom: 25px; color: var(--text-dark); font-weight: 700;">Premium Properties in Jaipur</h1>
+        
+        <section class="search-filter-wrapper">
+            <div class="search-bar-core">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="pg-search-input" placeholder="Search Jaipur PGs, flats, hostels by name or locality...">
+                <button id="voice-search-trigger" class="icon-btn" title="Voice Search">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+            </div>
+            
+            <div class="ai-tags-container">
+                <span class="ai-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Filters:</span>
+                <div class="filter-tag active" data-type="all">All Properties</div>
+                <div class="filter-tag" data-type="rooms">Rooms</div>
+                <div class="filter-tag" data-type="flats">Flats</div>
+                <div class="filter-tag" data-type="single sharing">Single Sharing</div>
+                <div class="filter-tag" data-type="food included">Food Included</div>
+                <div class="filter-tag" data-type="ac">AC Available</div>
+            </div>
+        </section>
+
+        <section class="listings-grid" id="pg-cards-container">
+            <div class="loader-text"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading premium properties in Jaipur...</div>
+        </section>
+    </main>
+
+    <!-- Native Custom Inquiry Modal -->
+    <div class="inq-modal" id="inquiry-modal">
+        <div class="inq-modal-content">
+            <div class="inq-modal-header">
+                <h3>Send Business Inquiry</h3>
+                <button class="icon-btn" onclick="closeInquiryModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="modal-inquiry-form">
+                <input type="hidden" id="inq-prop-id">
+                <div class="inq-form-group">
+                    <label>Selected Property</label>
+                    <input type="text" id="inq-prop-name" readonly style="background: #f3f4f6; font-weight: 600;">
+                </div>
+                <div class="inq-form-group">
+                    <label>Your Message / Requirements</label>
+                    <textarea id="inq-user-message" rows="3" placeholder="Enter scheduling requirements or basic questions..." required></textarea>
+                </div>
+                <button type="submit" class="inq-submit-btn">Submit Verification Inquiry</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dynamic-desktop-footer-container"></div>
+    <div id="dynamic-footer-container"></div>
+
+    <!-- Firebase SDK Layer Stack -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- Fallback Component Architecture Injection if external file fails -->
+    <script>
+        if (!window.PropertyCardComponent) {
+            window.PropertyCardComponent = {
+                render: function(item, savedList) {
+                    const isSaved = savedList.includes(item.id);
+                    return `
+                        <div class="property-card" data-view-id="${item.id}" style="background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer; display: flex; flex-direction: column;">
+                            <div style="height: 200px; background: #e5e7eb; position: relative; background-image: url('${item.image || ''}'); background-size: cover; background-position: center;">
+                                <button data-save-id="${item.id}" style="position: absolute; top: 15px; right: 15px; background: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                    <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart" style="color: ${isSaved ? '#dc2626' : '#666'}"></i>
+                                </button>
+                            </div>
+                            <div style="padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <h3 style="font-size: 18px; margin-bottom: 8px; color: #1a1a1a;">${item.name || 'Premium Property'}</h3>
+                                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;"><i class="fa-solid fa-location-dot" style="color: #556b2f;"></i> ${item.location || 'Jaipur'}</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                                    <span style="font-weight: 700; color: #556b2f; font-size: 18px;">₹${item.price || 'N/A'}<span style="font-size: 12px; font-weight: 400; color: #666;">/mo</span></span>
+                                    <button data-inquiry-id="${item.id}" style="padding: 8px 16px; background: #556b2f; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">Quick Inquiry</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            };
+        }
+    </script>
+    <script src="propertycardscomponants.js" onerror="console.log('Using local fallback card engine')"></script>
+    
+    <!-- Logic Pipeline scripts -->
+    <script src="header.js"></script>
+    <script type="module" src="city.js"></script>
+    <script type="module" src="footer.js"></script>
+</body>
+</html>

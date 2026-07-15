@@ -6,16 +6,26 @@
     <title>Corporate Tie-ups & Housing Solutions | Stay100%</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="index.css">
-     <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
     <style>
         /* CSS Uniform Token Variables */
         :root {
-            --primary-brand: #ff385c; /* Core index mapping match */
-            --dark-olive: #2b3618;
+            --primary-olive: #556b2f;
+            --mehrum: #800020;
+            --olive-light: rgba(85, 107, 47, 0.06);
+            --maroon-light: rgba(128, 0, 32, 0.04);
             --surface-white: #ffffff;
-            --border-muted: #e5e7eb;
-            --text-dark: #1a1a1a;
-            --text-muted: #6b7280;
+            --border-muted: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --radius-sheet: 16px;
+            --radius-item: 12px;
+            --hover-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-dark);
         }
 
         .tieups-section {
@@ -23,15 +33,15 @@
             width: 100%;
         }
 
-        /* Top Hero Pitch Area */
+        /* Top Hero Pitch Area with Deep Olive Background */
         .tieups-banner {
             background: linear-gradient(135deg, #1e2513 0%, #2b3618 100%);
             color: white;
             padding: 50px 40px;
-            border-radius: 16px;
+            border-radius: var(--radius-sheet);
             text-align: center;
             margin-bottom: 40px;
-            box-shadow: 0 4px 20px rgba(43, 54, 24, 0.15);
+            box-shadow: 0 10px 25px rgba(43, 54, 24, 0.15);
         }
 
         .tieups-banner h1 {
@@ -67,30 +77,32 @@
         .feature-tieup-card {
             background: var(--surface-white);
             border: 1px solid var(--border-muted);
-            border-radius: 12px;
+            border-radius: var(--radius-item);
             padding: 24px;
             display: flex;
             gap: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+            transition: var(--hover-transition);
         }
 
         .feature-tieup-card:hover {
             transform: translateX(5px);
-            border-color: var(--primary-brand);
+            border-color: var(--primary-olive);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
         }
 
         .tieup-icon-box {
             width: 50px;
             height: 50px;
-            background: rgba(255, 56, 92, 0.06);
-            color: var(--primary-brand);
+            background: var(--olive-light);
+            color: var(--primary-olive);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             flex-shrink: 0;
+            border: 1px solid rgba(85, 107, 47, 0.08);
         }
 
         .tieup-info-box h3 {
@@ -110,9 +122,9 @@
         .tieups-form-wrapper {
             background: var(--surface-white);
             border: 1px solid var(--border-muted);
-            border-radius: 16px;
+            border-radius: var(--radius-sheet);
             padding: 35px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
 
         .tieups-form-wrapper h2 {
@@ -159,17 +171,17 @@
             font-size: 14px;
             outline: none;
             background: #fff;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: var(--hover-transition);
         }
 
         .tieup-input-node:focus {
-            border-color: var(--primary-brand);
-            box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.08);
+            border-color: var(--mehrum);
+            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.08);
         }
 
         .btn-submit-tieup {
             width: 100%;
-            background: var(--primary-brand);
+            background: var(--mehrum);
             color: white;
             border: none;
             padding: 13px;
@@ -181,13 +193,14 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
-            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.2);
+            transition: var(--hover-transition);
             margin-top: 5px;
         }
 
         .btn-submit-tieup:hover {
-            background: #e03050;
+            background: #6a001a;
+            box-shadow: 0 6px 16px rgba(128, 0, 32, 0.3);
         }
 
         /* Responsive Adapters */
@@ -275,7 +288,7 @@
                 </div>
 
                 <div class="tieups-form-wrapper">
-                    <h2><i class="fa-solid fa-briefcase" style="color: var(--primary-brand);"></i> Partner With Us</h2>
+                    <h2><i class="fa-solid fa-briefcase" style="color: var(--mehrum);"></i> Partner With Us</h2>
                     <p>Register your corporate entity parameters below. Our commercial alliances lead will generate a custom onboarding package within hours.</p>
                     
                     <form id="corporate-tieups-payload">
@@ -336,7 +349,6 @@
 
     <script src="header.js"></script>
     <script>
-        // Tie-up Intake Submission Framework Handler
         document.getElementById('corporate-tieups-payload').addEventListener('submit', function(event) {
             event.preventDefault();
             alert('Success! Your institutional onboarding data model has been dispatched. Our accounts lead will share custom commercial matrices via mail shortly.');

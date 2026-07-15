@@ -56,7 +56,7 @@ const injectGlobalStyles = () => {
             top: 0;
             left: 0;
             right: 0;
-            height: 56px; 
+            height: 70px; 
             z-index: 9999; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
             backdrop-filter: blur(20px);
@@ -158,6 +158,11 @@ const injectGlobalStyles = () => {
         .desktop-header .header-center a:hover,
         .desktop-header .header-center a.active {
             color: var(--white);
+        }
+
+        .desktop-header .header-center a.active {
+            color: var(--white);
+            font-weight: 700;
         }
 
         .desktop-header .header-center a:hover::after,
@@ -508,13 +513,38 @@ const injectGlobalStyles = () => {
                 padding-top: 76px; 
                 padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
             }
+            
+            .desktop-header { 
+                padding: 16px 12px 12px 12px; 
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: auto;
+            }
+
+            .header-left-zone {
+                gap: 0px; 
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: space-between; 
+            }
+
+            .desktop-header .logo-link {
+                margin-left: -6px;  
+                margin-top: 6px;    
+            }
+
+            .city-picker-trigger {
+                padding: 6px 12px;   
+                font-size: 12px;
+                margin-right: 14px;  
+                margin-top: 6px;     
+            }
+
             .desktop-header .header-center { display: none; }
             .list-property-btn { display: none !important; }
             .mobile-bottom-nav { display: flex; }
-            .desktop-header { 
-                padding: 0 20px; 
-                height: 52px; 
-            }
             
             .city-modal-overlay {
                 align-items: flex-end; 
@@ -573,6 +603,7 @@ const injectGlobalStyles = () => {
 class LayoutEngine {
     constructor() {
         this.currentActivePage = "home";
+        this.hasBooted = false;
         
         // Architectural Line Art Vector Database 
         this.availableCities = [
@@ -667,14 +698,40 @@ class LayoutEngine {
         injectGlobalStyles();
     }
 
-    init(activePageContext) {
-        this.currentActivePage = activePageContext || "home";
+    init(activePageContext = null) {
+        if (this.hasBooted && !activePageContext) return;
+
+        this.evaluateRoutingContext(activePageContext);
         this.injectHeader();
         this.injectFooter();
         this.injectCityModal();
         this.applyActiveStates();
         this.attachCitySystemListeners();
         this.applyCityClientSideFilter();
+
+        this.hasBooted = true;
+    }
+
+    evaluateRoutingContext(overrideContext) {
+        if (overrideContext) {
+            this.currentActivePage = overrideContext;
+            return;
+        }
+
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes('index.html') || path.endsWith('/')) {
+            this.currentActivePage = "home";
+        } else if (path.includes('pg.html')) {
+            this.currentActivePage = "pg";
+        } else if (path.includes('room.html')) {
+            this.currentActivePage = "rooms";
+        } else if (path.includes('aboutus.html')) {
+            this.currentActivePage = "about";
+        } else if (path.includes('ourservices.html')) {
+            this.currentActivePage = "services";
+        } else if (path.includes('profile.html')) {
+            this.currentActivePage = "profile";
+        }
     }
 
     injectHeader() {
@@ -719,409 +776,265 @@ class LayoutEngine {
     }
 
     injectFooter() {
-        // --- 1. PREMIUM CSS ARCHITECTURE INJECTION ---
         if (!document.getElementById('staypremium-footer-extended-styles')) {
             const styleElement = document.createElement('style');
             styleElement.id = 'staypremium-footer-extended-styles';
             styleElement.textContent = `
-                /* Core Variables Matrix */
                 :root {
                     --footer-dark-bg: #0b0f19;
                     --footer-glass-border: rgba(255, 255, 255, 0.08);
                     --footer-text-muted: #94a3b8;
-                    --footer-accent-color: #800020; /* Mehrum Accent */
+                    --footer-accent-color: #800020; 
                     --footer-interactive-indigo: #4f46e5;
                     --footer-transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
-                /* Toggle Section Engine */
-                .footer-toggle-wrapper {
-                    text-align: center;
-                    margin-bottom: 24px;
-                }
+                .footer-toggle-wrapper { text-align: center; margin-bottom: 24px; }
                 .btn-footer-toggle {
-                    cursor: pointer;
-                    padding: 10px 24px;
-                    border-radius: 100px;
-                    border: 1px solid var(--footer-glass-border);
-                    background: var(--footer-interactive-indigo);
-                    color: #ffffff;
-                    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                    font-size: 14px;
-                    font-weight: 600;
-                    letter-spacing: 0.3px;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
-                    transition: var(--footer-transition-smooth);
+                    cursor: pointer; padding: 10px 24px; border-radius: 100px; border: 1px solid var(--footer-glass-border);
+                    background: var(--footer-interactive-indigo); color: #ffffff; font-family: system-ui, sans-serif;
+                    font-size: 14px; font-weight: 600; letter-spacing: 0.3px; display: inline-flex; align-items: center; gap: 8px;
+                    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); transition: var(--footer-transition-smooth);
                 }
-                .btn-footer-toggle:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
-                    background: #4338ca;
-                }
+                .btn-footer-toggle:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4); background: #4338ca; }
 
-                /* Column Headers & List Item Styling */
-                .footer-column h4 {
-                    color: #ffffff;
-                    font-size: 16px;
-                    font-weight: 700;
-                    letter-spacing: 0.5px;
-                    margin: 0 0 20px 0;
-                    text-transform: uppercase;
-                    position: relative;
-                    padding-bottom: 8px;
-                }
-                .footer-column h4::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 24px;
-                    height: 2px;
-                    background: var(--footer-accent-color);
-                }
-                .footer-links-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                }
-                .footer-links-list li {
-                    margin-bottom: 12px;
-                }
-                .footer-links-list a {
-                    color: var(--footer-text-muted);
-                    text-decoration: none;
-                    font-size: 14px;
-                    transition: var(--footer-transition-smooth);
-                }
-                .footer-links-list a:hover {
-                    color: #ffffff;
-                    padding-left: 4px;
-                }
-                .footer-address-info p {
-                    color: var(--footer-text-muted);
-                    font-size: 14px;
-                    line-height: 1.6;
-                    margin: 0 0 12px 0;
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 10px;
-                }
-                .footer-address-info i {
-                    color: var(--footer-accent-color);
-                    font-size: 14px;
-                    margin-top: 4px;
-                }
+                .footer-column h4 { color: #ffffff; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; margin: 0 0 20px 0; text-transform: uppercase; position: relative; padding-bottom: 8px; }
+                .footer-column h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 24px; height: 2px; background: var(--footer-accent-color); }
+                .footer-links-list { list-style: none; padding: 0; margin: 0; }
+                .footer-links-list li { margin-bottom: 12px; }
+                .footer-links-list a { color: var(--footer-text-muted); text-decoration: none; font-size: 14px; transition: var(--footer-transition-smooth); }
+                .footer-links-list a:hover { color: #ffffff; padding-left: 4px; }
+                .footer-address-info p { color: var(--footer-text-muted); font-size: 14px; line-height: 1.6; margin: 0 0 12px 0; display: flex; align-items: flex-start; gap: 10px; }
+                .footer-address-info i { color: var(--footer-accent-color); font-size: 14px; margin-top: 4px; }
 
-                /* NoBroker-Style Professional Tab Engine CSS */
-                .footer-seo-tabs-container {
-                    max-width: 1280px;
-                    margin: 40px auto 20px auto;
-                    padding: 0 40px;
-                }
-                .seo-tabs-nav {
-                    display: flex;
-                    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-                    margin-bottom: 24px;
-                    gap: 4px;
-                }
-                .seo-tab-trigger {
-                    background: transparent;
-                    border: none;
-                    color: var(--footer-text-muted);
-                    padding: 12px 24px;
-                    font-size: 14px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    transition: var(--footer-transition-smooth);
-                    position: relative;
-                    bottom: -2px;
-                    border-bottom: 3px solid transparent;
-                }
-                .seo-tab-trigger.active-tab {
-                    color: #ffffff;
-                    border-bottom: 3px solid var(--footer-interactive-indigo);
-                    background: rgba(255, 255, 255, 0.02);
-                }
-                .seo-tab-panel {
-                    display: none;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 30px;
-                }
-                .seo-tab-panel.active-panel {
-                    display: grid;
-                }
-                .seo-column-group h5 {
-                    color: #ffffff;
-                    font-size: 13.5px;
-                    font-weight: 600;
-                    margin: 0 0 14px 0;
-                    padding-bottom: 6px;
-                    border-bottom: 1px dashed rgba(255,255,255,0.1);
-                    letter-spacing: 0.3px;
-                }
-                .seo-links-list {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-                .seo-links-list a {
-                    color: var(--footer-text-muted);
-                    text-decoration: none;
-                    font-size: 12.5px;
-                    line-height: 1.5;
-                    transition: var(--footer-transition-smooth);
-                }
-                .seo-links-list a:hover {
-                    color: #ffffff;
-                    text-shadow: 0 0 1px rgba(255,255,255,0.5);
-                    padding-left: 2px;
-                }
+                .footer-seo-tabs-container { max-width: 1280px; margin: 40px auto 20px auto; padding: 0 40px; }
+                .seo-tabs-nav { display: flex; border-bottom: 2px solid rgba(255, 255, 255, 0.1); margin-bottom: 24px; gap: 4px; }
+                .seo-tab-trigger { background: transparent; border: none; color: var(--footer-text-muted); padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--footer-transition-smooth); position: relative; bottom: -2px; border-bottom: 3px solid transparent; }
+                .seo-tab-trigger.active-tab { color: #ffffff; border-bottom: 3px solid var(--footer-interactive-indigo); background: rgba(255, 255, 255, 0.02); }
+                .seo-tab-panel { display: none; grid-template-columns: repeat(5, 1fr); gap: 30px; }
+                .seo-tab-panel.active-panel { display: grid; }
+                .seo-column-group h5 { color: #ffffff; font-size: 13.5px; font-weight: 600; margin: 0 0 14px 0; padding-bottom: 6px; border-bottom: 1px dashed rgba(255,255,255,0.1); letter-spacing: 0.3px; }
+                .seo-links-list { display: flex; flex-direction: column; gap: 8px; }
+                .seo-links-list a { color: var(--footer-text-muted); text-decoration: none; font-size: 12.5px; line-height: 1.5; transition: var(--footer-transition-smooth); }
+                .seo-links-list a:hover { color: #ffffff; text-shadow: 0 0 1px rgba(255,255,255,0.5); padding-left: 2px; }
 
-                @media (max-width: 1024px) {
-                    .seo-tab-panel {
-                        grid-template-columns: repeat(2, 1fr);
-                        gap: 24px;
-                    }
-                }
+                @media (max-width: 1024px) { .seo-tab-panel { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
                 @media (max-width: 640px) {
-                    .seo-tab-panel {
-                        grid-template-columns: 1fr;
-                        gap: 20px;
-                    }
-                    .seo-tabs-nav {
-                        flex-direction: column;
-                        gap: 0;
-                        border-bottom: none;
-                    }
-                    .seo-tab-trigger {
-                        border-bottom: 1px solid rgba(255,255,255,0.05);
-                        text-align: left;
-                        padding: 10px 12px;
-                    }
-                    .seo-tab-trigger.active-tab {
-                        border-bottom: 1px solid var(--footer-interactive-indigo);
-                        border-left: 3px solid var(--footer-interactive-indigo);
-                    }
-                    .footer-seo-tabs-container {
-                        padding-left: 24px;
-                        padding-right: 24px;
-                    }
+                    .seo-tab-panel { grid-template-columns: 1fr; gap: 20px; }
+                    .seo-tabs-nav { flex-direction: column; gap: 0; border-bottom: none; }
+                    .seo-tab-trigger { border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; padding: 10px 12px; }
+                    .seo-tab-trigger.active-tab { border-bottom: 1px solid var(--footer-interactive-indigo); border-left: 3px solid var(--footer-interactive-indigo); }
+                    .footer-seo-tabs-container { padding-left: 24px; padding-right: 24px; }
                 }
             `;
             document.head.appendChild(styleElement);
         }
 
-// --- 1. MOBILE BOTTOM NAVIGATION SYSTEM INJECTION ---
-    const mobileContainer = document.getElementById('dynamic-footer-container');
-    if (mobileContainer) {
-        mobileContainer.innerHTML = `
-            <nav class="mobile-bottom-nav">
-                <a href="index.html" class="nav-item" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
-                <a href="pg.html" class="nav-item" data-page="pg"><i class="fa-solid fa-hotel"></i><span>PG's</span></a>
-                <a href="room.html" class="nav-item" data-page="rooms"><i class="fa-solid fa-bed"></i><span>Flats</span></a>
-                <a href="profile.html" class="nav-item" data-page="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-            </nav>
-        `;
-    }
+        const mobileContainer = document.getElementById('dynamic-footer-container');
+        if (mobileContainer) {
+            mobileContainer.innerHTML = `
+                <nav class="mobile-bottom-nav">
+                    <a href="index.html" class="nav-item" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+                    <a href="pg.html" class="nav-item" data-page="pg"><i class="fa-solid fa-hotel"></i><span>PG's</span></a>
+                    <a href="room.html" class="nav-item" data-page="rooms"><i class="fa-solid fa-bed"></i><span>Flats</span></a>
+                    <a href="profile.html" class="nav-item" data-page="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+                </nav>
+            `;
+        }
 
-    // --- 2. DESKTOP FOOTER SYSTEM INJECTION WITH SEO LINK SYNC ---
-    const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
-    if (desktopFooterContainer) {
-        desktopFooterContainer.innerHTML = `
-            <div class="footer-toggle-wrapper">
-                <button id="btn-global-footer-toggle" class="btn-footer-toggle">
-                    <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
-                    <span id="toggle-text">Show Full Directory</span>
-                </button>
-            </div>
-
-            <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
-                <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
-                    <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
-                    <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
-                    <g transform="translate(150, 220) scale(0.85)">
-                        <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
-                        <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
-                        <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
-                        <circle cx="132" cy="172" r="2" fill="#ffffff" />
-                    </g>
-                    <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
-                </svg>
-
-                <div class="footer-grid-container">
-                    <div class="footer-brand-column">
-                        <a href="index.html" class="footer-logo-link">
-                            <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
-                        </a>
-                        <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
-                        <div class="footer-social-icons">
-                            <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
-                            <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <ul class="footer-links-list">
-                            <li><a href="aboutus.html">About Corporate Group</a></li>
-                            <li><a href="ecosystem.html">Premium Ecosystem</a></li>
-                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                            <li><a href="terms.html">Terms & Conditions</a></li>
-                            <li><a href="faqs.html">Faq's</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Partners</h4>
-                        <ul class="footer-links-list">
-                            <li><a href="admin.html">Admin Hub</a></li>
-                            <li><a href="corporate.html">Corporate Tie-ups</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Contact Info</h4>
-                        <div class="footer-address-info">
-                            <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
-                            <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
-                            <p><i class="fa-solid fa-envelope"></i> <span>supportstay100@gmail.com</span></p>
-                        </div>
-                    </div>
+        const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
+        if (desktopFooterContainer) {
+            desktopFooterContainer.innerHTML = `
+                <div class="footer-toggle-wrapper">
+                    <button id="btn-global-footer-toggle" class="btn-footer-toggle">
+                        <i class="fa-solid fa-circle-chevron-down" id="toggle-icon" style="transition: transform 0.3s ease;"></i> 
+                        <span id="toggle-text">Show Full Directory</span>
+                    </button>
                 </div>
 
-                <div class="footer-seo-tabs-container">
-                    <div class="seo-tabs-nav">
-                        <button class="seo-tab-trigger active-tab" data-target="panel-north-west-cities">North & West Zones</button>
-                        <button class="seo-tab-trigger" data-target="panel-south-cities">South Metro Zones</button>
-                        <button class="seo-tab-trigger" data-target="panel-special-configs">Special Properties</button>
-                    </div>
+                <footer id="staypremium-core-footer" class="main-desktop-footer" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
+                    <svg class="footer-landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
+                        <path d="M-50,400 L200,180 L450,320 L750,110 L1100,340 L1250,220 L1250,400 Z" fill="none" stroke="#ffffff" stroke-width="1.5" />
+                        <path d="M50,400 L380,230 L600,340 L900,160 L1250,390 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5" />
+                        <g transform="translate(150, 220) scale(0.85)">
+                            <polygon points="120,40 40,110 200,110" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+                            <rect x="55" y="110" width="130" height="90" fill="none" stroke="#ffffff" stroke-width="2" />
+                            <rect x="100" y="145" width="40" height="55" fill="none" stroke="#ffffff" stroke-width="2" />
+                            <circle cx="132" cy="172" r="2" fill="#ffffff" />
+                        </g>
+                        <line x1="0" y1="398" x2="1200" y2="398" stroke="#ffffff" stroke-width="3" />
+                    </svg>
 
-                    <div class="seo-tabs-content-body">
-                        <div id="panel-north-west-cities" class="seo-tab-panel active-panel">
-                            <div class="seo-column-group">
-                                <h5>Jaipur Directory</h5>
-                                <div class="seo-links-list">
-                                    <a href="jaipur.html?type=flat&area=mansarovar">Flats in Mansarovar Road</a>
-                                    <a href="jaipur.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
-                                    <a href="jaipur.html?type=flat&area=malviyanagar">Apartments Malviya Nagar</a>
-                                    <a href="jaipur.html?type=pg&landmark=coaching">PG near Allen & Resonance</a>
-                                    <a href="jaipur.html?type=flat&budget=10k">Budget Flats under 10k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Delhi NCR Directory</h5>
-                                <div class="seo-links-list">
-                                    <a href="delhi.html?type=flat&area=rajindernagar">UPSC Flats Old Rajinder Nagar</a>
-                                    <a href="delhi.html?type=flat&area=laxminagar">1 BHK Stays in Laxmi Nagar</a>
-                                    <a href="delhi.html?type=flat&area=northcampus">Student Flats DU North Campus</a>
-                                    <a href="delhi.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
-                                    <a href="delhi.html?type=flat&area=ndls">Properties near NDLS Station</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Gurugram Directory</h5>
-                                <div class="seo-links-list">
-                                    <a href="gurugram.html?type=flat&area=cybercity">Corporate Suites Cyber City</a>
-                                    <a href="gurugram.html?type=flat&area=sector48">2 BHK Sector 48 Sohna Road</a>
-                                    <a href="gurugram.html?type=flat&area=hudacity">Studio near Millennium Metro</a>
-                                    <a href="gurugram.html?type=flat&area=sector21">Managed Flatsuites Sector 21</a>
-                                    <a href="gurugram.html?type=flat&budget=15k">Premium Flats under 15k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Noida Directory</h5>
-                                <div class="seo-links-list">
-                                    <a href="noida.html?type=flat&area=sector62">IT Park Linked Flats Sec 62</a>
-                                    <a href="noida.html?type=flat&area=sector15">Metro Walk Rooms Sector 15</a>
-                                    <a href="noida.html?type=flat&area=knowledgepark">Knowledge Park Units</a>
-                                    <a href="noida.html?type=flat&area=amity">Independent Stays near Amity</a>
-                                    <a href="noida.html?type=flat&budget=12k">Furnished Flats under 12k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Mumbai & Pune</h5>
-                                <div class="seo-links-list">
-                                    <a href="mumbai.html?type=pg&area=andheri">Executive Co-living Andheri</a>
-                                    <a href="mumbai.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
-                                    <a href="pune.html?type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3</a>
-                                    <a href="pune.html?type=pg&area=vimannagar">Student Rooms Viman Nagar</a>
-                                    <a href="pune.html?type=pg&facility=food">Premium Food Attached PG</a>
-                                </div>
+                    <div class="footer-grid-container">
+                        <div class="footer-brand-column">
+                            <a href="index.html" class="footer-logo-link">
+                                <img src="assets/stay100-1.png" alt="Stay100% Logo" style="height: 52px; width: auto; object-fit: contain;" />
+                            </a>
+                            <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
+                            <div class="footer-social-icons">
+                                <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
+                                <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
                             </div>
                         </div>
-
-                        <div id="panel-south-cities" class="seo-tab-panel">
-                            <div class="seo-column-group">
-                                <h5>Bangalore Hubs</h5>
-                                <div class="seo-links-list">
-                                    <a href="bengluru.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
-                                    <a href="bengluru.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
-                                    <a href="bengluru.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
-                                    <a href="bengluru.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>
-                                    <a href="bengluru.html?type=flat&budget=15k">Fully Furnished Units under 15k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Hyderabad Hubs</h5>
-                                <div class="seo-links-list">
-                                    <a href="hyderabad.html?type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
-                                    <a href="hyderabad.html?type=pg&area=gachibowli">Professional Suites Gachibowli</a>
-                                    <a href="hyderabad.html?type=pg&area=ameerpet">Coaching Area Rooms Ameerpet</a>
-                                    <a href="hyderabad.html?type=flat&area=madhapur">Managed Studio Flats Madhapur</a>
-                                    <a href="hyderabad.html?type=pg&budget=6k">Sharing Room Systems under 6k</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Chennai Hubs</h5>
-                                <div class="seo-links-list">
-                                    <a href="chennai.html?type=flat&area=omr">IT Highway Rooms OMR Road</a>
-                                    <a href="chennai.html?type=pg&area=adyar">Student Co-living Hostels Adyar</a>
-                                    <a href="chennai.html?type=flat&area=velachery">1 & 2 BHK Apartments Velachery</a>
-                                    <a href="chennai.html?type=pg&area=anna-nagar">Executive Staying Units Anna Nagar</a>
-                                    <a href="chennai.html?type=flat&budget=10k">Budget Rental Rooms under 10k</a>
-                                </div>
-                            </div>
+                        
+                        <div class="footer-column">
+                            <h4>Company</h4>
+                            <ul class="footer-links-list">
+                                <li><a href="aboutus.html">About Corporate Group</a></li>
+                                <li><a href="ecosystem.html">Premium Ecosystem</a></li>
+                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                                <li><a href="terms.html">Terms & Conditions</a></li>
+                                <li><a href="faqs.html">Faq's</a></li>
+                            </ul>
                         </div>
-
-                        <div id="panel-special-configs" class="seo-tab-panel">
-                            <div class="seo-column-group">
-                                <h5>Gender Orientations</h5>
-                                <div class="seo-links-list">
-                                    <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
-                                    <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
-                                    <a href="index.html?gender=unisex">Unisex/Family Friendly Apartments</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Sharing & Layout Types</h5>
-                                <div class="seo-links-list">
-                                    <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
-                                    <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
-                                    <a href="index.html?sharing=triple">Triple Sharing Student Housing</a>
-                                </div>
-                            </div>
-                            <div class="seo-column-group">
-                                <h5>Trust & Verification</h5>
-                                <div class="seo-links-list">
-                                    <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
-                                </div>
+                        
+                        <div class="footer-column">
+                            <h4>Partners</h4>
+                            <ul class="footer-links-list">
+                                <li><a href="admin.html">Admin Hub</a></li>
+                                <li><a href="corporate.html">Corporate Tie-ups</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-column">
+                            <h4>Contact Info</h4>
+                            <div class="footer-address-info">
+                                <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
+                                <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
+                                <p><i class="fa-solid fa-envelope"></i> <span>supportstay100@gmail.com</span></p>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="footer-bottom-bar">
-                    <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network. Dedicated to delivering 100% transparent rental solutions across India.</div>
-                </div>
-            </footer>
-        `;
-        
-            // --- 4. UNIFIED INTERACTIVE TOGGLE LOGIC FOR DESKTOP & MOBILE ---
+                    <div class="footer-seo-tabs-container">
+                        <div class="seo-tabs-nav">
+                            <button class="seo-tab-trigger active-tab" data-target="panel-north-west-cities">North & West Zones</button>
+                            <button class="seo-tab-trigger" data-target="panel-south-cities">South Metro Zones</button>
+                            <button class="seo-tab-trigger" data-target="panel-special-configs">Special Properties</button>
+                        </div>
+
+                        <div class="seo-tabs-content-body">
+                            <div id="panel-north-west-cities" class="seo-tab-panel active-panel">
+                                <div class="seo-column-group">
+                                    <h5>Jaipur Directory</h5>
+                                    <div class="seo-links-list">
+                                        <a href="jaipur.html?type=flat&area=mansarovar">Flats in Mansarovar Road</a>
+                                        <a href="jaipur.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
+                                        <a href="jaipur.html?type=flat&area=malviyanagar">Apartments Malviya Nagar</a>
+                                        <a href="jaipur.html?type=pg&landmark=coaching">PG near Allen & Resonance</a>
+                                        <a href="jaipur.html?type=flat&budget=10k">Budget Flats under 10k</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Delhi NCR Directory</h5>
+                                    <div class="seo-links-list">
+                                        <a href="delhi.html?type=flat&area=rajindernagar">UPSC Flats Old Rajinder Nagar</a>
+                                        <a href="delhi.html?type=flat&area=laxminagar">1 BHK Stays in Laxmi Nagar</a>
+                                        <a href="delhi.html?type=flat&area=northcampus">Student Flats DU North Campus</a>
+                                        <a href="delhi.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
+                                        <a href="delhi.html?type=flat&area=ndls">Properties near NDLS Station</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Gurugram Directory</h5>
+                                    <div class="seo-links-list">
+                                        <a href="gurugram.html?type=flat&area=cybercity">Corporate Suites Cyber City</a>
+                                        <a href="gurugram.html?type=flat&area=sector48">2 BHK Sector 48 Sohna Road</a>
+                                        <a href="gurugram.html?type=flat&area=hudacity">Studio near Millennium Metro</a>
+                                        <a href="gurugram.html?type=flat&area=sector21">Managed Flatsuites Sector 21</a>
+                                        <a href="gurugram.html?type=flat&budget=15k">Premium Flats under 15k</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Noida Directory</h5>
+                                    <div class="seo-links-list">
+                                        <a href="noida.html?type=flat&area=sector62">IT Park Linked Flats Sec 62</a>
+                                        <a href="noida.html?type=flat&area=sector15">Metro Walk Rooms Sector 15</a>
+                                        <a href="noida.html?type=flat&area=knowledgepark">Knowledge Park Units</a>
+                                        <a href="noida.html?type=flat&area=amity">Independent Stays near Amity</a>
+                                        <a href="noida.html?type=flat&budget=12k">Furnished Flats under 12k</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Mumbai & Pune</h5>
+                                    <div class="seo-links-list">
+                                        <a href="mumbai.html?type=pg&area=andheri">Executive Co-living Andheri</a>
+                                        <a href="mumbai.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
+                                        <a href="pune.html?type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3</a>
+                                        <a href="pune.html?type=pg&area=vimannagar">Student Rooms Viman Nagar</a>
+                                        <a href="pune.html?type=pg&facility=food">Premium Food Attached PG</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="panel-south-cities" class="seo-tab-panel">
+                                <div class="seo-column-group">
+                                    <h5>Bangalore Hubs</h5>
+                                    <div class="seo-links-list">
+                                        <a href="bengluru.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
+                                        <a href="bengluru.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
+                                        <a href="bengluru.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
+                                        <a href="bengluru.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>
+                                        <a href="bengluru.html?type=flat&budget=15k">Fully Furnished Units under 15k</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Hyderabad Hubs</h5>
+                                    <div class="seo-links-list">
+                                        <a href="hyderabad.html?type=pg&area=hitechcity">Luxury Co-living near HITEC City</a>
+                                        <a href="hyderabad.html?type=pg&area=gachibowli">Professional Suites Gachibowli</a>
+                                        <a href="hyderabad.html?type=pg&area=ameerpet">Coaching Area Rooms Ameerpet</a>
+                                        <a href="hyderabad.html?type=flat&area=madhapur">Managed Studio Flats Madhapur</a>
+                                        <a href="hyderabad.html?type=pg&budget=6k">Sharing Room Systems under 6k</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Chennai Hubs</h5>
+                                    <div class="seo-links-list">
+                                        <a href="chennai.html?type=flat&area=omr">IT Highway Rooms OMR Road</a>
+                                        <a href="chennai.html?type=pg&area=adyar">Student Co-living Hostels Adyar</a>
+                                        <a href="chennai.html?type=flat&area=velachery">1 & 2 BHK Apartments Velachery</a>
+                                        <a href="chennai.html?type=pg&area=anna-nagar">Executive Staying Units Anna Nagar</a>
+                                        <a href="chennai.html?type=flat&budget=10k">Budget Rental Rooms under 10k</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="panel-special-configs" class="seo-tab-panel">
+                                <div class="seo-column-group">
+                                    <h5>Gender Orientations</h5>
+                                    <div class="seo-links-list">
+                                        <a href="index.html?gender=girls">Girls Only Premium Shared Spaces</a>
+                                        <a href="index.html?gender=boys">Boys Executive Co-living Flatmates</a>
+                                        <a href="index.html?gender=unisex">Unisex/Family Friendly Apartments</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Sharing & Layout Types</h5>
+                                    <div class="seo-links-list">
+                                        <a href="index.html?sharing=single">Single Occupancy Private Rooms</a>
+                                        <a href="index.html?sharing=double">Double Sharing Corporate Setup</a>
+                                        <a href="index.html?sharing=triple">Triple Sharing Student Housing</a>
+                                    </div>
+                                </div>
+                                <div class="seo-column-group">
+                                    <h5>Trust & Verification</h5>
+                                    <div class="seo-links-list">
+                                        <a href="index.html?verified=true">Zero-Deposit Verified Rental Networks</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-bottom-bar">
+                        <div>© 2026 Stay100% All Rights Reserved. Conceptualized by Stay100% Enterprise Network. Dedicated to delivering 100% transparent rental solutions across India.</div>
+                    </div>
+                </footer>
+            `;
+            
             const toggleButton = document.getElementById('btn-global-footer-toggle');
             const footerElement = document.getElementById('staypremium-core-footer');
             const toggleIcon = document.getElementById('toggle-icon');
@@ -1161,7 +1074,6 @@ class LayoutEngine {
                 });
             }
 
-            // --- 5. NO-BROKER MULTI-TAB NAVIGATION ROUTER ENGINE ---
             const tabTriggers = desktopFooterContainer.querySelectorAll('.seo-tab-trigger');
             const tabPanels = desktopFooterContainer.querySelectorAll('.seo-tab-panel');
 
@@ -1304,6 +1216,6 @@ window.LayoutEngine = new LayoutEngine();
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.customPageContextSet) {
-        window.LayoutEngine.init("home");
+        window.LayoutEngine.init();
     }
 });

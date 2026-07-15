@@ -6,13 +6,24 @@
     <title>Privacy Policy | STAY100%</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="index.css">
-     <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
     <style>
         /* --- GLOBAL NATIVE FIT RESET --- */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        :root {
+            --primary-olive: #556b2f;
+            --mehrum: #800020;
+            --maroon-light: rgba(128, 0, 32, 0.04);
+            --text-black: #0f172a;
+            --text-muted: #64748b;
+            --border-line: #e2e8f0;
+            --radius-sheet: 20px;
+            --hover-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         body {
@@ -36,29 +47,29 @@
         /* --- DOCUMENTATION LAYOUT CONTAINER --- */
         .doc-wrapper {
             background: #fff;
-            border-radius: 20px;
+            border-radius: var(--radius-sheet);
             padding: 40px 30px;
             margin: 30px 0 50px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            border: 1px solid var(--border-line);
             animation: fadeIn 0.4s ease-in-out;
         }
 
         /* --- DOC HEADER --- */
         .doc-header {
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid var(--border-line);
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
         .doc-header h1 {
             font-size: clamp(26px, 5vw, 36px);
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text-black);
             margin-bottom: 10px;
         }
         .doc-header p {
             font-size: 14px;
-            color: #64748b;
+            color: var(--text-muted);
         }
 
         /* --- DOC CONTENT & TYPOGRAPHY --- */
@@ -69,14 +80,14 @@
         .doc-section h2 {
             font-size: clamp(18px, 4vw, 22px);
             font-weight: 700;
-            color: #0f172a;
+            color: var(--text-black);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         .doc-section h2 i {
-            color: #4f46e5;
+            color: var(--primary-olive);
             font-size: 18px;
         }
         .doc-section p {
@@ -105,35 +116,35 @@
             content: "\f00c";
             font-family: "Font Awesome 6 Free";
             font-weight: 900;
-            color: #4f46e5;
+            color: var(--mehrum);
             font-size: 12px;
             margin-top: 4px;
         }
 
         /* --- HYPERLINKS STYLE --- */
         .doc-link {
-            color: #4f46e5;
+            color: var(--mehrum);
             text-decoration: none;
             font-weight: 600;
-            border-bottom: 1px dashed #4f46e5;
-            transition: all 0.2s ease;
+            border-bottom: 1px dashed var(--mehrum);
+            transition: var(--hover-transition);
         }
         .doc-link:hover {
-            color: #4338ca;
+            color: #6a001a;
             border-bottom-style: solid;
         }
 
         /* --- CALLOUT BOX --- */
         .doc-callout {
-            background: #eeebff;
-            border-left: 4px solid #4f46e5;
+            background: var(--maroon-light);
+            border-left: 4px solid var(--mehrum);
             padding: 20px;
             border-radius: 0 12px 12px 0;
             margin: 25px 0;
         }
         .doc-callout p {
             font-size: 14px;
-            color: #4338ca;
+            color: var(--mehrum);
             margin: 0;
             font-weight: 500;
         }
@@ -211,7 +222,7 @@
             <section class="doc-section">
                 <h2><i class="fa-solid fa-envelope-open-text"></i> 6. Contact Our Privacy Officer</h2>
                 <p>If you have questions regarding this documentation, cookie consent configurations, or data encryption infrastructure, feel free to reach out to our management deck:</p>
-                <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> <a href="supportstay100@gmail.com" class="doc-link">privacy@stay100.in</a></p>
+                <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> <a href="mailto:supportstay100@gmail.com" class="doc-link">privacy@stay100.in</a></p>
                 <p><i class="fa-solid fa-headset"></i> <strong>Helpdesk Support:</strong> <a href="aboutus.html" class="doc-link">Submit a Grievance Ticket</a></p>
             </section>
 

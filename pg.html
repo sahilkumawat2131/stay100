@@ -3,143 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Premium PGs & Co-Living Spaces | Stay100%</title>
     <meta name="description" content="Book verified premium PGs and luxury co-living spaces under budget. Zero brokerage choices available.">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="pg.css">
-    <link rel="stylesheet" href="pgapp.css">
     
-    <style>
-        .pg-card {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-        }
-        .card-save-btn:hover {
-            transform: scale(1.15);
-            background: #ffffff !important;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .premium-promo-banner {
-            background: #eaf7f2;
-            border-radius: 20px;
-            padding: 40px 50px;
-            margin: 30px auto;
-            max-width: 1200px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.03);
-            box-sizing: border-box;
-        }
-        .banner-flex-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 30px;
-            width: 100%;
-        }
-        .promo-banner-left {
-            flex: 1;
-            max-width: 60%;
-        }
-        .promo-banner-left h2 {
-            font-size: 32px;
-            color: #0c1e36;
-            font-weight: 800;
-            margin: 0 0 10px 0;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-        .promo-banner-left p {
-            font-size: 16px;
-            color: #52627a;
-            margin: 0 0 25px 0;
-        }
-        .promo-btn-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .promo-post-btn {
-            background: #8b0000;
-            color: #ffffff !important;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 15px;
-            text-decoration: none;
-            transition: background 0.2s ease;
-            display: inline-block;
-            box-shadow: 0 4px 10px rgba(139,0,0,0.2);
-        }
-        .promo-post-btn:hover {
-            background: #600000;
-            text-decoration: none !important;
-        }
-        .promo-whatsapp-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #1c2d42 !important;
-            font-weight: 600;
-            font-size: 15px;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        .promo-whatsapp-link:hover {
-            text-decoration: underline !important;
-            color: #25D366 !important;
-        }
-        .promo-banner-right {
-            flex: 1;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-        .promo-banner-right img {
-            max-height: 220px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
-        
-        @media (max-width: 768px) {
-            .premium-promo-banner { padding: 30px 20px; }
-            .banner-flex-container { flex-direction: column; text-align: center; gap: 25px; }
-            .promo-banner-left { max-width: 100%; order: 1; }
-            .promo-banner-left h2 { font-size: 24px; }
-            .promo-banner-left p { font-size: 14px; }
-            .promo-btn-container { justify-content: center; flex-direction: column; gap: 15px; width: 100%; }
-            .promo-post-btn { width: 100%; text-align: center; box-sizing: border-box; }
-            .promo-banner-right { width: 100%; justify-content: center; order: 2; }
-            .promo-banner-right img { max-height: 160px; }
-        }
-    </style>
+    <!-- Design Toolkits -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pg.css">
 </head>
 <body>
 
     <div id="dynamic-header-container"></div>
 
     <main class="main-container">
-        <h1 style="display: none;">Premium PGs, Hostels & Co-Living Spaces</h1>
         
+        <!-- ADVANCED SEARCH & AI SUGGESTION CONTROL PANEL -->
         <section class="search-filter-wrapper">
-            <div class="search-bar-core">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="pg-search-input" placeholder="Search premium PGs by name, area or landmark...">
-                <button id="voice-search-trigger" class="icon-btn" title="Voice Search">
-                    <i class="fa-solid fa-microphone"></i>
-                </button>
+            <div class="search-bar-core-container">
+                <div class="search-bar-core">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="pg-search-input" placeholder="Search premium PGs by area, landmark, budget..." autocomplete="off">
+                    <button id="voice-search-trigger" class="icon-btn" title="Voice Search">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                </div>
+                <!-- AI Smart Keyword Suggestion Dropdown Box -->
+                <div id="ai-autocomplete-dropdown" class="ai-autocomplete-box" style="display: none;"></div>
             </div>
             
             <div class="ai-tags-container">
@@ -149,49 +39,95 @@
                 <div class="filter-tag" data-type="double sharing">Double Sharing</div>
                 <div class="filter-tag" data-type="triple sharing">Triple Sharing</div>
                 <div class="filter-tag" data-type="fully furnished">Fully Furnished</div>
-                <div class="filter-tag" data-type="semi furnished">Semi Furnished</div>
                 <div class="filter-tag" data-type="food included">Food Included</div>
                 <div class="filter-tag" data-type="ac">AC Available</div>
+                <div class="filter-tag" data-type="budget">Low Budget (&lt; ₹8000)</div>
             </div>
         </section>
 
+        <!-- ADVERTISEMENT BANNER PLACE 1 -->
         <section class="premium-promo-banner" aria-label="Property Advertisement Banner">
             <div class="banner-flex-container">
                 <div class="promo-banner-left">
-                    <h2>Rent faster at the right price!</h2>
-                    <p>Your perfect Rentals is waiting, list your property now</p>
+                    <span class="ad-pill">ADVERTISEMENT</span>
+                    <h2>Rent Faster at the Right Price!</h2>
+                    <p>Your perfect PG space is waiting. List your property on Stay100% now.</p>
                     <div class="promo-btn-container">
                         <a href="vendor-registration.html" class="promo-post-btn">Post Property, It's FREE</a>
                         <a href="https://wa.me/9680063684?text=I%20want%20to%20post%20my%20property" target="_blank" class="promo-whatsapp-link">
-                            Post via 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="color: #25D366; vertical-align: middle; margin: 0 2px 0 4px;">
-                              <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.69-4.98c-.202-.101-1.194-.588-1.379-.653-.185-.069-.32-.102-.455.101-.135.202-.52.653-.637.786-.117.135-.235.151-.437.05-.202-.101-.852-.313-1.623-.999-.6-.535-1.005-1.199-1.123-1.401-.117-.202-.012-.311.089-.41.09-.09.202-.236.3-.353.101-.117.135-.198.202-.333.067-.136.034-.253-.017-.354-.05-.101-.455-1.096-.624-1.503-.165-.398-.332-.344-.455-.35-.117-.006-.253-.007-.39-.007a.77.77 0 0 0-.558.26c-.185.202-.708.692-.708 1.688s.725 1.96 1.826 2.456c.102.046 1.8 2.751 4.36 3.857.61.263 1.087.42 1.458.537.613.195 1.173.167 1.615.102.493-.073 1.195-.488 1.362-.958.167-.47.167-.872.117-.958-.05-.088-.185-.136-.388-.237"/>
-                            </svg>
-                            Whatsapp &rarr;
+                            Post via Whatsapp <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px;"></i>
                         </a>
                     </div>
                 </div>
                 <div class="promo-banner-right">
-                    <img src="stay1.png" alt="Presentation Mockup">
+                    <img src="stay1.png" alt="Presentation Mockup" onerror="this.src='https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=350&q=80'">
                 </div>
             </div>
         </section>
 
-        <section class="listings-grid" id="pg-cards-container">
-            <div class="loader-text">Connecting to Firebase Cluster Services...</div>
-        </section>
+        <!-- SEGREGATED AGGREGATION VIEW CONTAINERS -->
+        <div id="pg-sections-master-wrapper">
+            
+            <!-- SECTION 1: TRENDING NOW -->
+            <div class="pg-matrix-section" id="sec-trending-wrapper" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fa-solid fa-fire text-trending"></i> Trending Spaces</h2>
+                    <p class="section-subtitle">Highly sought after PG listings with max user engagement this week</p>
+                </div>
+                <section class="listings-grid" id="grid-trending"></section>
+            </div>
+
+            <!-- SECTION 2: STAY100% PREFERRED -->
+            <div class="pg-matrix-section" id="sec-preferred-wrapper" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fa-solid fa-award text-preferred"></i> Stay100% Preferred</h2>
+                    <p class="section-subtitle">Premium selected high-grade assets matching optimal luxury indexes</p>
+                </div>
+                <section class="listings-grid" id="grid-preferred"></section>
+            </div>
+
+            <!-- ADVERTISEMENT DISPLAY BANNER PLACE 2 (MID GRID NATIVE INLINE AD) -->
+            <div class="inline-advertisement-strip">
+                <div class="inline-ad-content">
+                    <h4>Looking for Zero Brokerage Offers?</h4>
+                    <p>Unlock premium luxury co-living amenities at unmatched introductory rates today.</p>
+                </div>
+                <a href="#explore" class="btn-ad-explore">Explore Offers &rarr;</a>
+            </div>
+
+            <!-- SECTION 3: RECOMMENDED / ALL SPACES -->
+            <div class="pg-matrix-section" id="sec-recommended-wrapper">
+                <div class="section-header">
+                    <h2 class="section-title" id="listings-heading"><i class="fa-solid fa-thumbs-up text-recommended"></i> Recommended Accommodations</h2>
+                    <p class="section-subtitle">Tailored options based on verified data configurations</p>
+                </div>
+                <section class="listings-grid" id="grid-recommended">
+                    <div class="loader-text">Connecting to Firebase Cluster Services...</div>
+                </section>
+            </div>
+
+            <!-- SECTION 4: LATEST ARRIVALS -->
+            <div class="pg-matrix-section" id="sec-latest-wrapper" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fa-solid fa-calendar-day text-latest"></i> Latest Arrivals</h2>
+                    <p class="section-subtitle">Freshly verified properties recently boarded onto the network</p>
+                </div>
+                <section class="listings-grid" id="grid-latest"></section>
+            </div>
+            
+        </div>
         
     </main>
 
     <div id="dynamic-desktop-footer-container"></div>
     <div id="dynamic-footer-container"></div>
 
+    <!-- Firebase Script Libraries Core Layer -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <script src="header.js"></script>
     <script type="module" src="pg.js"></script>
     <script type="module" src="footer.js"></script>
-    <script src="propertycardscomponants.js"></script>
 </body>
 </html>
