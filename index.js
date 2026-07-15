@@ -14,6 +14,7 @@ const firebaseConfig = {
   appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
   measurementId: "G-4J40FKKDNT"
 };
+
 // Check if app initialization is pending
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -121,7 +122,7 @@ window.syncAndRenderFilters = function() {
     window.filterState.maxBudget = dBudget ? parseFloat(dBudget) : Infinity;
 
     // 2. Locality/Area Filter Sync
-    window.filterState.area = document.getElementById('filter-locality')?.value.toLowerCase().trim() || "";
+    window.filterState.area = document.getElementById('filter-locality')?.value?.toLowerCase().trim() || "";
     
     // 3. Gender Filter Sync
     const genderActive = document.querySelector('input[name="desktop-gender"]:checked') || document.getElementById('filter-gender');
@@ -282,20 +283,24 @@ function getEmptyStateHTML() {
 function parseAndApplyUrlFilters() {
     const urlParams = new URLSearchParams(window.location.search);
     
+    // Global filterState structure safety check
+    if (!window.filterState) window.filterState = {};
+    
     // 1. City Linkage
     const locationParam = urlParams.get('location');
     if (locationParam) {
         localStorage.setItem('staypremium_selected_city', locationParam.toLowerCase().trim());
-        // Sync layout header buttons if city selector component exists
         const headerCityLabel = document.getElementById('current-city-label');
-        if (headerCityLabel) headerCityLabel.innerText = locationParam.charAt(0).toUpperCase() + locationParam.slice(1);
+        if (headerCityLabel) {
+            headerCityLabel.innerText = locationParam.charAt(0).toUpperCase() + locationParam.slice(1);
+        }
         window.dispatchEvent(new Event('cityChanged'));
     }
 
     // 2. Category Tab Linkage
     const typeParam = urlParams.get('type');
     if (typeParam) {
-        currentCategory = typeParam.toLowerCase().trim();
+        const currentCategory = typeParam.toLowerCase().trim();
         document.querySelectorAll('.category-card').forEach(card => {
             if (card.dataset.category === currentCategory) {
                 card.classList.add('active');
@@ -309,8 +314,8 @@ function parseAndApplyUrlFilters() {
     const areaParam = urlParams.get('area');
     if (areaParam) {
         window.filterState.area = areaParam.toLowerCase().trim();
-        const el = document.getElementById('filter-locality'); if(el) el.value = areaParam;
-        const mel = document.getElementById('m-filter-locality'); if(mel) mel.value = areaParam;
+        const el = document.getElementById('filter-locality'); if (el) el.value = areaParam;
+        const mel = document.getElementById('m-filter-locality'); if (mel) mel.value = areaParam;
     }
 
     // 4. Budget Param Parsing (e.g., 10k, 12k, 15k)
@@ -319,43 +324,54 @@ function parseAndApplyUrlFilters() {
         let cleanBudget = parseFloat(budgetParam.replace('k', '')) * 1000;
         if (!isNaN(cleanBudget)) {
             window.filterState.maxBudget = cleanBudget;
-            const el = document.getElementById('filter-budget'); if(el) el.value = cleanBudget;
-            const mel = document.getElementById('m-filter-budget'); if(mel) mel.value = cleanBudget;
+            const el = document.getElementById('filter-budget'); if (el) el.value = cleanBudget;
+            const mel = document.getElementById('m-filter-budget'); if (mel) mel.value = cleanBudget;
         }
     }
 
     // 5. Gender Param
     const genderParam = urlParams.get('gender');
     if (genderParam) {
-        window.filterState.gender = genderParam.toLowerCase().trim();
-        document.querySelectorAll(`input[name="desktop-gender"][value="${genderParam}"], input[name="mobile-gender"][value="${genderParam}"]`).forEach(rb => rb.checked = true);
-        const el = document.getElementById('filter-gender'); if(el) el.value = genderParam;
+        const cleanGender = genderParam.toLowerCase().trim();
+        window.filterState.gender = cleanGender;
+        document.querySelectorAll(`input[name="desktop-gender"][value="${cleanGender}"], input[name="mobile-gender"][value="${cleanGender}"]`).forEach(rb => rb.checked = true);
+        const el = document.getElementById('filter-gender'); if (el) el.value = cleanGender;
     }
 
     // 6. Sharing Param
     const sharingParam = urlParams.get('sharing');
     if (sharingParam) {
-        window.filterState.sharingType = [sharingParam.toLowerCase().trim()];
-        document.querySelectorAll(`.filter-sharing[value="${sharingParam}"], .m-filter-sharing[value="${sharingParam}"]`).forEach(cb => cb.checked = true);
+        const cleanSharing = sharingParam.toLowerCase().trim();
+        window.filterState.sharingType = [cleanSharing];
+        document.querySelectorAll(`.filter-sharing[value="${cleanSharing}"], .m-filter-sharing[value="${cleanSharing}"]`).forEach(cb => cb.checked = true);
     }
 
     // 7. Verified Badge Param
     const verifiedParam = urlParams.get('verified');
     if (verifiedParam === 'true') {
         window.filterState.verifiedOnly = true;
-        const el = document.getElementById('filter-verified'); if(el) el.checked = true;
-        const mel = document.getElementById('m-filter-verified'); if(mel) mel.checked = true;
+        const el = document.getElementById('filter-verified'); if (el) el.checked = true;
+        const mel = document.getElementById('m-filter-verified'); if (mel) mel.checked = true;
     }
 
     // 8. Institutional Landmark Hubs Mapping
     const landmarkParam = urlParams.get('landmark');
     if (landmarkParam) {
-        let matchedHubValue = "near-" + landmarkParam.toLowerCase().trim();
+        const cleanLandmark = landmarkParam.toLowerCase().trim();
+        // Mobile desktop targets mapping wrapper logic
+        let matchedHubValue = cleanLandmark.startsWith('near-') ? cleanLandmark : "near-" + cleanLandmark;
+        
+        // Mobile markup uses direct strings like "coaching" / "metro" directly
         window.filterState.nearbyHubs = [matchedHubValue];
-        document.querySelectorAll(`.filter-landmark[value="${matchedHubValue}"], .m-filter-landmark[value="${matchedHubValue}"]`).forEach(cb => cb.checked = true);
+        
+        // Select selectors smoothly
+        document.querySelectorAll(`.filter-landmark[value="${matchedHubValue}"], .m-filter-landmark[value="${cleanLandmark}"]`).forEach(cb => cb.checked = true);
     }
 
-    renderActiveFilterChips();
+    // Call chip renderer safely if defined
+    if (typeof renderActiveFilterChips === "function") {
+        renderActiveFilterChips();
+    }
 }
 
 // --- DATA FILTERING PIPELINE ENGINE ---
@@ -368,25 +384,22 @@ window.renderPostsDataPipeline = function() {
     const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const activeSelectedGlobalCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
-    // --- 🛠️ UPGRADE: DYNAMIC HEADING LOGIC START ---
+    // --- DYNAMIC HEADING LOGIC ---
     const headingNode = document.getElementById('listings-heading');
     if (headingNode) {
         let headingParts = [];
         
-        // 1. Gender Add Karein
         if (window.filterState && window.filterState.gender && window.filterState.gender !== "all") {
             headingParts.push(window.filterState.gender.charAt(0).toUpperCase() + window.filterState.gender.slice(1));
         }
         
-        // 2. Category Add Karein (currentCategory global variable se)
         if (typeof currentCategory !== 'undefined' && currentCategory && currentCategory !== 'all') {
             let catText = currentCategory === 'pg' ? "PGs" : currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1) + "s";
             headingParts.push(catText);
         } else {
-            headingParts.push("Spaces"); // Default word agar koi category select na ho
+            headingParts.push("Spaces"); 
         }
         
-        // 3. Location/Area ya City Add Karein
         let activeLocation = "";
         if (window.filterState && window.filterState.area) {
             activeLocation = window.filterState.area;
@@ -398,8 +411,6 @@ window.renderPostsDataPipeline = function() {
             headingParts.push(`in ${activeLocation.charAt(0).toUpperCase() + activeLocation.slice(1)}`);
         }
 
-        // 4. Final Text Render State Configuration
-        // Agar filters default hain toh "Recommended Spaces", nahi toh dynamic text
         const totalText = headingParts.join(' ');
         if (totalText === "Spaces" || totalText === "Spaces in all") {
             headingNode.innerText = "Stay100% Spaces";
@@ -407,7 +418,6 @@ window.renderPostsDataPipeline = function() {
             headingNode.innerText = `Results for ${totalText}`;
         }
     }
-    // --- 🛠️ UPGRADE: DYNAMIC HEADING LOGIC END ---
 
     if (allPosts.length === 0) {
         listingsGrid.innerHTML = getEmptyStateHTML();
@@ -558,10 +568,11 @@ function renderPosts(postsToRender) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    let currentSessionUID = localStorage.getItem('staypremium_uid') || null;
+    // Sync current session UID securely
+    currentSessionUID = localStorage.getItem('stay100%_uid') || null;
     if (typeof updateUserProfileUI === 'function') updateUserProfileUI();
 
-    // --- 0. TOP LEVEL DOM ELEMENT DECLARATIONS ---
+    // --- TOP LEVEL DOM ELEMENT DECLARATIONS ---
     const listingsGrid = document.getElementById('listings-container');
     const filterBtn = document.getElementById('filter-btn');
     const filterModal = document.getElementById('filter-modal');
@@ -570,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const categoryCards = document.querySelectorAll('.category-card');
 
-    // --- 1. MOBILE BOTTOM NAVIGATION SYSTEM INJECTION ---
+    // --- MOBILE BOTTOM NAVIGATION SYSTEM INJECTION ---
     const mobileContainer = document.getElementById('dynamic-footer-container');
     if (mobileContainer) {
         mobileContainer.innerHTML = `
@@ -583,8 +594,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // --- 2. DESKTOP FOOTER SYSTEM INJECTION WITH SEO LINK SYNC ---
-const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
+    // --- DESKTOP FOOTER SYSTEM INJECTION WITH SEO LINK SYNC ---
+    const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-container');
     if (desktopFooterContainer) {
         desktopFooterContainer.innerHTML = `
             <div class="footer-toggle-wrapper">
@@ -764,7 +775,6 @@ const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-c
             </footer>
         `;
     
-
         // --- FOOTER TOGGLE ATTACHMENT ---
         const toggleBtn = document.getElementById('btn-global-footer-toggle');
         const footerCore = document.getElementById('staypremium-core-footer');
@@ -806,7 +816,7 @@ const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-c
         });
     }
 
-    // --- 3. DYNAMIC MOBILE FILTER POPUP INJECTION ---
+    // --- DYNAMIC MOBILE FILTER POPUP INJECTION ---
     if (filterModal) {
         const bodyTarget = document.getElementById('mobile-filter-body-container') || filterModal.querySelector('.modal-body');
         if (bodyTarget) {
@@ -875,7 +885,7 @@ const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-c
         }
     }
 
-    // --- 4. BIND SYNC EVENTS ---
+    // --- BIND SYNC EVENTS ---
     const bindSyncEvents = () => {
         document.getElementById('filter-budget')?.addEventListener('change', (e) => {
             const mel = document.getElementById('m-filter-budget'); if(mel) mel.value = e.target.value;
@@ -954,10 +964,9 @@ const desktopFooterContainer = document.getElementById('dynamic-desktop-footer-c
         window.syncAndRenderFilters();
     };
 
-    // --- 5. URL FILTERS ENGINE ---
+    // --- URL FILTERS ENGINE ---
     parseAndApplyUrlFilters();
 
-    // --- OTHER EVENT CHANNELS ---
     if (window.LayoutEngine) {
         window.LayoutEngine.applyCityClientSideFilter = () => {
             if (typeof window.renderPostsDataPipeline === 'function') window.renderPostsDataPipeline();
@@ -1133,7 +1142,7 @@ function optimizeCloudinaryUrl(url) {
     return url;
 }
 
-// UPDATE: बैनर लेआउट जनरेटर जो मोबाइल पर इमेज को कटने से बचाएगा
+// Banner Layout Generator
 function generateBannerSlidesLayout(banners) {
     const bannersContainer = document.getElementById('dynamic-banners-container');
     if (!bannersContainer) return;
@@ -1145,13 +1154,9 @@ function generateBannerSlidesLayout(banners) {
             .slider-wrapper-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; background: #111827; z-index: 1; }
             .dynamic-banner-slide { display: none; width: 100%; height: 100%; text-decoration: none; background-position: center center; background-repeat: no-repeat; transition: opacity 0.7s ease-in-out; opacity: 0; }
             .dynamic-banner-slide.active { display: block !important; opacity: 1; }
-            
-            /* डेस्कटॉप पर इमेज कवर करेगी */
             @media (min-width: 768px) {
                 .dynamic-banner-slide { background-size: cover; }
             }
-            
-            /* 📱 मोबाइल पर इमेज पूरी फिट दिखेगी और कटेगी नहीं */
             @media (max-width: 767px) {
                 .dynamic-banner-slide { background-size: 100% 100%; } 
             }
@@ -1248,9 +1253,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        searchInput.placeholder =
-            text.substring(0, letter) + (cursor ? "|" : "");
-
+        searchInput.placeholder = text.substring(0, letter) + (cursor ? "|" : "");
         setTimeout(animate, deleting ? 40 : 70);
     }
 

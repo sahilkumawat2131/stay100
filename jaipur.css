@@ -41,12 +41,13 @@ body {
 .main-layout-container {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 40px 4%;
+    padding: 30px 4% 60px 4%; /* Adjusted Top Padding for perfect grid look */
     display: grid;
     grid-template-columns: 320px 1fr; /* Desktop Dual Pane Split Grid Framework Locked */
     gap: 35px;
     align-items: start;
     box-sizing: border-box;
+    position: relative;
 }
 
 /* --- DESKTOP ASIDE SIDEBAR WRAPPER MECHANICAL LAYOUT --- */
@@ -57,8 +58,8 @@ body {
     box-shadow: 0 10px 40px rgba(15, 23, 42, 0.02);
     border: 1px solid var(--border-soft-tint);
     position: sticky;
-    top: 40px; /* Lock on Scroll view tracking system viewport parameters */
-    max-height: calc(100vh - 80px);
+    top: 100px; /* Aligned with consideration of dynamic global header height */
+    max-height: calc(100vh - 140px);
     overflow-y: auto;
     scrollbar-width: thin;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -305,106 +306,14 @@ body {
     gap: 25px;
 }
 
-.search-and-heading-block {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background: var(--card-surface-white);
-    padding: 26px;
-    border-radius: 24px;
-    border: 1px solid var(--border-soft-tint);
-    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.01);
-}
-
-#listings-heading {
-    font-size: 28px;
-    color: var(--text-core-dark);
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -0.6px;
-}
-
-.sub-meta-summary {
-    margin: 5px 0 0;
-    font-size: 14.5px;
-    color: var(--text-muted-slate);
-    font-weight: 500;
-}
-
-/* Master Realtime Search Elements Interface Row Row Setup */
-.search-action-matrix-bar {
-    display: flex;
-    gap: 14px;
-    width: 100%;
-}
-
-.input-icon-group {
-    position: relative;
-    flex-grow: 1;
-}
-
-.search-leading-icon {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted-slate);
-    font-size: 16px;
-}
-
-.input-icon-group input {
-    width: 100%;
-    padding: 15px 48px 15px 50px;
-    border-radius: 14px;
-    border: 1px solid rgba(15, 23, 42, 0.12);
-    outline: none;
-    font-family: inherit;
-    font-size: 15px;
-    box-sizing: border-box;
-    font-weight: 600;
-    background-color: #f8fafc;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.input-icon-group input:focus {
-    background-color: #ffffff;
-    border-color: var(--primary-burgundy-shade);
-    box-shadow: 0 0 0 4px rgba(128, 0, 32, 0.06);
-}
-
-.voice-icon {
-    position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: var(--text-muted-slate);
-    font-size: 16px;
-    transition: color 0.2s;
-    padding: 4px;
-}
-
-.voice-icon:hover {
-    color: var(--primary-burgundy-shade);
-}
-
-.voice-icon.listening-active {
-    color: #ef4444;
-    animation: voicePulseEngine 1.2s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes voicePulseEngine {
-    0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
-    100% { transform: translateY(-50%) scale(1.2); opacity: 1; }
-}
-
-/* Mobile Trigger Button Default State Parameters Hidden Layer */
+/* Mobile Trigger Button UI Upgrade (Clean Dynamic Placement) */
 .mobile-filter-modal-trigger-btn {
     display: none;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    padding: 0 22px;
-    background: var(--text-core-dark);
+    padding: 12px 24px;
+    background: var(--primary-burgundy-shade);
     color: #ffffff;
     border: none;
     border-radius: 14px;
@@ -412,11 +321,13 @@ body {
     font-size: 14.5px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s;
+    box-shadow: 0 4px 15px rgba(128, 0, 32, 0.2);
+    transition: all 0.2s ease;
+    margin-bottom: 10px;
 }
 
 .mobile-filter-modal-trigger-btn:hover {
-    background: #1e293b;
+    background: var(--primary-burgundy-hover);
 }
 
 /* Dynamic Active Pills Controls Items Layout Row Line */
@@ -476,8 +387,8 @@ body {
 @media (max-width: 1120px) {
     .main-layout-container {
         grid-template-columns: 1fr; /* Switch to full single column framework row grid matrix stack */
-        padding: 30px 4%;
-        gap: 25px;
+        padding: 20px 4%;
+        gap: 15px;
     }
 
     /* Transform Desktop Left Sidebar to Fixed Overlay Bottom-Sheet/Mobile Sliding Drawer Control System */
@@ -597,45 +508,20 @@ body {
         box-shadow: 0 4px 12px rgba(128,0,32,0.2);
     }
 
-    /* Unhide Interactive Floating Control System Trigger Block */
+    /* Unhide Upgrade Mobile Trigger Layout */
     .mobile-filter-modal-trigger-btn {
         display: flex;
+        width: 100%;
     }
 }
 
 @media (max-width: 640px) {
-    #listings-heading {
-        font-size: 22px;
-    }
-    
-    .search-and-heading-block {
-        padding: 18px;
-        border-radius: 18px;
-    }
-    
-    .input-icon-group input {
-        padding: 13px 40px 13px 42px;
-        font-size: 14px;
-    }
-    
-    .search-leading-icon {
-        left: 15px;
-    }
-    
-    .voice-icon {
-        right: 15px;
-    }
-    
-    .mobile-filter-modal-trigger-btn {
-        padding: 0 16px;
-    }
-    
-    .mobile-filter-modal-trigger-btn span {
-        display: none; /* Auto collapse to space saving icon button setup optimization */
-    }
-    
     #pg-cards-container {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 20px;
+    }
+    
+    .main-layout-container {
+        padding: 15px 4% 40px 4%;
     }
 }

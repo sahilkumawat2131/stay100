@@ -1,12 +1,13 @@
 /**
- * StayPremium - Production Architecture Control Pipeline Engine (jaipur.js)
- * Enhanced with Dynamic Isolated Template Header-Footer Loaders & Multi-Option View States Filters
+ * StayPremium - Enterprise Architecture Control Engine (jaipur.js)
+ * Enhanced with Dynamic Analytics Counters, Full Multi-Tier Filters, Working State Machine & Local Language Search Engine
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, push, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Global Production Parameter Configuration Variables Mapping Node
+// Enterprise Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
   authDomain: "stay100-31316.firebaseapp.com",
@@ -18,393 +19,422 @@ const firebaseConfig = {
   measurementId: "G-4J40FKKDNT"
 };
 
-// Pipeline State Machine Variable Cache Allocation Storage
+// Application State Initialization
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth(app);
 
-let cloudMasterRecords = [];
-const IMMUTABLE_TARGET_CITY = "jaipur"; // Strict localized locking string sequence token
+let masterPGRecords = [];
+let currentUser = null;
+let currentSessionUID = localStorage.getItem('staypremium_uid') || null;
+let currentSelectedCity = "jaipur";
 
-// Multi-Option Dynamic State Control Directives Setup Block Matrix
-let stateFilters = {
-    searchQuery: "",
+// Multilayer Active Filters State Object
+let filterStates = {
+    searchKeyword: "",
     localArea: "all",
     maxBudget: 30000,
     spaceType: "all",
-    genderType: "all",
-    checkedAmenities: [] // Collection array tracking live flag parameters constraints
+    targetGender: "all",
+    amenities: [] // Dynamic tags array like ['furnished', 'ac', etc.]
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. Fire Dynamic Structural Layout Components Injector Operations
-    injectDynamicGlobalHeader();
-    injectDynamicGlobalFooter();
+/**
+ * SOLID LOCAL LANGUAGE & DIALECT TRANSLATION MAPPER (Hinglish / Local Search Engine)
+ * Automatically parses conversational keywords into structured data attributes.
+ */
+function parseLocalLanguageQuery(rawQueryString) {
+    const text = rawQueryString.toLowerCase().trim();
+    if (!text) return;
 
-    // 2. Mobile Responsive Sliding Control Drawer Layer System Event Map Wiring
-    setupResponsiveDrawerInteraction();
+    // 1. Demographic / Gender Context Mapping
+    if (/\b(boys|boy|ladko|ladka|gents|gent|male|पुरुष)\b/.test(text)) {
+        filterStates.targetGender = "boys";
+        syncVisualTags('.gender-filter', 'boys');
+    } else if (/\b(girls|girl|ladkiyo|ladki|ladies|lady|female|महिला)\b/.test(text)) {
+        filterStates.targetGender = "girls";
+        syncVisualTags('.gender-filter', 'girls');
+    } else if (/\b(unisex|co-living|dono|family|couple|coliving)\b/.test(text)) {
+        filterStates.targetGender = "unisex";
+        syncVisualTags('.gender-filter', 'unisex');
+    }
 
-    // 3. Establish Interactive Control Node Events Listeners Wireframes System
-    registerPipelineInterfaceTriggers();
+    // 2. Space / Configuration Type Mapping
+    if (/\b(1\s*bhk|one\s*bhk)\b/.test(text)) {
+        filterStates.spaceType = "1bhk";
+        syncVisualTags('.type-filter', '1bhk');
+    } else if (/\b(2\s*bhk|two\s*bhk)\b/.test(text)) {
+        filterStates.spaceType = "2bhk";
+        syncVisualTags('.type-filter', '2bhk');
+    } else if (/\b(3\s*bhk|three\s*bhk)\b/.test(text)) {
+        filterStates.spaceType = "3bhk";
+        syncVisualTags('.type-filter', '3bhk');
+    } else if (/\b(1\s*rk|studio|one\s*rk)\b/.test(text)) {
+        filterStates.spaceType = "1rk";
+        syncVisualTags('.type-filter', '1rk');
+    } else if (/\b(pg|hostel|paying\s*guest|p\s*g)\b/.test(text)) {
+        filterStates.spaceType = "pg";
+        syncVisualTags('.type-filter', 'pg');
+    } else if (/\b(room|kamra|single|private|ek\s*akela)\b/.test(text) && !/bhk|rk/.test(text)) {
+        filterStates.spaceType = "room";
+        syncVisualTags('.type-filter', 'room');
+    }
 
-    // 4. Connect Core Cloud Database Stream Tracking Synchronization Task
-    initializeCloudSyncPipeline();
+    // 3. Hotspot Area Zone Auto-Selection Mapping
+    const areaSelect = document.getElementById('filter-local-area');
+    const areas = ['malviya nagar', 'mansarovar', 'vaishali nagar', 'c-scheme', 'jagatpura', 'pratap nagar', 'sitapura'];
+    for (let area of areas) {
+        if (text.includes(area) || text.includes(area.replace(" ", ""))) {
+            filterStates.localArea = area;
+            if (areaSelect) areaSelect.value = area;
+            break;
+        }
+    }
+
+    // 4. Local Pricing Intent Filters (Sasta, Premium, Low Budget, Luxury)
+    const budgetSlider = document.getElementById('filter-budget-range');
+    const budgetBadge = document.getElementById('budget-cap-badge');
+    
+    if (/\b(sasta|low\s*budget|kam\s*paisa|cheap|budget\s*friendly|economical)\b/.test(text)) {
+        filterStates.maxBudget = 7000;
+        if (budgetSlider) budgetSlider.value = 7000;
+        if (budgetBadge) budgetBadge.innerText = "₹7,000";
+    } else if (/\b(premium|luxury| वीआईपी |vip|expensive|high\s*end|best)\b/.test(text)) {
+        filterStates.maxBudget = 30000;
+        if (budgetSlider) budgetSlider.value = 30000;
+        if (budgetBadge) budgetBadge.innerText = "₹30,000+ Luxury";
+    }
+
+    // 5. Amenities Intercept Arrays
+    let runtimeCheckboxes = Array.from(document.querySelectorAll('.amenity-checkbox-flag'));
+    
+    if (/\b(ac|air\s*conditioner|cooler|thandee)\b/.test(text)) {
+        toggleCheckboxState(runtimeCheckboxes, 'ac', true);
+    }
+    if (/\b(food|khana|mess|tiffin|meals|lunch|dinner)\b/.test(text)) {
+        toggleCheckboxState(runtimeCheckboxes, 'food', true);
+    }
+    if (/\b(furnished|well\s*furnished|vip\s*room|sofa|bed)\b/.test(text)) {
+        toggleCheckboxState(runtimeCheckboxes, 'furnished', true);
+    }
+}
+
+// Helper utility to sync UI component triggers visually
+function syncVisualTags(selector, targetDataType) {
+    const nodes = document.querySelectorAll(selector);
+    nodes.forEach(node => {
+        if (node.dataset.type === targetDataType || node.dataset.gender === targetDataType) {
+            node.classList.add('active');
+        } else {
+            node.classList.remove('active');
+        }
+    });
+}
+
+// Helper utility to manage state arrays flags checkbox components
+function toggleCheckboxState(checkboxElements, targetValue, assertState) {
+    const targetBox = checkboxElements.find(box => box.value === targetValue);
+    if (targetBox) {
+        targetBox.checked = assertState;
+        if (assertState && !filterStates.amenities.includes(targetValue)) {
+            filterStates.amenities.push(targetValue);
+        }
+    }
+}
+
+// Authentication Context Observer
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
+        currentSessionUID = user.uid;
+        localStorage.setItem('staypremium_uid', user.uid);
+    } else {
+        currentUser = null;
+        currentSessionUID = localStorage.getItem('staypremium_uid') || null;
+    }
+    renderPGDataViewGrid();
 });
 
-/**
- * Loads and injects the global shared component structure asynchronously dynamically.
- */
-function injectDynamicGlobalHeader() {
-    const headerContainer = document.getElementById('dynamic-global-header');
-    if (!headerContainer) return;
+// DOM Event Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('pg-search-input');
+    const voiceBtn = document.getElementById('voice-search-trigger');
+    const areaSelect = document.getElementById('filter-local-area');
+    const budgetSlider = document.getElementById('filter-budget-range');
+    const budgetBadge = document.getElementById('budget-cap-badge');
+    const typeTags = document.querySelectorAll('.type-filter');
+    const genderTags = document.querySelectorAll('.gender-filter');
+    const amenityCheckboxes = document.querySelectorAll('.amenity-checkbox-flag');
+    const resetFiltersBtn = document.getElementById('filter-reset-trigger');
 
-    // Header component structural model string definition injection simulation
-    headerContainer.innerHTML = `
-        <header style="background:#fff; border-bottom:1px solid rgba(0,0,0,0.06); padding:15px 4%; display:flex; justify-content:space-between; align-items:center;">
-            <a href="index.html" style="font-size:20px; font-weight:800; color:#800020; text-decoration:none; display:flex; align-items:center; gap:6px;">
-                <i class="fa-solid fa-hotel"></i> StayPremium
-            </a>
-            <nav style="display:flex; gap:20px; font-size:14px; font-weight:700;">
-                <a href="pg.html" style="color:#0f172a; text-decoration:none;">All Cities</a>
-                <a href="#" style="color:#800020; text-decoration:none;">Jaipur Hub</a>
-                <a href="#" style="color:#0f172a; text-decoration:none;">Rooms</a>
-            </nav>
-        </header>
-    `;
-}
-
-function injectDynamicGlobalFooter() {
-    const footerContainer = document.getElementById('dynamic-global-footer');
-    if (!footerContainer) return;
-
-    footerContainer.innerHTML = `
-        <footer style="background:#0f172a; color:#94a3b8; padding:40px 4% 20px; margin-top:50px; font-size:13.5px; border-radius:24px 24px 0 0;">
-            <div style="display:flex; flex-wrap:wrap; justify-content:between; gap:30px; margin-bottom:30px;">
-                <div style="flex:1; min-width:250px;">
-                    <h3 style="color:#fff; font-size:16px; margin-bottom:12px;">StayPremium Realestate Corp.</h3>
-                    <p style="line-height:1.6;">Providing verified luxury spaces across Jaipur and metro areas with direct owner contact matching algorithms.</p>
-                </div>
-            </div>
-            <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:20px; text-align:center; font-weight:600;">
-                &copy; 2026 StayPremium Pipeline Engine. All Cloud Data Sync Protected.
-            </div>
-        </footer>
-    `;
-}
-
-/**
- * Configures the responsive drawer sliding mechanics logic rules layout actions
- */
-function setupResponsiveDrawerInteraction() {
-    const drawerNode = document.getElementById('core-filter-drawer');
-    const openBtn = document.getElementById('mobile-drawer-open-btn');
-    const closeBtn = document.getElementById('filter-close-trigger');
-    const applyBtn = document.getElementById('filter-apply-trigger');
-
-    // Drawer activation toggle procedures map block
-    if (openBtn && drawerNode) {
-        openBtn.addEventListener('click', () => drawerNode.classList.add('drawer-visible-open'));
-    }
-    
-    const dismissDrawer = () => {
-        if(drawerNode) drawerNode.classList.remove('drawer-visible-open');
-    };
-
-    if (closeBtn) closeBtn.addEventListener('click', dismissDrawer);
-    if (applyBtn) applyBtn.addEventListener('click', () => {
-        applyFiltersAndRenderPipeline();
-        dismissDrawer();
-    });
-}
-
-/**
- * Hooks elements and parameters mapping definitions directly.
- */
-function registerPipelineInterfaceTriggers() {
-    // Text search input query mapping processing flow rules
-    const textSearchNode = document.getElementById('pg-search-input');
-    if (textSearchNode) {
-        textSearchNode.addEventListener('input', (e) => {
-            stateFilters.searchQuery = e.target.value.toLowerCase().trim();
-            applyFiltersAndRenderPipeline();
-        });
-    }
-
-    // Local Area selection zone input trigger point
-    const areaDropdownNode = document.getElementById('filter-local-area');
-    if (areaDropdownNode) {
-        areaDropdownNode.addEventListener('change', (e) => {
-            stateFilters.localArea = e.target.value.toLowerCase().trim();
-            applyFiltersAndRenderPipeline();
-        });
-    }
-
-    // Budget range threshold adjustment change handler engine tracking logic rules
-    const budgetSliderNode = document.getElementById('filter-budget-range');
-    const budgetBadgeNode = document.getElementById('budget-cap-badge');
-    if (budgetSliderNode) {
-        budgetSliderNode.addEventListener('input', (e) => {
-            const currentSelectedValue = parseInt(e.target.value);
-            stateFilters.maxBudget = currentSelectedValue;
-            if(budgetBadgeNode) {
-                budgetBadgeNode.innerText = `₹${currentSelectedValue.toLocaleString('en-IN')}`;
-            }
-            applyFiltersAndRenderPipeline();
-        });
-    }
-
-    // Space subtype click tag arrays loop configuration maps setup execution routines
-    document.querySelectorAll('.type-filter').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.type-filter').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            stateFilters.spaceType = btn.getAttribute('data-type');
-            applyFiltersAndRenderPipeline();
-        });
-    });
-
-    // Gender filter click routing setup flow sequences parameters
-    document.querySelectorAll('.gender-filter').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.gender-filter').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            stateFilters.genderType = btn.getAttribute('data-gender');
-            applyFiltersAndRenderPipeline();
-        });
-    });
-
-    // Multi-option checkbox amenity flags registration handlers loop processing block arrays
-    document.querySelectorAll('.amenity-checkbox-flag').forEach(chk => {
-        chk.addEventListener('change', () => {
-            let activeCheckedList = [];
-            document.querySelectorAll('.amenity-checkbox-flag').forEach(item => {
-                if(item.checked) activeCheckedList.push(item.value);
-            });
-            stateFilters.checkedAmenities = activeCheckedList;
-            applyFiltersAndRenderPipeline();
-        });
-    });
-
-    // Global filtering system variable reset processing mechanism loop logic mapping parameters
-    const resetTriggerBtn = document.getElementById('filter-reset-trigger');
-    if (resetTriggerBtn) {
-        resetTriggerBtn.addEventListener('click', () => {
-            stateFilters.searchQuery = "";
-            stateFilters.localArea = "all";
-            stateFilters.maxBudget = 30000;
-            stateFilters.spaceType = "all";
-            stateFilters.genderType = "all";
-            stateFilters.checkedAmenities = [];
-
-            // Structural UI elements default values resetting sequences flow parameters execution
-            if(textSearchNode) textSearchNode.value = "";
-            if(areaDropdownNode) areaDropdownNode.value = "all";
-            if(budgetSliderNode) {
-                budgetSliderNode.value = 30000;
-                if(budgetBadgeNode) budgetBadgeNode.innerText = "₹30,000";
-            }
-            
-            document.querySelectorAll('.type-filter').forEach(b => b.classList.remove('active'));
-            const defaultTypeBtn = document.querySelector('.type-filter[data-type="all"]');
-            if(defaultTypeBtn) defaultTypeBtn.classList.add('active');
-
-            document.querySelectorAll('.gender-filter').forEach(b => b.classList.remove('active'));
-            const defaultGenderBtn = document.querySelector('.gender-filter[data-gender="all"]');
-            if(defaultGenderBtn) defaultGenderBtn.classList.add('active');
-
-            document.querySelectorAll('.amenity-checkbox-flag').forEach(item => item.checked = false);
-
-            applyFiltersAndRenderPipeline();
-        });
-    }
-
-    // Voice recognition search logic setup framework module activation initialization handler routines
-    setupVoiceRecognitionEnginePipeline();
-}
-
-/**
- * Orchestrates HTML5 Speech recognition processing mechanisms
- */
-function setupVoiceRecognitionEnginePipeline() {
-    const voiceTrigger = document.getElementById('voice-search-trigger');
-    const inputNode = document.getElementById('pg-search-input');
-    
-    if (!voiceTrigger || !inputNode) return;
-
-    const SpeechRecognitionEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognitionEngine) {
-        voiceTrigger.style.display = 'none'; // Suppress view node context if browser platform mismatch exists
-        return;
-    }
-
-    const voiceRecognizerInstance = new SpeechRecognitionEngine();
-    voiceRecognizerInstance.continuous = false;
-    voiceRecognizerInstance.lang = 'en-IN'; // Indian phonetics language optimization matching criteria setup
-    voiceRecognizerInstance.interimResults = false;
-
-    voiceTrigger.addEventListener('click', () => {
-        try {
-            voiceRecognizerInstance.start();
-        } catch(e) { console.log("Recognition lifecycle conflict bypassed: ", e); }
-    });
-
-    voiceRecognizerInstance.onstart = () => voiceTrigger.classList.add('listening-active');
-    voiceRecognizerInstance.onend = () => voiceTrigger.classList.remove('listening-active');
-    voiceRecognizerInstance.onerror = () => voiceTrigger.classList.remove('listening-active');
-    
-    voiceRecognizerInstance.onresult = (event) => {
-        const structuralTranscribedText = event.results[0][0].transcript.toLowerCase().replace(/[.]/g, "").trim();
-        inputNode.value = structuralTranscribedText;
-        stateFilters.searchQuery = structuralTranscribedText;
-        applyFiltersAndRenderPipeline();
-    };
-}
-
-/**
- * Handles Realtime Synchronous Data Collection Streaming from Live Fire Realtime Endpoint Node Cloud references.
- */
-function initializeCloudSyncPipeline() {
-    const recordsDatabaseReferenceNode = ref(database, 'properties');
-    onValue(recordsDatabaseReferenceNode, (snapshot) => {
-        const structuralPayloadReceived = snapshot.val();
-        if (structuralPayloadReceived) {
-            // Map keys and lock to target city pipeline parameter straight out of database loop array stack
-            cloudMasterRecords = Object.keys(structuralPayloadReceived).map(recordId => ({
-                id: recordId,
-                ...structuralPayloadReceived[recordId]
-            })).filter(entryItem => (entryItem.city || "").toLowerCase().trim() === IMMUTABLE_TARGET_CITY);
-            
-            applyFiltersAndRenderPipeline();
+    // Realtime Database Stream Pipeline
+    const propertiesNodeRef = ref(database, 'properties');
+    onValue(propertiesNodeRef, (snapshot) => {
+        const rawPayload = snapshot.val();
+        if(rawPayload) {
+            masterPGRecords = Object.keys(rawPayload).map(key => ({ id: key, ...rawPayload[key] }))
+                                           .filter(item => item.category && item.category.toLowerCase() === 'pg');
+            renderPGDataViewGrid();
         } else {
-            renderEmptyStateLayoutPlaceholder();
+            masterPGRecords = [];
+            renderPGDataViewGrid();
         }
-    }, (error) => {
-        console.error("Critical Synchronization Fault encountered from backend stream node mapping stack pipeline: ", error);
     });
-}
 
-/**
- * Compiles compound conditions dynamically and pushes matching output arrays into view render layer nodes loop structures.
- */
-function applyFiltersAndRenderPipeline() {
-    const gridTargetContainer = document.getElementById('pg-cards-container');
-    const headingTargetTextNode = document.getElementById('listings-heading');
-    
-    if (!gridTargetContainer) return;
-
-    const localSavedProfileListingsArray = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
-
-    // --- EXECUTE HIGH-VELOCITY RECURSIVE COMPOUND FILTERING ENGINE STEPS ---
-    const computationalFilteredOutputDatasetArray = cloudMasterRecords.filter(itemRecord => {
-        
-        // Context Option 1: Search Query string lookup check validation block
-        if (stateFilters.searchQuery !== "") {
-            const validationMatchName = (itemRecord.name || itemRecord.title || "").toLowerCase().includes(stateFilters.searchQuery);
-            const validationMatchArea = (itemRecord.area || itemRecord.location || "").toLowerCase().includes(stateFilters.searchQuery);
-            if (!validationMatchName && !validationMatchArea) return false;
-        }
-
-        // Context Option 2: Localized area option drop validation processing sequence map check
-        if (stateFilters.localArea !== "all") {
-            const entryTargetAreaValueString = (itemRecord.area || itemRecord.location || "").toLowerCase().trim();
-            if (!entryTargetAreaValueString.includes(stateFilters.localArea)) return false;
-        }
-
-        // Context Option 3: Cap Numeric maximum rental evaluation parameter constraint
-        const targetNormalizedPricingParam = parseInt(itemRecord.price || itemRecord.rent || 0);
-        if (targetNormalizedPricingParam > stateFilters.maxBudget) return false;
-
-        // Context Option 4: Structural Space Category and configurations matching setup routing rules
-        if (stateFilters.spaceType !== "all") {
-            const assetCategoryStr = (itemRecord.category || "").toLowerCase().trim();
-            const assetSubtypeStr = (itemRecord.subType || itemRecord.sharingType || "").toLowerCase().trim();
+    // 1. Live Text Search Controller with Embedded Local NLP Core
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            const rawValue = searchInput.value;
+            filterStates.searchKeyword = rawValue.toLowerCase().trim();
             
-            if (stateFilters.spaceType === "pg" || stateFilters.spaceType === "room") {
-                if (assetCategoryStr !== stateFilters.spaceType) return false;
-            } else {
-                if (assetSubtypeStr !== stateFilters.spaceType && assetCategoryStr !== stateFilters.spaceType) return false;
-            }
-        }
-
-        // Context Option 5: Demographic Gender restriction protocol checks alignment block parameters
-        if (stateFilters.genderType !== "all") {
-            const recordGenderStringToken = (itemRecord.gender || itemRecord.targetGender || "").toLowerCase().trim();
-            if (recordGenderStringToken !== stateFilters.genderType) return false;
-        }
-
-        // Context Option 6: Loop through requested structural checkbox dynamic feature tags collections array maps list
-        if (stateFilters.checkedAmenities.length > 0) {
-            for (let filterFlagItem of stateFilters.checkedAmenities) {
-                if (filterFlagItem === "furnished" && itemRecord.furnished !== true && itemRecord.furnishing !== "fully") return false;
-                if (filterFlagItem === "lift" && itemRecord.lift !== true && itemRecord.elevator !== true) return false;
-                if (filterFlagItem === "ground" && parseInt(itemRecord.floor || itemRecord.floorNumber) !== 0 && (itemRecord.floor || "").toLowerCase() !== "ground") return false;
-                if (filterFlagItem === "ac" && itemRecord.ac !== true && itemRecord.airConditioner !== true) return false;
-                if (filterFlagItem === "food" && itemRecord.food !== true && itemRecord.mealsIncluded !== true) return false;
-            }
-        }
-
-        return true; // Property meets all conditions
-    });
-
-    // Dynamic Heading synchronization counter value string update invocation block point
-    if (headingTargetTextNode) {
-        headingTargetTextNode.innerText = `Results for Jaipur (${computationalFilteredOutputDatasetArray.length} Properties Found)`;
+            // Evaluates local expressions dynamically during type execution
+            parseLocalLanguageQuery(rawValue);
+            renderPGDataViewGrid();
+        });
     }
 
-    // Dynamic runtime interface badge pill generation method execution call mapping routing rules
-    populateActiveBadgesInterfaceRow();
+    // 2. Area Zone Dropdown Listener
+    if (areaSelect) {
+        areaSelect.addEventListener('change', () => {
+            filterStates.localArea = areaSelect.value.toLowerCase().trim();
+            renderPGDataViewGrid();
+        });
+    }
 
-    // Verification check for dataset counts block
-    if (computationalFilteredOutputDatasetArray.length === 0) {
-        renderEmptyStateLayoutPlaceholder();
+    // 3. Dynamic Budget Range Slider Action
+    if (budgetSlider && budgetBadge) {
+        budgetSlider.addEventListener('input', () => {
+            const currentVal = parseInt(budgetSlider.value);
+            filterStates.maxBudget = currentVal;
+            budgetBadge.innerText = currentVal >= 30000 ? "₹30,000+" : `₹${currentVal.toLocaleString('en-IN')}`;
+            renderPGDataViewGrid();
+        });
+    }
+
+    // 4. Space Arrangement Typology Matrix Tags Click Handler
+    typeTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            typeTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+            filterStates.spaceType = tag.dataset.type.toLowerCase().trim();
+            renderPGDataViewGrid();
+        });
+    });
+
+    // 5. Demographics/Gender Targets Tags Matrix Click Handler
+    genderTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            genderTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+            filterStates.targetGender = tag.dataset.gender.toLowerCase().trim();
+            renderPGDataViewGrid();
+        });
+    });
+
+    // 6. Multi-Option Amenities Checkboxes Interceptor Array Map
+    amenityCheckboxes.forEach(box => {
+        box.addEventListener('change', () => {
+            let selectedFlags = [];
+            amenityCheckboxes.forEach(cb => {
+                if(cb.checked) selectedFlags.push(cb.value.toLowerCase());
+            });
+            filterStates.amenities = selectedFlags;
+            renderPGDataViewGrid();
+        });
+    });
+
+    // 7. Master Reset Filters Pipeline Action Block
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', () => {
+            filterStates = { searchKeyword: "", localArea: "all", maxBudget: 30000, spaceType: "all", targetGender: "all", amenities: [] };
+            if(searchInput) searchInput.value = "";
+            if(areaSelect) areaSelect.value = "all";
+            if(budgetSlider) budgetSlider.value = 30000;
+            if(budgetBadge) budgetBadge.innerText = "₹30,000";
+            
+            typeTags.forEach(t => t.classList.remove('active'));
+            if(typeTags[0]) typeTags[0].classList.add('active');
+            
+            genderTags.forEach(t => t.classList.remove('active'));
+            if(genderTags[0]) genderTags[0].classList.add('active');
+            
+            amenityCheckboxes.forEach(cb => cb.checked = false);
+            
+            renderPGDataViewGrid();
+        });
+    }
+
+    // Multilingual Native Voice Speech Recognition Implementation Core
+    if (voiceBtn && searchInput) {
+        const SpeechSetup = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechSetup) {
+            const SpeechEngineInstance = new SpeechSetup();
+            SpeechEngineInstance.continuous = false;
+            // Configured to interpret dual locale inputs natively
+            SpeechEngineInstance.lang = 'hi-IN'; 
+
+            voiceBtn.onclick = () => {
+                SpeechEngineInstance.start();
+                searchInput.placeholder = "Aapki voice search live listen kar rahe hain...";
+            };
+            SpeechEngineInstance.onresult = (e) => {
+                const vocalResultText = e.results[0][0].transcript;
+                searchInput.value = vocalResultText;
+                filterStates.searchKeyword = vocalResultText.toLowerCase().trim();
+                
+                // Route vocal stream data into NLP engine directly
+                parseLocalLanguageQuery(vocalResultText);
+                searchInput.placeholder = "Search premium PGs by name, area or landmark...";
+                renderPGDataViewGrid();
+            };
+        } else {
+            voiceBtn.style.display = 'none';
+        }
+    }
+});
+
+// Primary Rendering Engine Matrix
+function renderPGDataViewGrid() {
+    const container = document.getElementById('pg-cards-container');
+    if(!container) return;
+
+    const savedList = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
+
+    // Step A: Filter properties solely matching active city (Jaipur)
+    let evaluatedResultGrid = masterPGRecords.filter(post => {
+        const propertyCity = (post.city || "").toLowerCase().trim();
+        return propertyCity === currentSelectedCity;
+    });
+
+    // Step B: Multi-Tier Matrix Evaluation Filtering Loop Logic
+    evaluatedResultGrid = evaluatedResultGrid.filter(post => {
+        // 1. Text Search verification (Name, Location, Area description matching)
+        if(filterStates.searchKeyword !== "") {
+            const nameMatch = (post.name || post.title || "").toLowerCase().includes(filterStates.searchKeyword);
+            const areaMatch = (post.area || post.location || "").toLowerCase().includes(filterStates.searchKeyword);
+            const descriptionMatch = (post.description || "").toLowerCase().includes(filterStates.searchKeyword);
+            const sharingTypeMatch = (post.sharingType || "").toLowerCase().includes(filterStates.searchKeyword);
+            const amenitiesStringMatch = (post.amenities || []).join(',').toLowerCase().includes(filterStates.searchKeyword);
+            
+            // Extended local expressions support inside standard dataset parameters matching loop
+            if(!nameMatch && !areaMatch && !amenitiesStringMatch && !descriptionMatch && !sharingTypeMatch) return false;
+        }
+
+        // 2. Zone/Local Area Selection mapping validation
+        if(filterStates.localArea !== "all") {
+            const currentZone = (post.area || post.location || "").toLowerCase();
+            if(!currentZone.includes(filterStates.localArea)) return false;
+        }
+
+        // 3. Maximum Monthly Budget constraint loop checks
+        const rentAmount = parseInt(post.price || post.rent || 0);
+        if(rentAmount > filterStates.maxBudget) return false;
+
+        // 4. Space Arrangement typology matching
+        if(filterStates.spaceType !== "all") {
+            const targetType = filterStates.spaceType;
+            const sharingStr = (post.sharingType || "").toLowerCase();
+            const categoryStr = (post.category || "").toLowerCase();
+            
+            if(targetType === "room" && !sharingStr.includes("single")) return false;
+            if(targetType === "pg" && categoryStr !== "pg") return false;
+            if(targetType === "1rk" && !sharingStr.includes("1rk") && !sharingStr.includes("studio")) return false;
+            if(targetType === "1bhk" && !sharingStr.includes("1bhk")) return false;
+            if(targetType === "2bhk" && !sharingStr.includes("2bhk")) return false;
+            if(targetType === "3bhk" && !sharingStr.includes("3bhk")) return false;
+        }
+
+        // 5. Gender demographic profile evaluation
+        if(filterStates.targetGender !== "all") {
+            const postGender = (post.gender || post.genderType || post.targetGender || "").toLowerCase();
+            if(filterStates.targetGender === "boys" && !postGender.includes("boy") && !postGender.includes("male") && !postGender.includes("gent")) return false;
+            if(filterStates.targetGender === "girls" && !postGender.includes("girl") && !postGender.includes("female") && !postGender.includes("ladie")) return false;
+            if(filterStates.targetGender === "unisex" && !postGender.includes("unisex") && !postGender.includes("co-living")) return false;
+        }
+
+        // 6. Premium Amenities Multi-Flags array conditional looping logic
+        if(filterStates.amenities.length > 0) {
+            const postAmenitiesArr = (post.amenities || []).map(a => a.toLowerCase());
+            const facilityStr = (post.facility || "").toLowerCase();
+            const furnishStr = (post.furnishedType || "").toLowerCase();
+
+            for(let flag of filterStates.amenities) {
+                if(flag === 'furnished' && !furnishStr.includes('fully') && !furnishStr.includes('semi')) return false;
+                if(flag === 'ac' && !postAmenitiesArr.includes('ac') && !post.ac) return false;
+                if(flag === 'food' && !facilityStr.includes('food') && !post.food && !post.mess) return false;
+                if(flag === 'lift' && !facilityStr.includes('lift') && !postAmenitiesArr.includes('lift') && !post.lift) return false;
+            }
+        }
+
+        return true;
+    });
+
+    // Dynamic global header title counter update configuration mapping
+    const headingNode = document.getElementById('listings-heading');
+    if (headingNode) {
+        headingNode.innerHTML = `Stay100 Accommodations in Jaipur(Raj.) <span style="font-size: 15px; font-weight: 500; color: #64748b; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; margin-left: 10px; vertical-align: middle;">${evaluatedResultGrid.length} Spaces Available</span>`;
+    }
+
+    // Empty Asset Fallback Structure Rendering Pipeline Control logic block
+    if(evaluatedResultGrid.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; padding:60px 20px; background:#fff; border-radius:16px; text-align:center; width: 100%; box-sizing: border-box; max-width: 600px; margin: 30px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <h3 style="margin:0 0 6px 0; font-size:22px; color:#1e293b; font-weight:700;">No Matching Spaces Found</h3>
+                <p style="margin:0; font-size:14px; color:#64748b; max-width:400px; line-height:1.5;">Modify search keywords or adjust structural filter segments to display premium rooms.</p>
+            </div>
+        `;
+        updateActiveFilterBadgesUi();
         return;
     }
 
-    // Direct stream compilation mapping output grid view arrays nodes loop tracking compilation block rules
+    // High Performance Injection Render System Loop Pipeline
     if (window.PropertyCardComponent && typeof window.PropertyCardComponent.render === 'function') {
-        gridTargetContainer.innerHTML = computationalFilteredOutputDatasetArray.map(propertyAssetItem => {
-            return window.PropertyCardComponent.render(propertyAssetItem, localSavedProfileListingsArray);
+        container.innerHTML = evaluatedResultGrid.map(item => {
+            let labelBadge = item.badge || "Premium Room";
+            const structuralRenderClone = { ...item, badge: labelBadge, badgeText: labelBadge, tag: labelBadge, isVerified: false };
+            return window.PropertyCardComponent.render(structuralRenderClone, savedList);
         }).join('');
-        
-        // Re-trigger dynamic sliders engine lifecycle initialization checks map arrays definitions points
-        if(window.PropertyCardComponent.initializeSwipers && typeof window.PropertyCardComponent.initializeSwipers === 'function') {
-            window.PropertyCardComponent.initializeSwipers();
+
+        if (typeof window.PropertyCardComponent.initAutoswipe === 'function') {
+            window.PropertyCardComponent.initAutoswipe();
         }
     } else {
-        // Fallback UI rendering structural matrix setup configuration pipeline engine model
-        gridTargetContainer.innerHTML = computationalFilteredOutputDatasetArray.map(item => {
+        // Fallback Resilient Layout Template Frame Card Structure Injection
+        container.innerHTML = evaluatedResultGrid.map(item => {
+            const isSaved = savedList.includes(item.id);
             return `
-                <div class="property-card" data-view-id="${item.id}" style="background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.05); position:relative;">
-                    <img src="${item.image || item.imageUrl || 'https://via.placeholder.com/400x250'}" style="width:100%; height:210px; object-fit:cover; display:block;">
-                    <div style="padding:18px;">
-                        <h4 style="margin:0 0 8px 0; font-size:16.5px; color:#0f172a; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name || item.title}</h4>
-                        <p style="margin:0 0 14px 0; font-size:13px; color:#64748b; font-weight:500;"><i class="fa-solid fa-location-dot" style="color:#800020; margin-right:4px;"></i> ${item.location || item.area || 'Jaipur City'}</p>
-                        <div style="display:flex; justify-content:between; align-items:center; border-top:1px solid #f1f5f9; padding-top:14px;">
-                            <span style="font-weight:800; color:#800020; font-size:17px;">₹${(item.price || item.rent).toLocaleString('en-IN')}<span style="font-size:12px; color:#64748b; font-weight:500;">/mo</span></span>
-                            <span style="background:#f1f5f9; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.5px;">${item.category || 'Luxury'}</span>
+                <div class="property-card" data-view-id="${item.id}" style="position:relative; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.05); cursor:pointer;">
+                    <img src="${item.image || item.imageUrl || 'https://via.placeholder.com/400x250'}" style="width:100%; height:200px; object-fit:cover;">
+                    <div style="padding:16px;">
+                        <h4 style="margin:0 0 8px 0; font-size:16px; color:#1e293b; font-weight:700;">${item.name || item.title || 'Premium Space'}</h4>
+                        <p style="margin:0 0 8px 0; font-size:13px; color:#64748b;"><i class="fa-solid fa-location-dot"></i> ${item.location || item.area || 'Jaipur Zone'}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px;">
+                            <span style="font-weight:700; color:#800020; font-size:16px;">₹${item.price || item.rent || 'N/A'}/mo</span>
+                            <button style="background:#800020; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:12px; font-weight:600;">View Details</button>
                         </div>
                     </div>
-                </div>`;
+                </div>
+            `;
         }).join('');
     }
+
+    updateActiveFilterBadgesUi();
 }
 
-/**
- * Visualizes active filtering pill indicators dynamically below the header control matrix.
- */
-function populateActiveBadgesInterfaceRow() {
+// Render Secondary Dynamic Badges System Runtime Map UI Controller
+function updateActiveFilterBadgesUi() {
     const runtimeBadgesContainer = document.getElementById('active-badges-runtime-container');
-    if (!runtimeBadgesContainer) return;
+    if(!runtimeBadgesContainer) return;
 
     let systemActiveBadgeStringsArray = [];
-
-    if (stateFilters.localArea !== "all") systemActiveBadgeStringsArray.push(`Area: ${stateFilters.localArea}`);
-    if (stateFilters.maxBudget < 30000) systemActiveBadgeStringsArray.push(`Max: ₹${stateFilters.maxBudget}`);
-    if (stateFilters.spaceType !== "all") systemActiveBadgeStringsArray.push(`Type: ${stateFilters.spaceType.toUpperCase()}`);
-    if (stateFilters.genderType !== "all") systemActiveBadgeStringsArray.push(`Gender: ${stateFilters.genderType}`);
     
-    if (stateFilters.checkedAmenities.length > 0) {
-        stateFilters.checkedAmenities.forEach(flag => systemActiveBadgeStringsArray.push(`Feature: ${flag}`));
-    }
+    if(filterStates.searchKeyword !== "") systemActiveBadgeStringsArray.push(`Keyword: ${filterStates.searchKeyword}`);
+    if(filterStates.localArea !== "all") systemActiveBadgeStringsArray.push(`Area: ${filterStates.localArea}`);
+    if(filterStates.maxBudget < 30000) systemActiveBadgeStringsArray.push(`Budget Under: ₹${filterStates.maxBudget}`);
+    if(filterStates.spaceType !== "all") systemActiveBadgeStringsArray.push(`Type: ${filterStates.spaceType}`);
+    if(filterStates.targetGender !== "all") systemActiveBadgeStringsArray.push(`Gender: ${filterStates.targetGender}`);
+    
+    filterStates.amenities.forEach(flag => systemActiveBadgeStringsArray.push(`Feature: ${flag.toUpperCase()}`));
 
     if (systemActiveBadgeStringsArray.length === 0) {
         runtimeBadgesContainer.innerHTML = "";
@@ -413,23 +443,8 @@ function populateActiveBadgesInterfaceRow() {
 
     runtimeBadgesContainer.innerHTML = systemActiveBadgeStringsArray.map(badgeLabelText => {
         return `
-            <div class="badge-pill-item">
+            <div class="badge-pill-item" style="background:#e2e8f0; color:#334155; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; font-family:inherit; display:inline-flex; align-items:center;">
                 <span>${badgeLabelText}</span>
             </div>`;
     }).join('');
-}
-
-/**
- * Renders standardized blank states messages inside targeted template interfaces loops blocks.
- */
-function renderEmptyStateLayoutPlaceholder() {
-    const gridTargetContainer = document.getElementById('pg-cards-container');
-    if(gridTargetContainer) {
-        gridTargetContainer.innerHTML = `
-            <div style="grid-column:1/-1; text-align:center; padding:60px 20px; background:#ffffff; border-radius:20px; border:1px solid rgba(15,23,42,0.06); box-shadow:0 10px 30px rgba(0,0,0,0.01);">
-                <i class="fa-solid fa-building-circle-xmark" style="font-size:44px; color:#cbd5e1; margin-bottom:15px; display:block;"></i>
-                <h3 style="color:#0f172a; margin:0 0 6px 0; font-size:18px; font-weight:800;">No Matching Spaces Live</h3>
-                <p style="color:#64748b; margin:0; font-size:14px; font-weight:500;">Koi bhi property aapke selected premium filters aur boundaries se match nahi ho rahi hai. Kripya constraints ko adjust karein.</p>
-            </div>`;
-    }
 }

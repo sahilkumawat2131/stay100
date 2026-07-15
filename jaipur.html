@@ -4,72 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Premium PGs, Co-Living & Luxury Rooms in Jaipur | stay100%</title>
-    <meta name="description" content="Find the best luxury PGs, co-living spaces, single private rooms, 1 RK, 1 BHK, 2 BHK, 3 BHK, and luxury villas in Jaipur. Filter by budget, local areas like Malviya Nagar, Mansarovar, Vaishali Nagar, C-Scheme, and demographic targets for boys, girls, and unisex co-living.">
-    <meta name="keywords" content="PG in Jaipur, Co-living spaces Jaipur, Private room Jaipur, Single room PG Jaipur, 1 RK for rent Jaipur, 1 BHK Jaipur, 2 BHK Jaipur, 3 BHK villa Jaipur, Hostel in Jaipur, Ladies hostel Jaipur, Gents PG Jaipur, Unisex co-living Mansarovar, Budget PG Jaipur, PGs near Malviya Nagar, Luxury PG C-Scheme">
+    <title>Premium PGs, Luxury Co-Living, Single/Sharing Rooms & 1/2/3 BHK Flats in Jaipur | stay100%</title>
+    <meta name="description" content="Explore managed luxury PGs, single rooms, double & triple sharing accommodations, premium studio 1 RK, 1 BHK, 2 BHK, and 3 BHK flats in Jaipur with zero brokerage. Best rental spaces near major coaching centers (Allen, Resonance, Aakash), corporate offices, and tech hubs in Malviya Nagar, Mansarovar, Vaishali Nagar, Jagatpura, Pratap Nagar, and C-Scheme. Book direct verified spaces on stay100.in.">
+    <meta name="keywords" content="PG in Jaipur, stay100, stay100.in, luxury co-living Jaipur, single room PG Jaipur, double sharing PG Jaipur, triple sharing accommodation, premium rooms for rent Jaipur, 1 BHK flats in Jaipur, 2 BHK flat Mansarovar, 3 BHK luxury flat Malviya Nagar, student PG near coaching centers Jaipur, corporate room rent Jaipur, PGs near Allen Malviya Nagar, room rent near Sitapura Industrial Area, luxury rooms near World Trade Park, girls PG Jaipur, boys PG Jaipur, unisex co-living spaces Jaipur">
     <meta name="robots" content="index, follow">
-    <link class="canonical" href="https://www.stay100.in/jaipur">
- <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="canonical" href="https://www.stay100.in/jaipur">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Premium PGs, Co-Living & Luxury Rooms in Jaipur | stay100%">
-    <meta property="og:description" content="Explore premium single rooms, co-living PGs, 1RK, 1BHK, 2BHK, 3BHK & luxury configurations in Jaipur's top residential and commercial hubs tailored for gents, ladies, and unisex groups.">
+    <meta property="og:title" content="Premium PGs, Luxury Co-Living, Sharing Rooms & Flats in Jaipur | stay100%">
+    <meta property="og:description" content="Find premium student & corporate rental accommodations across Jaipur. Budget-friendly and luxury single/sharing rooms, 1RK/1BHK/2BHK flats near top educational institutes & corporate offices on stay100.in.">
     <meta property="og:url" content="https://www.stay100.in/jaipur">
     <meta property="og:site_name" content="stay100%">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Premium PGs & Luxury Co-Living in Jaipur">
-    <meta name="twitter:description" content="Find single private rooms, shared PGs, and premium 1/2/3 BHK luxury spaces across Jaipur with premium amenities.">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="jaipur.css">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Premium Co-Living & PGs in Jaipur",
-      "description": "Top-rated single private rooms, luxury PG hostels, 1RK, 1BHK, 2BHK, and 3BHK spaces across major educational and commercial hubs in Jaipur.",
-      "url": "https://www.stay100.in/jaipur",
-      "numberOfItems": 10,
-      "itemListOrder": "https://schema.org/ItemListOrderDescending"
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "What are the top locations for premium PGs and co-living in Jaipur?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The most preferred hubs for premium PGs and luxury co-living spaces in Jaipur include Malviya Nagar, Mansarovar (the largest residential colony), Vaishali Nagar, C-Scheme (premium corporate zone), and Jagatpura."
+    
+    <style>
+        /* Framework Intercepts & Modal View States */
+        .stay100-modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            z-index: 99999; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px; box-sizing: border-box;
         }
-      },
-      {
-        "@type": "Question",
-        "name": "What space configurations are available on stay100% Jaipur?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "stay100% offers versatile options including student and corporate Co-living PGs, Single Private Rooms, fully managed Studio 1 RKs, Elite 1 BHKs, 2 BHK Suites, and spacious 3 BHK premium villas/flats."
+        .stay100-modal-backdrop.modal-active-view { opacity: 1; pointer-events: auto; }
+        .stay100-modal-box {
+            background: #ffffff; border-radius: 24px; max-width: 550px; width: 100%;
+            padding: 30px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            transform: translateY(30px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh; overflow-y: auto; box-sizing: border-box;
         }
-      }]
-    }
-    </script>
+        .stay100-modal-backdrop.modal-active-view .stay100-modal-box { transform: translateY(0); }
+        .modal-close-trigger-node {
+            position: absolute; top: 20px; right: 20px; background: #f1f5f9;
+            border: none; width: 36px; height: 36px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #475569; transition: all 0.2s;
+        }
+        .modal-close-trigger-node:hover { background: #e2e8f0; color: #0f172a; }
+        
+        /* Premium Inline Back Button Bar Styling */
+        .custom-back-nav-bar {
+            background: #ffffff;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            padding: 14px 4%;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+        .back-nav-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+        .inline-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #0f172a;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.2s ease;
+        }
+        .inline-back-btn i { font-size: 14px; transition: transform 0.2s ease; }
+        .inline-back-btn:hover { background: #e2e8f0; color: #800020; transform: translateX(-2px); }
+        .inline-back-btn:hover i { transform: translateX(-3px); }
+
+        /* Structural Targets for Header and Footer Injectors */
+        #dynamic-header-container, .header-global-container { width: 100%; min-height: auto; }
+        #dynamic-footer-container, .footer-bottom-bar { width: 100%; min-height: auto; margin-top: 40px; }
+    </style>
 </head>
 <body>
 
-    <div id="dynamic-header-container"></div>
+    <div id="dynamic-header-container" class="header-global-container"></div>
+
+    <nav class="custom-back-nav-bar">
+        <div class="back-nav-container">
+            <button type="button" class="inline-back-btn" id="stay100-history-back-trigger">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back </span>
+            </button>
+        </div>
+    </nav>
 
     <main class="main-layout-container">
         
         <aside class="sidebar-filter-wrapper" id="core-filter-drawer" aria-label="Search Filter Drawer">
             <div class="drawer-header-mobile">
-                <h3><i class="fa-solid fa-sliders"></i> Filter Properties</h3>
+                <h3><i class="fa-solid fa-sliders"></i> Filter Matrix</h3>
                 <button type="button" class="close-drawer-btn" id="filter-close-trigger" aria-label="Close Filter">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -77,138 +113,148 @@
             
             <div class="drawer-scroll-body">
                 <div class="filter-section-block">
-                    <label class="filter-block-label" for="filter-local-area">Local Area Zone</label>
+                    <label class="filter-block-label" for="filter-local-area">Prime Area / Commercial Zone</label>
                     <select id="filter-local-area" class="premium-form-control">
-                        <option value="all">All Areas / Whole Jaipur</option>
-                        <option value="malviya nagar">Malviya Nagar</option>
-                        <option value="mansarovar">Mansarovar</option>
-                        <option value="vaishali nagar">Vaishali Nagar</option>
-                        <option value="c-scheme">C-Scheme</option>
-                        <option value="jagatpura">Jagatpura</option>
-                        <option value="tonk road">Tonk Road</option>
-                        <option value="raja park">Raja Park</option>
+                        <option value="all">Whole Jaipur / All Zones</option>
+                        <option value="malviya nagar">Malviya Nagar (Near Allen / WTP)</option>
+                        <option value="mansarovar">Mansarovar (Coaching Hub / Metro Zone)</option>
+                        <option value="vaishali nagar">Vaishali Nagar (Premium Commercial)</option>
+                        <option value="c-scheme">C-Scheme (Elite Corporate Offices)</option>
+                        <option value="jagatpura">Jagatpura (University & Institutional Hub)</option>
+                        <option value="pratap nagar">Pratap Nagar (Coaching & Tech Hub)</option>
+                        <option value="sitapura">Sitapura (Industrial & Corporate Campus)</option>
                     </select>
                 </div>
 
                 <div class="filter-section-block">
                     <div class="flex-label-row">
-                        <label class="filter-block-label" for="filter-budget-range">Maximum Monthly Budget</label>
+                        <label class="filter-block-label" for="filter-budget-range">Max Monthly Rental Cap</label>
                         <span class="range-display-badge" id="budget-cap-badge">₹30,000</span>
                     </div>
-                    <input type="range" id="filter-budget-range" min="2000" max="30000" step="500" value="30000" class="premium-range-slider">
-                    <div class="range-limit-text"><span>₹2,000</span><span>₹30,000+ Premium</span></div>
+                    <input type="range" id="filter-budget-range" min="3000" max="30000" step="500" value="30000" class="premium-range-slider">
+                    <div class="range-limit-text"><span>₹3,000</span><span>₹30,000+ Luxury</span></div>
                 </div>
 
                 <div class="filter-section-block">
-                    <label class="filter-block-label">Space Arrangement Type</label>
+                    <label class="filter-block-label">Space & Flat Configurations</label>
                     <div class="tag-cloud-matrix">
-                        <button type="button" class="filter-tag type-filter active" data-type="all">All Typologies</button>
-                        <button type="button" class="filter-tag type-filter" data-type="pg">Co-Living PG</button>
+                        <button type="button" class="filter-tag type-filter active" data-type="all">All Accommodations</button>
+                        <button type="button" class="filter-tag type-filter" data-type="pg">Managed Co-Living PG</button>
                         <button type="button" class="filter-tag type-filter" data-type="room">Single Private Room</button>
                         <button type="button" class="filter-tag type-filter" data-type="1rk">Studio 1 RK</button>
-                        <button type="button" class="filter-tag type-filter" data-type="1bhk">Elite 1 BHK</button>
-                        <button type="button" class="filter-tag type-filter" data-type="2bhk">Luxury 2 BHK Suite</button>
-                        <button type="button" class="filter-tag type-filter" data-type="3bhk">Premium 3 BHK Villa</button>
+                        <button type="button" class="filter-tag type-filter" data-type="1bhk">Elite 1 BHK Flat</button>
+                        <button type="button" class="filter-tag type-filter" data-type="2bhk">Premium 2 BHK Suite</button>
+                        <button type="button" class="filter-tag type-filter" data-type="3bhk">Luxury 3 BHK Flat/Villa</button>
                     </div>
                 </div>
 
                 <div class="filter-section-block">
-                    <label class="filter-block-label">Sharing/Target Gender</label>
+                    <label class="filter-block-label">Sharing & Demographic Target</label>
                     <div class="tag-cloud-matrix">
-                        <button type="button" class="filter-tag gender-filter active" data-gender="all">All Demographics</button>
-                        <button type="button" class="filter-tag gender-filter" data-gender="boys">Men / Gents Accommodation</button>
-                        <button type="button" class="filter-tag gender-filter" data-gender="girls">Women / Ladies Accommodation</button>
+                        <button type="button" class="filter-tag gender-filter active" data-gender="all">All Profiles</button>
+                        <button type="button" class="filter-tag gender-filter" data-gender="boys">Gents / Boys Hostels</button>
+                        <button type="button" class="filter-tag gender-filter" data-gender="girls">Ladies / Girls PGs</button>
                         <button type="button" class="filter-tag gender-filter" data-gender="unisex">Unisex Co-Living</button>
                     </div>
                 </div>
 
                 <div class="filter-section-block">
-                    <label class="filter-block-label">Premium Essential Amenities</label>
+                    <label class="filter-block-label">Premium Standard Conveniences</label>
                     <div class="checkbox-matrix-stack">
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="single">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-user"></i> Exclusive Single Room</span>
+                        </label>
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="double">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-user-group"></i> Double Sharing Room</span>
+                        </label>
+                        <label class="checkbox-custom-row">
+                            <input type="checkbox" class="amenity-checkbox-flag" value="triple">
+                            <span class="checkbox-indicator"></span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-users"></i> Triple Sharing Setup</span>
+                        </label>
                         <label class="checkbox-custom-row">
                             <input type="checkbox" class="amenity-checkbox-flag" value="furnished">
                             <span class="checkbox-indicator"></span>
-                            <span class="checkbox-text-label"><i class="fa-solid fa-couch"></i> Luxury Fully Furnished</span>
-                        </label>
-                        <label class="checkbox-custom-row">
-                            <input type="checkbox" class="amenity-checkbox-flag" value="lift">
-                            <span class="checkbox-indicator"></span>
-                            <span class="checkbox-text-label"><i class="fa-solid fa-elevator"></i> With Elevator / Lift</span>
-                        </label>
-                        <label class="checkbox-custom-row">
-                            <input type="checkbox" class="amenity-checkbox-flag" value="ground">
-                            <span class="checkbox-indicator"></span>
-                            <span class="checkbox-text-label"><i class="fa-solid fa-stairs"></i> Ground Floor Preference</span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-couch"></i> Fully Furnished / Luxury</span>
                         </label>
                         <label class="checkbox-custom-row">
                             <input type="checkbox" class="amenity-checkbox-flag" value="ac">
                             <span class="checkbox-indicator"></span>
-                            <span class="checkbox-text-label"><i class="fa-solid fa-snowflake"></i> Air Conditioner (AC)</span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-snowflake"></i> Air Conditioning (AC)</span>
                         </label>
                         <label class="checkbox-custom-row">
                             <input type="checkbox" class="amenity-checkbox-flag" value="food">
                             <span class="checkbox-indicator"></span>
-                            <span class="checkbox-text-label"><i class="fa-solid fa-utensils"></i> Food Catering Included</span>
+                            <span class="checkbox-text-label"><i class="fa-solid fa-utensils"></i> Quality Food Included</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="drawer-action-footer">
-                    <button type="button" class="btn-clear-all-filters" id="filter-reset-trigger">Reset Filters</button>
+                    <button type="button" class="btn-clear-all-filters" id="filter-reset-trigger">Reset System</button>
                     <button type="button" class="btn-apply-mobile-view" id="filter-apply-trigger">Apply Layout</button>
                 </div>
             </div>
         </aside>
 
         <section class="content-stream-grid-wrapper" aria-labelledby="listings-heading">
-            <header class="search-and-heading-block">
-                <div class="heading-dynamic-counter-group">
-                    <h1 id="listings-heading">Premium PGs & Luxury Co-Living Spaces in Jaipur</h1>
-                    <p class="sub-meta-summary">Explore verified luxury co-living hubs, private single rooms, managed 1 RK studio setups, and elite 1, 2 & 3 BHK properties across Jaipur's premier corporate zones and institutional hubs.</p>
+            
+            <div class="search-and-heading-block" style="margin-bottom: 25px; display: flex; gap: 12px; align-items: center; background: #fff; padding: 18px; border-radius: 20px; border: 1px solid rgba(15,23,42,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.01);">
+                <div class="input-icon-group" style="position: relative; flex: 1;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 15px;"></i>
+                    <input type="text" id="pg-search-input" placeholder="Search spaces by area, landmarks, coaching institutes, or corporate hubs..." style="width: 100%; padding: 14px 16px 14px 50px; border-radius: 14px; border: 1px solid rgba(15,23,42,0.08); outline: none; font-family: inherit; font-size: 14px; box-sizing: border-box; transition: border-color 0.2s;">
                 </div>
-                
-                <div class="search-action-matrix-bar">
-                    <div class="input-icon-group">
-                        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
-                        <input type="text" id="pg-search-input" placeholder="Search spaces in Jaipur by area, landmark, coaching hub or metro station...">
-                        <i class="fa-solid fa-microphone voice-icon" id="voice-search-trigger" title="Voice Search Engine Activation"></i>
-                    </div>
-                    
-                    <button type="button" class="mobile-filter-modal-trigger-btn" id="mobile-drawer-open-btn">
-                        <i class="fa-solid fa-sliders"></i>
-                        <span>Filters</span>
-                    </button>
-                </div>
-            </header>
+                <button type="button" id="voice-search-trigger" style="background: #f1f5f9; border: none; width: 48px; height: 48px; border-radius: 14px; cursor: pointer; color: #475569; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"><i class="fa-solid fa-microphone"></i></button>
+            </div>
 
-            <div class="active-badges-row-bar" id="active-badges-runtime-container"></div>
+            <h2 id="listings-heading" style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 12px 0; font-family: 'Plus Jakarta Sans', sans-serif; tracking: -0.5px;">Premium Accommodations in Jaipur</h2>
+            
+            <div class="active-badges-row-bar" id="active-badges-runtime-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px;"></div>
 
-            <div id="pg-cards-container">
-                <div class="initial-loader-placeholder">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i>
-                    <p>Retrieving real-time premium accommodation data for Jaipur hubs...</p>
+            <div id="pg-cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 24px; min-height: 400px;">
+                <div class="initial-loader-placeholder" style="grid-column: 1/-1; text-align: center; padding: 80px 20px; color: #64748b;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 32px; color: #800020; margin-bottom: 15px;"></i>
+                    <p style="font-size: 15px; font-weight: 600;">Connecting with stay100% database engine cores...</p>
                 </div>
             </div>
 
-            <article class="seo-localized-footer-content" style="margin-top: 40px; padding: 20px; border-top: 1px solid #eee; font-size: 0.95rem; color: #555; line-height: 1.6;">
-                <h2>Verified Luxury Accommodations Across Key Jaipur Zones</h2>
-                <p>stay100% redefines premium student housing and professional corporate living across the Pink City. Whether you require a high-end <strong>student single room in Mansarovar or Jagatpura</strong> near major universities, a managed <strong>1 BHK or 2 BHK studio suite in Malviya Nagar and Tonk Road</strong>, or elite <strong>gents and ladies co-living spaces in C-Scheme and Vaishali Nagar</strong>, our curated listings offer upscale lifestyle benefits with zero brokerage.</p>
+            <article class="seo-content-rich-footer" style="margin-top: 50px; background: #ffffff; border-radius: 20px; padding: 30px; border: 1px solid rgba(15,23,42,0.06); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.6; color: #334155;">
+                <h3 style="color: #0f172a; font-size: 20px; font-weight: 700; margin-top: 0; margin-bottom: 12px;">Premium Accommodations, Managed PGs & Flats in Jaipur Hubs via stay100%</h3>
+                <p style="font-size: 14px; margin-bottom: 16px;">Welcome to <strong>stay100.in</strong>, Jaipur's leading digital real estate matrix offering zero-brokerage managed rooms. We list ultra-premium single private rooms, custom double sharing spaces, triple sharing systems, and standard independent configurations tailor-made for career-driven youths and active scholars alike across the Pink City.</p>
                 
-                <h3>Tailored Space Solutions in Jaipur:</h3>
-                <ul>
-                    <li><strong>Luxury PGs & Co-Living Spaces:</strong> Modern fully-managed communities featuring home-style premium meals, high-speed Wi-Fi, laundry facilities, and 3-tier security.</li>
-                    <li><strong>Private Single Rooms & Studio 1 RKs:</strong> Independent spaces optimized for students and remote professionals needing quiet zones with executive housekeeping.</li>
-                    <li><strong>Elite 1 BHK, 2 BHK & 3 BHK Villas/Suites:</strong> Fully furnished independent luxury apartments engineered for premium corporate teams, families, or couples.</li>
-                </ul>
+                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-graduation-cap" style="color:#800020;"></i> Strategic Proximity to Premier Coaching Institutions</h4>
+                <p style="font-size: 14px; margin-bottom: 16px;">Finding stable, disturbance-free single rooms or student hostels near coaching sectors is key. Our engine maps luxury properties within walking distance from major institutes like <strong>Allen Career Institute (Malviya Nagar & Jawahar Nagar)</strong>, <strong>Resonance, Aakash Institute, and FIITJEE at Mansarovar</strong>. Keep your focus intact with professional amenities including continuous Wi-Fi, laundry facilities, and timely dynamic dietary meals.</p>
+
+                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-briefcase" style="color:#800020;"></i> Seamless Commute to Tech parks & Corporate Complexes</h4>
+                <p style="font-size: 14px; margin-bottom: 16px;">Skip long transit hours by picking managed suites, studio 1 RKs, or 1 BHK, 2 BHK, and 3 BHK luxury flats distributed close to active industrial networks. Find rooms near the <strong>Sitapura Industrial Area, Genpact spaces, World Trade Park (WTP) corporate setups, Malviya Nagar business centers, and premium corporate offices in C-Scheme & Vaishali Nagar</strong>. Experience executive living models loaded with full housekeeping utilities on stay100.in.</p>
             </article>
         </section>
     </main>
 
-    <div class="footer-bottom-bar"></div>
+    <div id="dynamic-footer-container" class="footer-bottom-bar"></div>
 
-       <script type="module" src="propertycardscomponants.js"></script>
+    <script type="module" src="propertycardscomponants.js"></script>
     <script type="module" src="jaipur.js"></script>
     <script type="module" src="footer.js"></script>
     <script type="module" src="header.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backBtn = document.getElementById('stay100-history-back-trigger');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    if (document.referrer && window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        window.location.href = '/';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
