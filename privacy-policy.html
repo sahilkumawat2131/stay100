@@ -238,5 +238,216 @@
 
     <script src="header.js"></script>
     <script type="module" src="footer.js"></script>
+    </script>
+
+<!-- 1. इंस्टाग्राम लाइव प्रोफाइल सेक्शन कंटेनर -->
+<div class="insta-profile-footer-card" onclick="window.open('https://www.instagram.com/stay100.in?igsh=MTdoajkwdTlvZmgy')">
+    <div class="insta-card-wrapper">
+        
+        <!-- लेफ्ट साइड: डीपी और यूजरनेम -->
+        <div class="insta-left-node">
+            <div class="insta-avatar-ring">
+                <!-- अपनी इंस्टाग्राम डीपी का लिंक यहाँ डालें -->
+                <img src="/assets/dp.png" alt="Instagram Profile DP" class="insta-dp">
+            </div>
+            <div class="insta-meta-info">
+                <div class="insta-username-row">
+                    <span class="insta-username">Stay100.in</span>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLbzHZg6xcp3UsysM5zI2fG1ulmvT8AMnjotaGnEY4pg&s=10" alt="Verified" class="insta-verified-badge" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;">
+                </div>
+                <p class="insta-fullname">Stay100% | Premium Spaces</p>
+            </div>
+        </div>
+
+        <!-- राइट साइड: लाइव स्टेट्स और फॉलो बटन -->
+        <div class="insta-right-node">
+            <div class="insta-stats-group">
+                <div class="insta-stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Followers</span>
+                </div>
+                <div class="insta-stat-item live-indicator-dot">
+                    <span class="stat-number" style="color: #16a34a;">LIVE</span>
+                    <span class="stat-label">Active Now</span>
+                </div>
+            </div>
+            
+            <!-- फॉलो बटन -->
+            <button class="btn-insta-follow">
+                <i class="fa-brands fa-instagram"></i> Follow Us
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- 2. प्रीमियम इंस्टाग्राम विजेट स्टाइल्स (CSS) -->
+<style>
+.insta-profile-footer-card {
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto 20px auto;
+    background: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 20px;
+    padding: 16px 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+/* होवर करने पर हल्का सा ज़ूम और शैडो */
+.insta-profile-footer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.insta-card-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.insta-left-node {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* इंस्टाग्राम स्टोरी जैसा सतरंगी रिंग */
+.insta-avatar-ring {
+    width: 68px;
+    height: 68px;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+}
+
+.insta-dp {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    object-fit: cover;
+}
+
+.insta-username-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.insta-username {
+    font-size: 15px;
+    font-weight: 700;
+    color: #262626;
+}
+
+.insta-fullname {
+    font-size: 13px;
+    color: #737373;
+    margin: 3px 0 0 0;
+}
+
+.insta-right-node {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.insta-stats-group {
+    display: flex;
+    gap: 16px;
+}
+
+.insta-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 15px;
+    font-weight: 700;
+    color: #262626;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #737373;
+    font-weight: 500;
+}
+
+/* लाइव ब्लिंकिंग पल्स एनीमेशन */
+.live-indicator-dot .stat-number::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #16a34a;
+    border-radius: 50%;
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: instaLivePulse 1.5s infinite ease-in-out;
+}
+
+/* प्रीमियम इंस्टाग्राम ब्लू फॉलो बटन */
+.btn-insta-follow {
+    background: #0095f6;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.btn-insta-follow:hover {
+    background: #1877f2;
+}
+
+@keyframes instaLivePulse {
+    0% { opacity: 0.3; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.3; transform: scale(0.9); }
+}
+
+/* मोबाइल रिस्पॉन्सिव सपोर्ट */
+@media (max-width: 480px) {
+    .insta-card-wrapper {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .insta-left-node {
+        flex-direction: column;
+    }
+    .insta-right-node {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+    .insta-stats-group {
+        justify-content: center;
+        width: 100%;
+    }
+    .btn-insta-follow {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
 </body>
 </html>

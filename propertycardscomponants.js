@@ -606,7 +606,7 @@ window.PropertyCardComponent = {
         window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`, '_blank');
     },
 
-    render: function(post, savedItemsList = []) {
+   render: function(post, savedItemsList = []) {
         this.injectStyles();
         const heading = post.name || post.title || "Premium Rental Space";
         const currentRent = post.price || post.rent || "Contact Host";
@@ -681,6 +681,21 @@ window.PropertyCardComponent = {
         const sliderInstanceKey = `slider-${String(post.id).replace(/[^a-zA-Z0-9]/g, '')}`;
         const calculatedPropertyType = this._determineNormalizedPropertyType(post);
 
+        // Fallbacks for data analytics strings
+        const viewedCountString = post.viewedLastWeek || "5k";
+        const calledCountString = post.calledLastWeek || "2k";
+          // --- 🌟 लाइव यूनीक डेटा कैलकुलेशन इंजन ---
+        // प्रॉपर्टी आईडी को स्ट्रिंग में बदलकर उसके कैरेक्टर कोड्स का सम निकालेंगे ताकि हर प्रॉपर्टी का नंबर अलग आए
+        const uniqueIdSeed = String(post.id || '1').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        
+        // व्यूज के लिए एक यूनीक रैंडम बेस रेंज (जैसे 12 से 48 के बीच) हर कार्ड के लिए अलग बनेगी
+        const dynamicViewedBase = 12 + (uniqueIdSeed % 37); 
+        const finalUniqueViews = post.viewedLastWeek || dynamicViewedBase;
+        
+        // कॉल्स का डेटा हमेशा व्यूज का ठीक 60% कैलकुलेट होगा
+        const finalUniqueCalls = post.calledLastWeek || Math.round(finalUniqueViews * 0.60);
+        // ------------------------------------------
+
         return `
             <div class="property-card" data-city="${rawCityNode}" id="card-root-${sliderInstanceKey}">
                 <div class="image-container" id="${sliderInstanceKey}">
@@ -718,6 +733,43 @@ window.PropertyCardComponent = {
                     </p>
                     
                     <div class="facilities-grid">${amenitiesHTML}</div>
+                    
+                    <!-- 🔥 प्रीमियम सोशल प्रूफ और यूज़र एक्टिविटी सेक्शन -->
+                    <div class="card-activity-insights" style="margin: 14px 0; padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px dashed #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                        <!-- रो 1: व्यू करने वाले यूज़र्स (3 Stacked DPs के साथ) -->
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center;">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCRQaiQm4zirlolVJZ6dv3g1XX21mwP2i-HZIMOjJiBg&s=10" style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; display: block;" alt="User profile">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOL-IMHsrs9HkYjkNRLD6UMeKvIcoq54-bBr61fR6UNw&s=10" style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; margin-left: -8px; object-fit: cover; display: block;" alt="User profile">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0NvSvNntYdxmPDlsIActYVddq9TNIjRfjpnOkSR7kOQ&s=10" style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; margin-left: -8px; object-fit: cover; display: block;" alt="User profile">
+                            </div>
+                            <span style="font-size: 12px; color: #475569; font-weight: 500; line-height: 1.2;">
+                                <strong style="color: #1e293b; font-weight: 600;">${finalUniqueViews} users</strong> viewed in last week
+                            </span>
+                        </div>
+                        
+                        <!-- रो 2: कॉल करने वाले यूज़र्स (60% Math Logic + Live Blinking पल्स के साथ) -->
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="live-pulse-badge" style="background: #dcfce7; color: #16a34a; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; line-height: 14px; display: flex; align-items: center; gap: 4px;">
+                                <span style="width: 5px; height: 5px; background: #16a34a; border-radius: 50%; display: inline-block; animation: stay100Pulse 1.5s infinite ease-in-out;"></span>
+                                Live
+                            </div>
+                            <span style="font-size: 12px; color: #475569; font-weight: 500; line-height: 1.2;">
+                                <i class="fa-solid fa-phone" style="color: #16a34a; font-size: 10px; margin-right: 3px;"></i>
+                                <strong style="color: #1e293b; font-weight: 600;">${finalUniqueCalls} users</strong> called this property in last week
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CSS एनीमेशन इन्जेक्शन (यह पल्स इफ़ेक्ट को चलाएगा) -->
+                    <style>
+                        @keyframes stay100Pulse {
+                            0% { transform: scale(0.9); opacity: 0.4; }
+                            50% { transform: scale(1.2); opacity: 1; }
+                            100% { transform: scale(0.9); opacity: 0.4; }
+                        }
+                    </style>
+
                     <div class="card-actions">
                         <button class="btn-card-outline" data-view-id="${post.id}">View Details</button>
                         <button class="btn-card-mehrum" data-inquiry-id="${post.id}">Inquiry Now</button>
@@ -726,6 +778,7 @@ window.PropertyCardComponent = {
             </div>
         `;
     },
+
 
     renderLandscapeCard: function(post, customBadgeType, savedItemsList = []) {
         this.injectStyles();

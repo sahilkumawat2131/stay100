@@ -500,21 +500,67 @@ window.renderPostsDataPipeline = function() {
     // 📢 DYNAMIC SPONSORED INLINE AD BANNER SYSTEM
     // ==========================================
     // [EDIT HERE] इमेज बदलने के लिए src और रीडायरेक्ट के लिए window.location.href बदलें
-    const targetAdBanner = `
-        <div class="inline-advertisement-card" style="grid-column: 1 / -1; width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin: 15px 0; cursor: pointer;" onclick="window.location.href='premium.html'">
-            <img src="https://placehold.co/1200x250?text=Premium+Managed+Stays+-+High+Quality+Banner" alt="Sponsored Ad" style="width: 100%; height: auto; display: block; object-fit: cover;">
-        </div>
-    `;
+   const adBannersData = [
+    {
+        image: "/assets/sponsored.png", 
+        url: "https://www.stay100.in/pg.html", 
+        alt: "Premium Managed Stays"
+    },
+    {
+        image: "/assets/sponsored_2.png", 
+        url: "https://www.stay100.in/pg.html",               
+        alt: "Luxury Villa Offers"
+    },
+    {
+        image: "/assets/sponsored_3.png", 
+        url: "https://www.stay100.in/pg.html",      
+        alt: "Exclusive Holiday Deals"
+    }
+];
 
-    if (finalDisplayItems.length === 0) {
-        listingsGrid.innerHTML = getEmptyStateHTML();
-        return;
+let adCounter = 0;
+
+if (finalDisplayItems.length === 0) {
+    listingsGrid.innerHTML = getEmptyStateHTML();
+    return;
+}
+
+finalDisplayItems.forEach((post, idx) => {
+    if (idx > 0 && idx % 3 === 0 && adCounter < adBannersData.length) {
+        
+        const currentAd = adBannersData[adCounter];
+        
+        // प्रीमियम लुक और होवर इफेक्ट के साथ नया स्ट्रक्चर
+        const targetAdBanner = `
+            <div class="inline-advertisement-card" 
+                 style="grid-column: 1 / -1; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin: 25px 0; cursor: pointer; position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);" 
+                 onclick="window.open('${currentAd.url}', '_blank')"
+                 onmouseenter="this.style.transform='scale(1.01)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';"
+                 onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.04)';"
+            >
+                
+                <!-- प्रीमियम मिनिमलिस्ट Sponsored टैग (टॉप-लेफ्ट) -->
+                <div style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.85); color: #1a1a1a; padding: 6px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 30px; letter-spacing: 1px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 4px;">
+                    <span style="display: inline-block; width: 6px; height: 6px; background: #007aff; border-radius: 50%;"></span>
+                    Sponsored
+                </div>
+
+                <!-- विज्ञापनों वाला प्रामाणिक 'Ad Info' बटन (टॉप-राइट) -->
+                <div style="position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.4); color: #fff; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-family: serif; backdrop-filter: blur(4px); z-index: 10; opacity: 0.8;" title="Advertisement Information">
+                    ⓘ
+                </div>
+
+                <!-- इमेज स्मूथ ट्रांजिशन के साथ -->
+                <img src="${currentAd.image}" alt="${currentAd.alt}" style="width: 100%; height: auto; display: block; object-fit: cover; transition: transform 0.4s ease;">
+            </div>
+        `;
+        
+        finalGridHTML += targetAdBanner;
+        adCounter++; 
     }
 
-    finalDisplayItems.forEach((post, idx) => {
-        if (idx > 0 && idx % 3 === 0) {
-            finalGridHTML += targetAdBanner;
-        }
+    // यहाँ आपकी बाकी की पोस्ट का कोड रहेगा
+
 
         let genderIconHTML = '<span class="gender-tag unisex"><i class="fa-solid fa-users"></i> Unisex</span>';
         const cleanGender = (post.gender || "").toLowerCase().trim();
@@ -881,11 +927,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pointerIdx === -1) {
         bookmarkArray.push(targetPropId); 
         localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
-        window.showCenterToast("❤️ Space Bookmarked Safely!");
+        window.showCenterToast("Saved!");
     } else {
         bookmarkArray = bookmarkArray.filter(id => id !== targetPropId); 
         localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
-        window.showCenterToast("💔 Space Removed from Dashboard.");
+        window.showCenterToast("Removed.");
     }
     window.renderPostsDataPipeline();
 }
@@ -1041,7 +1087,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "Try 'boys hostel in Jaipur under 7000'",
         "Try 'girls flat near luxury areas'",
         "Search Premium Rooms",
-        "Search Luxury Flats"
+        "Search Luxury Flats",
+        "Students Friendly Pg's",
+        "Jaipur"
+         
     ];
 
     let word = 0;
@@ -1096,4 +1145,23 @@ function executeInquirySubmission() {
         document.getElementById('inquiry-modal').style.display = 'none';
         document.getElementById('inquiry-form').reset();
     });
+}
+function showSkeleton() {
+    const container = document.getElementById('listings-container');
+    container.classList.add('loading');
+    container.innerHTML = `
+        ${[1, 2, 3, 4, 5, 6].map(() => `
+            <div class="property-card">
+                <div class="skeleton skeleton-img"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text" style="width: 50%;"></div>
+            </div>
+        `).join('')}
+    `;
+}
+
+// Jab data aa jaye, tab ise call karke remove kardein:
+function hideSkeleton() {
+    document.getElementById('listings-container').classList.remove('loading');
+    // Yaha apna real data render karne wala function call karein
 }

@@ -873,7 +873,7 @@ class LayoutEngine {
                             <p>Experience ultra-premium co-living environments with verified properties, automated maintenance pipelines, and verified room allocation architectures tailored globally.</p>
                             <div class="footer-social-icons">
                                 <a href="https://facebook.com" target="_blank" class="fb-link"><i class="fa-brands fa-facebook-f"></i></a>
-                                <a href="https://instagram.com" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://www.instagram.com/stay100.in?igsh=MTdoajkwdTlvZmgy" target="_blank" class="insta-link"><i class="fa-brands fa-instagram"></i></a>
                                 <a href="https://twitter.com" target="_blank" class="x-link"><i class="fa-brands fa-x-twitter"></i></a>
                                 <a href="https://linkedin.com" target="_blank" class="ln-link"><i class="fa-brands fa-linkedin-in"></i></a>
                             </div>
@@ -902,7 +902,7 @@ class LayoutEngine {
                             <h4>Contact Info</h4>
                             <div class="footer-address-info">
                                 <p><i class="fa-solid fa-location-dot"></i> <span>Plot 45, Sector 12, Mansarovar Main Road, Jaipur, Rajasthan, 302020</span></p>
-                                <p><i class="fa-solid fa-phone"></i> <span>+91 98765 43210</span></p>
+                                <p><i class="fa-solid fa-phone"></i> <span>+91 9680063684</span></p>
                                 <p><i class="fa-solid fa-envelope"></i> <span>supportstay100@gmail.com</span></p>
                             </div>
                         </div>
@@ -920,51 +920,51 @@ class LayoutEngine {
                                 <div class="seo-column-group">
                                     <h5>Jaipur Directory</h5>
                                     <div class="seo-links-list">
-                                        <a href="jaipur.html?type=flat&area=mansarovar">Flats in Mansarovar Road</a>
-                                        <a href="jaipur.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
-                                        <a href="jaipur.html?type=flat&area=malviyanagar">Apartments Malviya Nagar</a>
-                                        <a href="jaipur.html?type=pg&landmark=coaching">PG near Allen & Resonance</a>
-                                        <a href="jaipur.html?type=flat&budget=10k">Budget Flats under 10k</a>
+                                        <a href="city.html?type=flat&area=mansarovar">Flats in Mansarovar Road</a>
+                                        <a href="city.html?type=flat&area=gopalpura">1 & 2 BHK in Gopalpura Bypass</a>
+                                        <a href="city.html?type=flat&area=malviyanagar">Apartments Malviya Nagar</a>
+                                        <a href="city.html?type=pg&landmark=coaching">PG near Allen & Resonance</a>
+                                        <a href="city.html?type=flat&budget=10k">Budget Flats under 10k</a>
                                     </div>
                                 </div>
                                 <div class="seo-column-group">
                                     <h5>Delhi NCR Directory</h5>
                                     <div class="seo-links-list">
-                                        <a href="delhi.html?type=flat&area=rajindernagar">UPSC Flats Old Rajinder Nagar</a>
-                                        <a href="delhi.html?type=flat&area=laxminagar">1 BHK Stays in Laxmi Nagar</a>
-                                        <a href="delhi.html?type=flat&area=northcampus">Student Flats DU North Campus</a>
-                                        <a href="delhi.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
-                                        <a href="delhi.html?type=flat&area=ndls">Properties near NDLS Station</a>
+                                        <a href="city.html?type=flat&area=rajindernagar">UPSC Flats Old Rajinder Nagar</a>
+                                        <a href="city.html?type=flat&area=laxminagar">1 BHK Stays in Laxmi Nagar</a>
+                                        <a href="city.html?type=flat&area=northcampus">Student Flats DU North Campus</a>
+                                        <a href="city.html?type=flat&area=satyaniketan">Studio Flats in Satya Niketan</a>
+                                        <a href="city.html?type=flat&area=ndls">Properties near NDLS Station</a>
                                     </div>
                                 </div>
                                 <div class="seo-column-group">
                                     <h5>Gurugram Directory</h5>
                                     <div class="seo-links-list">
-                                        <a href="gurugram.html?type=flat&area=cybercity">Corporate Suites Cyber City</a>
-                                        <a href="gurugram.html?type=flat&area=sector48">2 BHK Sector 48 Sohna Road</a>
-                                        <a href="gurugram.html?type=flat&area=hudacity">Studio near Millennium Metro</a>
-                                        <a href="gurugram.html?type=flat&area=sector21">Managed Flatsuites Sector 21</a>
-                                        <a href="gurugram.html?type=flat&budget=15k">Premium Flats under 15k</a>
+                                        <a href="city.html?type=flat&area=cybercity">Corporate Suites Cyber City</a>
+                                        <a href="city.html?type=flat&area=sector48">2 BHK Sector 48 Sohna Road</a>
+                                        <a href="city.html?type=flat&area=hudacity">Studio near Millennium Metro</a>
+                                        <a href="city.html?type=flat&area=sector21">Managed Flatsuites Sector 21</a>
+                                        <a href="city.html?type=flat&budget=15k">Premium Flats under 15k</a>
                                     </div>
                                 </div>
                                 <div class="seo-column-group">
                                     <h5>Noida Directory</h5>
                                     <div class="seo-links-list">
-                                        <a href="noida.html?type=flat&area=sector62">IT Park Linked Flats Sec 62</a>
-                                        <a href="noida.html?type=flat&area=sector15">Metro Walk Rooms Sector 15</a>
-                                        <a href="noida.html?type=flat&area=knowledgepark">Knowledge Park Units</a>
-                                        <a href="noida.html?type=flat&area=amity">Independent Stays near Amity</a>
-                                        <a href="noida.html?type=flat&budget=12k">Furnished Flats under 12k</a>
+                                        <a href="city.html?type=flat&area=sector62">IT Park Linked Flats Sec 62</a>
+                                        <a href="city.html?type=flat&area=sector15">Metro Walk Rooms Sector 15</a>
+                                        <a href="city.html?type=flat&area=knowledgepark">Knowledge Park Units</a>
+                                        <a href="city.html?type=flat&area=amity">Independent Stays near Amity</a>
+                                        <a href="city.html?type=flat&budget=12k">Furnished Flats under 12k</a>
                                     </div>
                                 </div>
                                 <div class="seo-column-group">
                                     <h5>Mumbai & Pune</h5>
                                     <div class="seo-links-list">
-                                        <a href="mumbai.html?type=pg&area=andheri">Executive Co-living Andheri</a>
-                                        <a href="mumbai.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
-                                        <a href="pune.html?type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3</a>
-                                        <a href="pune.html?type=pg&area=vimannagar">Student Rooms Viman Nagar</a>
-                                        <a href="pune.html?type=pg&facility=food">Premium Food Attached PG</a>
+                                        <a href="city.html?type=pg&area=andheri">Executive Co-living Andheri</a>
+                                        <a href="city.html?type=pg&area=powai">IIT Tech Circle PG in Powai</a>
+                                        <a href="city.html?type=pg&area=hinjewadi">Hinjewadi Infotech Phase 1-3</a>
+                                        <a href="city.html?type=pg&area=vimannagar">Student Rooms Viman Nagar</a>
+                                        <a href="city.html?type=pg&facility=food">Premium Food Attached PG</a>
                                     </div>
                                 </div>
                             </div>
@@ -973,7 +973,7 @@ class LayoutEngine {
                                 <div class="seo-column-group">
                                     <h5>Bangalore Hubs</h5>
                                     <div class="seo-links-list">
-                                        <a href="bengluru.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
+                                        <a href="city.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
                                         <a href="bengluru.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
                                         <a href="bengluru.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
                                         <a href="bengluru.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>

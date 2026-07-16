@@ -472,13 +472,15 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     const track = document.getElementById('image-slider-track');
     if (track) {
         let slidesHTMLArray = [];
+        let allMediaSources = []; // फुल स्क्रीन व्यू में इस्तेमाल करने के लिए सोर्सेस ट्रैक करेंगे
         
         // 1. First inject autoplaying visual video feeds if hosted online
         if (targetPropertyObject.videoUrl && targetPropertyObject.videoUrl.trim() !== "") {
+            allMediaSources.push({ type: 'video', src: targetPropertyObject.videoUrl });
             slidesHTMLArray.push(`
-                <div class="slide-unit" style="min-width:100%; width:100%; flex-shrink:0; position:relative; background:#000; display:flex; align-items:center; justify-content:center; height:56.25vw; max-height:500px; min-height:250px; overflow:hidden;">
+                <div class="slide-unit" style="min-width:100%; width:100%; flex-shrink:0; position:relative; background:#000; display:flex; align-items:center; justify-content:center; height:56.25vw; max-height:500px; min-height:250px; overflow:hidden; cursor:zoom-in;" onclick="openMediaFullScreen(0)">
                     <video src="${targetPropertyObject.videoUrl}" autoplay muted loop playsinline preload="auto" style="width:100%; height:100%; object-fit:contain; position:relative; z-index:2; display:block;"></video>
-                    <div style="position:absolute; top:12px; left:12px; z-index:3; background:rgba(15,23,42,0.75); color:#fff; font-size:11px; padding:4px 8px; border-radius:4px; font-weight:700; display:flex; align-items:center; gap:5px;">
+                    <div style="position:absolute; top:12px; left:12px; z-index:3; background:rgba(15,23,42,0.75); color:#fff; font-size:11px; padding:4px 8px; border-radius:4px; font-weight:700; display:flex; align-items:center; gap:5px; pointer-events:none;">
                         <i class="fa-solid fa-video" style="color:#ef4444;"></i> PROPERTY VIDEO
                     </div>
                 </div>
@@ -499,13 +501,17 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
 
         imagesList = imagesList.filter(src => src && typeof src === 'string' && src.trim() !== "");
 
-        imagesList.forEach(src => {
+        imagesList.forEach((src) => {
             let optimizedSrc = src;
             if (src.includes('unsplash.com')) {
                 optimizedSrc = src.split('?')[0] + "?auto=format&fit=crop&w=2560&q=100"; 
             }
+            
+            const currentMediaIndex = allMediaSources.length;
+            allMediaSources.push({ type: 'image', src: optimizedSrc });
+
             slidesHTMLArray.push(`
-                <div class="slide-unit" style="min-width:100%; width:100%; flex-shrink:0; position:relative; background:#0f172a; display:flex; align-items:center; justify-content:center; height:56.25vw; max-height:500px; min-height:250px; overflow:hidden;">
+                <div class="slide-unit" style="min-width:100%; width:100%; flex-shrink:0; position:relative; background:#0f172a; display:flex; align-items:center; justify-content:center; height:56.25vw; max-height:500px; min-height:250px; overflow:hidden; cursor:zoom-in;" onclick="openMediaFullScreen(${currentMediaIndex})">
                     <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:#cbd5e1; font-size:48px; pointer-events:none; z-index:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
                         <i class="fa-regular fa-image" style="opacity:0.2;"></i>
                         <span style="font-size:12px; font-weight:700; letter-spacing:1px; opacity:0.15;">STAY100%</span>
@@ -518,7 +524,93 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         track.innerHTML = slidesHTMLArray.join('');
         activeSliderPositionIndex = 0;
         track.style.transform = `translateX(0%)`;
+
+        // 3. वैश्विक विंडो ऑब्जेक्ट में मीडिया स्टोर करें ताकि फुलस्क्रीन फंक्शन इसे एक्सेस कर सके
+        window.currentPropertyMediaAssets = allMediaSources;
+
+        // 4. Google स्टाइल का मल्टीपल इमेज काउंटर बटन (Bottom-Right) पैरेंट कंटेनर में जोड़ें
+        const sliderWrapper = track.parentElement;
+        if (sliderWrapper) {
+            // पुराने काउंटर को हटाएं अगर पहले से मौजूद हो
+            const oldCounter = sliderWrapper.querySelector('.google-image-counter');
+            if (oldCounter) oldCounter.remove();
+
+            // नया Google स्टाइल काउंटर बनाएँ
+            const counterDiv = document.createElement('div');
+            counterDiv.className = 'google-image-counter';
+            counterDiv.setAttribute('style', `
+                position: absolute; bottom: 16px; right: 16px; z-index: 10;
+                background: rgba(23, 23, 23, 0.85); color: #ffffff;
+                padding: 6px 12px; border-radius: 20px; font-size: 12px;
+                font-weight: 600; display: flex; align-items: center; gap: 6px;
+                backdrop-filter: blur(4px); cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                font-family: system-ui, -apple-system, sans-serif; transition: background 0.2s;
+            `);
+            counterDiv.innerHTML = `
+                <i class="fa-solid fa-images" style="font-size: 13px;"></i>
+                <span>All Photos (${allMediaSources.length})</span>
+            `;
+            counterDiv.onclick = () => openMediaFullScreen(0);
+            
+            // सुनिश्चित करें कि पैरेंट की पोजीशन relative हो ताकि काउंटर सही जगह चिपके
+            sliderWrapper.style.position = 'relative';
+            sliderWrapper.appendChild(counterDiv);
+        }
     }
+
+    // 5. फुल स्क्रीन लाइटबॉक्स खोलने और बंद करने के फंक्शन्स
+    window.openMediaFullScreen = function(index) {
+        const assets = window.currentPropertyMediaAssets || [];
+        if (assets.length === 0) return;
+
+        // पुराना फुलस्क्रीन ओवरले हटाएं अगर मौजूद हो
+        const oldOverlay = document.getElementById('fullscreen-media-overlay');
+        if (oldOverlay) oldOverlay.remove();
+
+        // नया ओवरले बनाएँ
+        const overlay = document.createElement('div');
+        overlay.id = 'fullscreen-media-overlay';
+        overlay.setAttribute('style', `
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000000; z-index: 99999; display: flex;
+            align-items: center; justify-content: center; opacity: 0;
+            transition: opacity 0.3s ease; font-family: sans-serif;
+        `);
+
+        // क्लोज बटन
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        closeBtn.setAttribute('style', `
+            position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.15);
+            border: none; color: #fff; width: 44px; height: 44px; border-radius: 50%;
+            font-size: 20px; cursor: pointer; z-index: 100001; transition: background 0.2s;
+        `);
+        closeBtn.onmouseenter = () => closeBtn.style.background = 'rgba(255,255,255,0.3)';
+        closeBtn.onmouseleave = () => closeBtn.style.background = 'rgba(255,255,255,0.15)';
+        closeBtn.onclick = () => {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 300);
+        };
+
+        // मीडिया कंटेनर
+        const contentBox = document.createElement('div');
+        contentBox.setAttribute('style', 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;');
+
+        const item = assets[index];
+        if (item.type === 'video') {
+            contentBox.innerHTML = `<video src="${item.src}" controls autoplay loop style="max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"></video>`;
+        } else {
+            contentBox.innerHTML = `<img src="${item.src}" style="max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.5);" alt="Fullscreen gallery target">`;
+        }
+
+        overlay.appendChild(closeBtn);
+        overlay.appendChild(contentBox);
+        document.body.appendChild(overlay);
+
+        // फेड-इन इफ़ेक्ट के लिए
+        setTimeout(() => overlay.style.opacity = '1', 50);
+    };
+
 
     // --- COMPLETE UPGRADED DYNAMIC AMENITIES MATRIX PACK ---
     globalGeneratedFacilitiesArray = [];
