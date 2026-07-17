@@ -20,13 +20,13 @@ const db = getDatabase(app);
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const currentSessionUID = localStorage.getItem('staypremium_uid');
+    const currentSessionUID = localStorage.getItem('stay100_uid');
 
     // --- 1. AUTH RECOVERY & AUTO FILL ENGINE ---
     function handleProfileAutoFillEngine() {
-        const sessionName = localStorage.getItem('staypremium_name');
-        const sessionEmail = localStorage.getItem('staypremium_email');
-        const sessionPhone = localStorage.getItem('staypremium_phone');
+        const sessionName = localStorage.getItem('stay100_name');
+        const sessionEmail = localStorage.getItem('sta100_email');
+        const sessionPhone = localStorage.getItem('stay100_phone');
 
         if (!currentSessionUID) {
             alert("Session expired or user not logged in. Redirecting to login...");
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const phoneNode = document.getElementById('display-user-phone');
 
         if (idNode) idNode.innerText = currentSessionUID;
-        if (nameNode) nameNode.innerText = sessionName || "StayPremium Resident";
+        if (nameNode) nameNode.innerText = sessionName || "Stay100 Resident";
         if (emailNode) emailNode.innerText = (sessionEmail && sessionEmail !== 'N/A') ? sessionEmail : "No Email Linked";
         if (phoneNode) phoneNode.innerText = (sessionPhone && sessionPhone !== 'N/A') ? sessionPhone : "No Phone Linked";
     }
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (navigator.share) {
                     navigator.share({
                         title: btn.dataset.name,
-                        text: `Check out this premium space verified on StayPremium!`,
+                        text: `Check out this premium space verified on Stay100!`,
                         url: targetUrl
                     }).catch(e => console.error(e));
                 } else {
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         try {
                             let localList = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
                             localList = localList.filter(id => id !== targetId);
-                            localStorage.setItem('staypremium_saved_properties', JSON.stringify(localList));
+                            localStorage.setItem('stay100_saved_properties', JSON.stringify(localList));
                         } catch(err) { console.error(err); }
                     });
                 }
@@ -226,13 +226,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to log out from StayPremium?")) {
-                localStorage.removeItem('staypremium_uid');
-                localStorage.removeItem('staypremium_name');
-                localStorage.removeItem('staypremium_email');
-                localStorage.removeItem('staypremium_phone');
-                localStorage.removeItem('staypremium_saved_properties');
-                localStorage.removeItem('staypremium_history_footprints');
+            if (confirm("Are you sure you want to log out from Stay100?")) {
+                localStorage.removeItem('stay100_uid');
+                localStorage.removeItem('stay100_name');
+                localStorage.removeItem('stay100_email');
+                localStorage.removeItem('stay100_phone');
+                localStorage.removeItem('stay100_saved_properties');
+                localStorage.removeItem('stay100_history_footprints');
                 
                 window.location.href = 'login.html';
             }

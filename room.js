@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Attach Event Listeners to all Input Fields in Sidebar
-    document.querySelectorAll('.prop-type-filter, .sharing-filter, .furnish-filter, .amenity-filter, name="genderPref"').forEach(element => {
+    document.querySelectorAll('.prop-type-filter, .sharing-filter, .furnish-filter, .amenity-filter').forEach(element => {
         element.addEventListener('change', renderRoomDataViewGrid);
     });
     document.getElementsByName('genderPref').forEach(radio => radio.addEventListener('change', renderRoomDataViewGrid));
@@ -104,12 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 🔴 [शुरुआती लोड] Firebase से कनेक्शन स्थापित होने के दौरान एनीमेशन दिखाएं
+    showInitialRoomLoader();
+
     // Firebase Data Capture Node
     const propertiesNodeRef = ref(database, 'properties');
     onValue(propertiesNodeRef, (snapshot) => {
         const rawPayload = snapshot.val();
         if(rawPayload) {
             masterRoomRecords = Object.keys(rawPayload).map(key => ({ id: key, ...rawPayload[key] }));
+            renderRoomDataViewGrid();
+        } else {
             renderRoomDataViewGrid();
         }
     });
@@ -125,6 +130,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// [नया फंक्शन] रूम्स ग्रिड में ब्रांडेड पल्स लोडर दिखाने के लिए
+function showInitialRoomLoader() {
+    const container = document.getElementById('room-cards-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="firebase-loading-wrapper" style="grid-column: 1 / -1; width:100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; text-align: center;">
+            <div class="logo-animation-container">
+                <!-- 🔴 [यहाँ बदलें] अपनी वेबसाइट के असली लोगो का पाथ डालें -->
+                <img src="/assets/vendor logo.png" alt="Loading Assets..." class="pulse-logo" style="width: 85px; height: auto; margin-bottom: 18px;">
+            </div>
+            <div class="loading-bar-container" style="width: 140px; height: 4px; background: #f3f4f6; border-radius: 10px; overflow: hidden; position: relative;">
+                <div class="loading-bar-fill" style="position: absolute; width: 50%; height: 100%; background: #800020; border-radius: 10px; animation: loadingSlide 1.5s infinite ease-in-out;"></div>
+            </div>
+            <p style="color: #6b7280; font-size: 13px; font-weight: 500; margin-top: 14px; font-family: sans-serif; letter-spacing: 0.5px;">Loading Stay100%...</p>
+        </div>
+    `;
+}
 
 // --- LOCAL LANGUAGE & HINGLISH PARSER DICTIONARY ---
 function processSmartSearchDictionary(queryStr) {
@@ -216,7 +240,7 @@ function renderRoomDataViewGrid() {
 
     // Dynamic Render View DOM Injector
     if(processedResultPool.length === 0) {
-        container.innerHTML = `<div class="loader-text">Oops! Koi matching flat ya PG nahi mila. Filter reset karke dekhein.</div>`;
+        container.innerHTML = `<div class="loader-text" style="grid-column:1/-1; text-align:center; padding:50px; color:#6b7280; font-family:sans-serif;">Oops! Koi matching flat ya PG nahi mila. Filter reset karke dekhein.</div>`;
         return;
     }
 

@@ -514,3 +514,21 @@ body {
         gap: 20px;
     }
 }
+
+
+/* लोगो को धीरे-धीरे ब्लिंक/पल्स कराने का एनीमेशन */
+@keyframes logoPulse {
+    0% { transform: scale(0.95); opacity: 0.6; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.6; }
+}
+
+.pulse-logo {
+    animation: logoPulse 2s infinite ease-in-out;
+}
+
+/* लोडिंग बार को बाएं से दाएं स्लाइड कराने का एनीमेशन */
+@keyframes loadingSlide {
+    0% { left: -50%; }
+    100% { left: 100%; }
+}

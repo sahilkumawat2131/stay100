@@ -365,241 +365,245 @@ const AI_NLP_DICTIONARY = {
 window.renderPostsDataPipeline = function() {
     const listingsGrid = document.getElementById('listings-container');
     if (!listingsGrid) return;
-    listingsGrid.innerHTML = '';
     
-    const searchInput = document.getElementById('search-input');
-    const rawSearchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
-    const activeSelectedGlobalCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
+    // --- [नया] लोडिंग / कंकाल (Skeleton) स्टेट दिखाना ---
+    // जब तक डेटा रेंडर नहीं हो जाता, यह लोडिंग स्क्रीन एनिमेट करेगी
+    listingsGrid.innerHTML = `
+        <div class="site-loading-wrapper" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center;">
+            <div class="logo-animation-container">
+                <!-- 🔴 [यहाँ बदलें] अपनी साइट के LOGO का पाथ src में डालें -->
+                <img src="/assets/vendor logo.png" alt="Loading..." class="pulse-logo" style="width: 80px; height: auto; margin-bottom: 15px;">
+            </div>
+            <div class="loading-bar-container" style="width: 140px; height: 4px; background: #f3f4f6; border-radius: 10px; overflow: hidden; position: relative;">
+                <div class="loading-bar-fill" style="position: absolute; width: 50%; height: 100%; background: #800020; border-radius: 10px; animation: loadingSlide 1.5s infinite ease-in-out;"></div>
+            </div>
+            <p style="color: #6b7280; font-size: 13px; font-weight: 500; margin-top: 12px; font-family: sans-serif; letter-spacing: 0.5px;">Loading Stay100%...</p>
+        </div>
+    `;
 
-    // --- 1. LOCAL SEARCH COOPERATIVE ENGINE ---
-    let aiExtractedState = {
-        detectedArea: "",
-        detectedGender: "all",
-        detectedHubs: [],
-        budgetLimit: Infinity
-    };
+    // स्मूथ फ़ेड-इन इफ़ेक्ट के लिए एक छोटे से डिले (Delay) के बाद रेंडरिंग शुरू करना
+    setTimeout(() => {
+        const searchInput = document.getElementById('search-input');
+        const rawSearchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const activeSelectedGlobalCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
-    if (rawSearchQuery.length > 2) {
-        AI_NLP_DICTIONARY.localities.forEach(loc => {
-            if (rawSearchQuery.includes(loc)) aiExtractedState.detectedArea = loc;
-        });
+        // --- 1. LOCAL SEARCH COOPERATIVE ENGINE ---
+        let aiExtractedState = {
+            detectedArea: "",
+            detectedGender: "all",
+            detectedHubs: [],
+            budgetLimit: Infinity
+        };
 
-        Object.keys(AI_NLP_DICTIONARY.hubs).forEach(hubKey => {
-            AI_NLP_DICTIONARY.hubs[hubKey].forEach(alias => {
-                if (rawSearchQuery.includes(alias)) {
-                    aiExtractedState.detectedHubs.push(hubKey);
-                }
+        if (rawSearchQuery.length > 2) {
+            AI_NLP_DICTIONARY.localities.forEach(loc => {
+                if (rawSearchQuery.includes(loc.toLowerCase())) aiExtractedState.detectedArea = loc.toLowerCase();
             });
-        });
 
-        Object.keys(AI_NLP_DICTIONARY.gender).forEach(genderKey => {
-            AI_NLP_DICTIONARY.gender[genderKey].forEach(alias => {
-                if (rawSearchQuery.includes(alias)) aiExtractedState.detectedGender = genderKey;
+            Object.keys(AI_NLP_DICTIONARY.hubs).forEach(hubKey => {
+                AI_NLP_DICTIONARY.hubs[hubKey].forEach(alias => {
+                    if (rawSearchQuery.includes(alias.toLowerCase())) {
+                        if (!aiExtractedState.detectedHubs.includes(hubKey)) {
+                            aiExtractedState.detectedHubs.push(hubKey);
+                        }
+                    }
+                });
             });
-        });
 
-        const budgetMatches = rawSearchQuery.match(/(?:under|below|around|₹|\bsabse sasta\b)\s?(\d+)(k)?/i);
-        if (budgetMatches) {
-            let parsedVal = parseFloat(budgetMatches[1]);
-            if (budgetMatches[2] || parsedVal < 100) parsedVal = parsedVal * 1000; 
-            aiExtractedState.budgetLimit = parsedVal;
-        }
-    }
-
-    // --- 2. RUN EXTRACTION FILTER MATCHES PIPELINE ---
-    const locallySavedItems = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
-
-    let filteredOutputs = allPosts.filter(item => {
-        const title = (item.name || item.title || "").toLowerCase();
-        const placement = (item.location || item.area || "").toLowerCase();
-        const itemCityNode = (item.city || "").toLowerCase().trim();
-        const baseCategory = (item.category || "").toLowerCase().trim();
-        const itemGender = (item.gender || "").toLowerCase().trim();
-        const itemTags = Array.isArray(item.tags) ? item.tags.map(t => t.toLowerCase()) : [];
-
-        let matchesGlobalCity = false;
-        if (activeSelectedGlobalCity === "all" || activeSelectedGlobalCity === "all cities" || activeSelectedGlobalCity === "") {
-            matchesGlobalCity = true;
-        } else if (itemCityNode !== "") {
-            matchesGlobalCity = (itemCityNode === activeSelectedGlobalCity || activeSelectedGlobalCity.includes(itemCityNode));
-        } else {
-            matchesGlobalCity = placement.includes(activeSelectedGlobalCity) || title.includes(activeSelectedGlobalCity);
-        }
-        if (!matchesGlobalCity) return false;
-
-        if (rawSearchQuery && !aiExtractedState.detectedArea && aiExtractedState.detectedHubs.length === 0 && aiExtractedState.detectedGender === "all") {
-            const isPlainMatch = title.includes(rawSearchQuery) || placement.includes(rawSearchQuery);
-            if (!isPlainMatch) return false;
-        }
-
-        if (aiExtractedState.detectedArea && !placement.includes(aiExtractedState.detectedArea) && !title.includes(aiExtractedState.detectedArea)) {
-            return false;
-        }
-        if (aiExtractedState.detectedGender !== "all" && itemGender !== aiExtractedState.detectedGender && !title.includes(aiExtractedState.detectedGender)) {
-            return false;
-        }
-        if (aiExtractedState.budgetLimit !== Infinity && parseFloat(item.price || item.rent || 0) > aiExtractedState.budgetLimit) {
-            return false;
-        }
-        if (aiExtractedState.detectedHubs.length > 0) {
-            let matchedHub = aiExtractedState.detectedHubs.some(hub => {
-                if (hub === "coaching" || hub === "college") {
-                    return title.includes("coaching") || title.includes("allen") || title.includes("college") || title.includes("university") || !!item.nearSchool || itemTags.includes("near school");
-                }
-                if (hub === "hospital") return title.includes("hospital") || !!item.nearHospital || itemTags.includes("near hospital");
-                if (hub === "office") return title.includes("office") || title.includes("it park") || !!item.nearOffice || itemTags.includes("near office");
-                return false;
+            Object.keys(AI_NLP_DICTIONARY.gender).forEach(genderKey => {
+                AI_NLP_DICTIONARY.gender[genderKey].forEach(alias => {
+                    if (rawSearchQuery.includes(alias.toLowerCase())) aiExtractedState.detectedGender = genderKey;
+                });
             });
-            if (!matchedHub) return false;
+
+            const budgetMatches = rawSearchQuery.match(/(?:under|below|around|₹|price|\bsabse sasta\b)\s?(\d+)(k)?/i);
+            if (budgetMatches) {
+                let parsedVal = parseFloat(budgetMatches[1]);
+                if (budgetMatches[2] || parsedVal < 100) parsedVal = parsedVal * 1000; 
+                aiExtractedState.budgetLimit = parsedVal;
+            }
         }
 
-        if (currentCategory !== 'all' && currentCategory !== '') {
-            if (currentCategory === 'pg' && baseCategory !== 'pg' && baseCategory !== 'hostel') return false;
-            if (currentCategory === 'flat' && baseCategory !== 'flat' && baseCategory !== 'apartment') return false;
-        }
-        if (window.filterState.maxBudget !== Infinity && parseFloat(item.price || item.rent || 0) > window.filterState.maxBudget) return false;
-        if (window.filterState.area !== "" && !placement.includes(window.filterState.area)) return false;
+        // --- 2. RUN EXTRACTION FILTER MATCHES PIPELINE (सुधारित और फिक्स्ड) ---
+        const locallySavedItems = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
+        const globalFilterMaxBudget = window.filterState && window.filterState.maxBudget ? parseFloat(window.filterState.maxBudget) : Infinity;
+        const globalFilterArea = window.filterState && window.filterState.area ? window.filterState.area.toLowerCase().trim() : "";
 
-        return true;
-    });
-
-    let scoredOutputs = filteredOutputs.map(post => {
-        const isVendorVerified = checkVendorVerification(post.vendorId || post.userId) || post.isVerified === true;
-        let sortingScore = (post.views || 0) + (isVendorVerified ? 100000 : 0);
-        if (post.timestamp) sortingScore += post.timestamp / 1000000;
-        return { ...post, isVendorVerified, sortingScore };
-    });
-    scoredOutputs.sort((a, b) => b.sortingScore - a.sortingScore);
-
-    let isShowingRecommended = false;
-    let finalDisplayItems = [...scoredOutputs];
-
-    if (finalDisplayItems.length === 0 && rawSearchQuery.length > 0) {
-        isShowingRecommended = true;
-        finalDisplayItems = allPosts.filter(item => {
-            const itemCityNode = (item.city || "").toLowerCase().trim();
+        let filteredOutputs = allPosts.filter(item => {
+            const title = (item.name || item.title || "").toLowerCase();
             const placement = (item.location || item.area || "").toLowerCase();
-            if (activeSelectedGlobalCity && activeSelectedGlobalCity !== "all") {
-                return itemCityNode === activeSelectedGlobalCity || placement.includes(activeSelectedGlobalCity);
+            const itemCityNode = (item.city || "").toLowerCase().trim();
+            const baseCategory = (item.category || "").toLowerCase().trim();
+            const itemGender = (item.gender || "").toLowerCase().trim();
+            const itemTags = Array.isArray(item.tags) ? item.tags.map(t => t.toLowerCase()) : [];
+            const itemPrice = parseFloat(item.price || item.rent || 0);
+
+            // A. ग्लोबल सिटी फ़िल्टर (City Match)
+            let matchesGlobalCity = false;
+            if (activeSelectedGlobalCity === "all" || activeSelectedGlobalCity === "all cities" || activeSelectedGlobalCity === "") {
+                matchesGlobalCity = true;
+            } else if (itemCityNode !== "") {
+                matchesGlobalCity = (itemCityNode === activeSelectedGlobalCity || activeSelectedGlobalCity.includes(itemCityNode));
+            } else {
+                matchesGlobalCity = placement.includes(activeSelectedGlobalCity) || title.includes(activeSelectedGlobalCity);
             }
+            if (!matchesGlobalCity) return false;
+
+            // B. सामान्य सर्च बार (Plain Match) - अगर NLP कुछ न ढूंढ पाए
+            if (rawSearchQuery && !aiExtractedState.detectedArea && aiExtractedState.detectedHubs.length === 0 && aiExtractedState.detectedGender === "all") {
+                const isPlainMatch = title.includes(rawSearchQuery) || placement.includes(rawSearchQuery) || itemCityNode.includes(rawSearchQuery);
+                if (!isPlainMatch) return false;
+            }
+
+            // C. NLP एरिया फ़िल्टर
+            if (aiExtractedState.detectedArea && !placement.includes(aiExtractedState.detectedArea) && !title.includes(aiExtractedState.detectedArea)) {
+                return false;
+            }
+
+            // D. UI साइडबार मैन्युअल एरिया फ़िल्टर
+            if (globalFilterArea !== "" && !placement.includes(globalFilterArea)) {
+                return false;
+            }
+
+            // E. जेंडर फ़िल्टर
+            if (aiExtractedState.detectedGender !== "all" && itemGender !== aiExtractedState.detectedGender && !title.includes(aiExtractedState.detectedGender)) {
+                return false;
+            }
+
+            // F. संयुक्त बजट फ़िल्टर (NLP + Sidebar Filter दोनों को साथ संभाला)
+            const finalMaxBudgetLimit = Math.min(aiExtractedState.budgetLimit, globalFilterMaxBudget);
+            if (itemPrice > finalMaxBudgetLimit) {
+                return false;
+            }
+
+            // G. NLP हब फ़िल्टर
+            if (aiExtractedState.detectedHubs.length > 0) {
+                let matchedHub = aiExtractedState.detectedHubs.some(hub => {
+                    if (hub === "coaching" || hub === "college") {
+                        return title.includes("coaching") || title.includes("allen") || title.includes("college") || title.includes("university") || !!item.nearSchool || itemTags.includes("near school");
+                    }
+                    if (hub === "hospital") return title.includes("hospital") || !!item.nearHospital || itemTags.includes("near hospital");
+                    if (hub === "office") return title.includes("office") || title.includes("it park") || !!item.nearOffice || itemTags.includes("near office");
+                    return false;
+                });
+                if (!matchedHub) return false;
+            }
+
+            // H. कैटेगरी फ़िल्टर (PG / Flat)
+            if (typeof currentCategory !== 'undefined' && currentCategory !== 'all' && currentCategory !== '') {
+                if (currentCategory === 'pg' && baseCategory !== 'pg' && baseCategory !== 'hostel') return false;
+                if (currentCategory === 'flat' && baseCategory !== 'flat' && baseCategory !== 'apartment') return false;
+            }
+
             return true;
-        }).slice(0, 6); 
-    }
+        });
 
-    let finalGridHTML = "";
-    
-    if (isShowingRecommended) {
-        finalGridHTML += `
-            <div style="grid-column: 1/-1; background: #fffbeb; border: 1px solid #fef3c7; color: #b45309; padding: 16px; border-radius: 12px; margin-bottom: 15px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Direct match not found. Showing smart recommended listings in ${activeSelectedGlobalCity.toUpperCase()}:
-            </div>
-        `;
-    }
+        // --- 3. SCORING AND SORTING ---
+        let scoredOutputs = filteredOutputs.map(post => {
+            const isVendorVerified = (typeof checkVendorVerification === "function" && checkVendorVerification(post.vendorId || post.userId)) || post.isVerified === true;
+            let sortingScore = (post.views || 0) + (isVendorVerified ? 100000 : 0);
+            if (post.timestamp) sortingScore += post.timestamp / 1000000;
+            return { ...post, isVendorVerified, sortingScore };
+        });
+        scoredOutputs.sort((a, b) => b.sortingScore - a.sortingScore);
 
-    // ==========================================
-    // 📢 DYNAMIC SPONSORED INLINE AD BANNER SYSTEM
-    // ==========================================
-    // [EDIT HERE] इमेज बदलने के लिए src और रीडायरेक्ट के लिए window.location.href बदलें
-   const adBannersData = [
-    {
-        image: "/assets/sponsored.png", 
-        url: "https://www.stay100.in/pg.html", 
-        alt: "Premium Managed Stays"
-    },
-    {
-        image: "/assets/sponsored_2.png", 
-        url: "https://www.stay100.in/pg.html",               
-        alt: "Luxury Villa Offers"
-    },
-    {
-        image: "/assets/sponsored_3.png", 
-        url: "https://www.stay100.in/pg.html",      
-        alt: "Exclusive Holiday Deals"
-    }
-];
+        let isShowingRecommended = false;
+        let finalDisplayItems = [...scoredOutputs];
 
-let adCounter = 0;
-
-if (finalDisplayItems.length === 0) {
-    listingsGrid.innerHTML = getEmptyStateHTML();
-    return;
-}
-
-finalDisplayItems.forEach((post, idx) => {
-    if (idx > 0 && idx % 3 === 0 && adCounter < adBannersData.length) {
-        
-        const currentAd = adBannersData[adCounter];
-        
-        // प्रीमियम लुक और होवर इफेक्ट के साथ नया स्ट्रक्चर
-        const targetAdBanner = `
-            <div class="inline-advertisement-card" 
-                 style="grid-column: 1 / -1; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin: 25px 0; cursor: pointer; position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);" 
-                 onclick="window.open('${currentAd.url}', '_blank')"
-                 onmouseenter="this.style.transform='scale(1.01)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';"
-                 onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.04)';"
-            >
-                
-                <!-- प्रीमियम मिनिमलिस्ट Sponsored टैग (टॉप-लेफ्ट) -->
-                <div style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.85); color: #1a1a1a; padding: 6px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 30px; letter-spacing: 1px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 4px;">
-                    <span style="display: inline-block; width: 6px; height: 6px; background: #007aff; border-radius: 50%;"></span>
-                    Sponsored
-                </div>
-
-                <!-- विज्ञापनों वाला प्रामाणिक 'Ad Info' बटन (टॉप-राइट) -->
-                <div style="position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.4); color: #fff; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-family: serif; backdrop-filter: blur(4px); z-index: 10; opacity: 0.8;" title="Advertisement Information">
-                    ⓘ
-                </div>
-
-                <!-- इमेज स्मूथ ट्रांजिशन के साथ -->
-                <img src="${currentAd.image}" alt="${currentAd.alt}" style="width: 100%; height: auto; display: block; object-fit: cover; transition: transform 0.4s ease;">
-            </div>
-        `;
-        
-        finalGridHTML += targetAdBanner;
-        adCounter++; 
-    }
-
-    // यहाँ आपकी बाकी की पोस्ट का कोड रहेगा
-
-
-        let genderIconHTML = '<span class="gender-tag unisex"><i class="fa-solid fa-users"></i> Unisex</span>';
-        const cleanGender = (post.gender || "").toLowerCase().trim();
-        if (cleanGender === "boys" || cleanGender === "boy") {
-            genderIconHTML = '<span class="gender-tag boys" style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-mars"></i> Boys</span>';
-        } else if (cleanGender === "girls" || cleanGender === "girl") {
-            genderIconHTML = '<span class="gender-tag girls" style="background:#fce7f3; color:#b7064f; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-venus"></i> Girls</span>';
-        } else {
-            genderIconHTML = '<span class="gender-tag unisex" style="background:#f3f4f6; color:#374151; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-genderless"></i> Unisex</span>';
+        if (finalDisplayItems.length === 0 && rawSearchQuery.length > 0) {
+            isShowingRecommended = true;
+            finalDisplayItems = allPosts.filter(item => {
+                const itemCityNode = (item.city || "").toLowerCase().trim();
+                const placement = (item.location || item.area || "").toLowerCase();
+                if (activeSelectedGlobalCity && activeSelectedGlobalCity !== "all") {
+                    return itemCityNode === activeSelectedGlobalCity || placement.includes(activeSelectedGlobalCity);
+                }
+                return true;
+            }).slice(0, 6); 
         }
 
-        if (window.PropertyCardComponent && typeof window.PropertyCardComponent.render === "function") {
-            let generatedCard = window.PropertyCardComponent.render(post, locallySavedItems);
-            if (generatedCard.includes('</div>')) {
-                generatedCard = generatedCard.replace('</h3>', `</h3> <div style="margin-top: 5px; display:inline-block;">${genderIconHTML}</div>`);
-            }
-            finalGridHTML += generatedCard;
-        } else {
+        if (finalDisplayItems.length === 0) {
+            listingsGrid.innerHTML = typeof getEmptyStateHTML === "function" ? getEmptyStateHTML() : '<p style="text-align:center; padding: 40px; color:#666;">No properties found.</p>';
+            return;
+        }
+
+        let finalGridHTML = "";
+        
+        if (isShowingRecommended) {
             finalGridHTML += `
-                <div class="property-card" style="background:#fff; border-radius:12px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.08); position:relative;">
-                    <div style="position:absolute; top:12px; left:12px; z-index:10;">${genderIconHTML}</div>
-                    <h4 style="margin:40px 0 5px 0; font-size:17px;">${post.name || post.title}</h4>
-                    <p style="color:#666; font-size:13px; margin:0 0 10px 0;"><i class="fa-solid fa-location-dot"></i> ${post.location || post.area}</p>
-                    <div style="font-weight:700; color:#800020; font-size:16px;">₹${post.price || post.rent}/mo</div>
-                    <button data-view-id="${post.id}" style="margin-top:10px; width:100%; padding:8px; border:none; background:#800020; color:#fff; border-radius:6px; cursor:pointer;">View Details</button>
+                <div style="grid-column: 1/-1; background: #fffbeb; border: 1px solid #fef3c7; color: #b45309; padding: 16px; border-radius: 12px; margin-bottom: 15px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; font-family: sans-serif;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Direct match not found. Showing smart recommended listings in ${activeSelectedGlobalCity.toUpperCase()}:
                 </div>
             `;
         }
-    });
 
-    listingsGrid.innerHTML = finalGridHTML;
-    
-    if (window.PropertyCardComponent && typeof window.PropertyCardComponent.initAutoswipe === 'function') {
-        setTimeout(() => { window.PropertyCardComponent.initAutoswipe(); }, 50);
-    }
+        // --- 4. DYNAMIC SPONSORED ADS BANNERS ---
+        const adBannersData = [
+            { image: "/assets/sponsored.png", url: "https://www.stay100.in/pg.html", alt: "Premium Managed Stays" },
+            { image: "/assets/sponsored_2.png", url: "https://www.stay100.in/pg.html", alt: "Luxury Villa Offers" },
+            { image: "/assets/sponsored_3.png", url: "https://www.stay100.in/pg.html", alt: "Exclusive Holiday Deals" }
+        ];
 
-    renderAuxiliaryDataSections();
+        let adCounter = 0;
+
+        // --- 5. INJECT HTML CARDS ---
+        finalDisplayItems.forEach((post, idx) => {
+            if (idx > 0 && idx % 3 === 0 && adCounter < adBannersData.length) {
+                const currentAd = adBannersData[adCounter];
+                finalGridHTML += `
+                    <div class="inline-advertisement-card" 
+                         style="grid-column: 1 / -1; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin: 25px 0; cursor: pointer; position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);" 
+                         onclick="window.open('${currentAd.url}', '_blank')">
+                        <div style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.85); color: #1a1a1a; padding: 6px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 30px; letter-spacing: 1px; backdrop-filter: blur(8px); z-index: 10; font-family: sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 4px;">
+                            <span style="display: inline-block; width: 6px; height: 6px; background: #007aff; border-radius: 50%;"></span>Sponsored
+                        </div>
+                        <div style="position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.4); color: #fff; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-family: serif; backdrop-filter: blur(4px); z-index: 10; opacity: 0.8;" title="Advertisement Information">ⓘ</div>
+                        <img src="${currentAd.image}" alt="${currentAd.alt}" style="width: 100%; height: auto; display: block; object-fit: cover;">
+                    </div>
+                `;
+                adCounter++; 
+            }
+
+            let genderIconHTML = '';
+            const cleanGender = (post.gender || "").toLowerCase().trim();
+            if (cleanGender === "boys" || cleanGender === "boy") {
+                genderIconHTML = '<span class="gender-tag boys" style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-mars"></i> Boys</span>';
+            } else if (cleanGender === "girls" || cleanGender === "girl") {
+                genderIconHTML = '<span class="gender-tag girls" style="background:#fce7f3; color:#b7064f; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-venus"></i> Girls</span>';
+            } else {
+                genderIconHTML = '<span class="gender-tag unisex" style="background:#f3f4f6; color:#374151; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600;"><i class="fa-solid fa-genderless"></i> Unisex</span>';
+            }
+
+            if (window.PropertyCardComponent && typeof window.PropertyCardComponent.render === "function") {
+                let generatedCard = window.PropertyCardComponent.render(post, locallySavedItems);
+                if (generatedCard.includes('</div>')) {
+                    generatedCard = generatedCard.replace('</h3>', `</h3> <div style="margin-top: 5px; display:inline-block;">${genderIconHTML}</div>`);
+                }
+                finalGridHTML += generatedCard;
+            } else {
+                finalGridHTML += `
+                    <div class="property-card" style="background:#fff; border-radius:12px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.08); position:relative; font-family: sans-serif;">
+                        <div style="position:absolute; top:12px; left:12px; z-index:10;">${genderIconHTML}</div>
+                        <h4 style="margin:40px 0 5px 0; font-size:17px;">${post.name || post.title}</h4>
+                        <p style="color:#666; font-size:13px; margin:0 0 10px 0;"><i class="fa-solid fa-location-dot"></i> ${post.location || post.area}</p>
+                        <div style="font-weight:700; color:#800020; font-size:16px;">₹${post.price || post.rent}/mo</div>
+                        <button data-view-id="${post.id}" style="margin-top:10px; width:100%; padding:8px; border:none; background:#800020; color:#fff; border-radius:6px; cursor:pointer;">View Details</button>
+                    </div>
+                `;
+            }
+        });
+
+        listingsGrid.innerHTML = finalGridHTML;
+        
+        if (window.PropertyCardComponent && typeof window.PropertyCardComponent.initAutoswipe === 'function') {
+            window.PropertyCardComponent.initAutoswipe();
+        }
+
+        if (typeof renderAuxiliaryDataSections === "function") {
+            renderAuxiliaryDataSections();
+        }
+    }, 400); // 400ms का स्मूथ डिले एनीमेशन फील कराने के लिए
 };
-
 function renderAuxiliaryDataSections() {
     let mainContainerEl = document.getElementById('listings-container')?.parentElement;
     if (!mainContainerEl || document.getElementById('stay100-auxiliary-wrapper')) return;
@@ -955,15 +959,126 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    if (voiceBtn && searchInput) {
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognizerInstance = new SpeechEngine();
-            recognizerInstance.lang = 'en-IN';
-            voiceBtn.addEventListener('click', () => { recognizerInstance.start(); searchInput.placeholder = "Listening live..."; });
-            recognizerInstance.onresult = (evt) => { searchInput.value = evt.results[0][0].transcript; window.renderPostsDataPipeline(); };
-        } else { voiceBtn.style.display = 'none'; }
+   if (voiceBtn && searchInput) {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        // ==========================================
+        // 🎨 1. DYNAMIC UI & STYLES INJECTION
+        // ==========================================
+        if (!document.getElementById('premium-voice-ui-styles')) {
+            const voiceStyle = document.createElement('style');
+            voiceStyle.id = 'premium-voice-ui-styles';
+            voiceStyle.innerHTML = `
+                .google-voice-overlay {
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    z-index: 99999; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                .google-voice-overlay.active { opacity: 1; pointer-events: auto; }
+                .voice-popup-box { text-align: center; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+                .voice-status-title { font-size: 24px; font-weight: 600; color: #f8fafc; margin-bottom: 8px; }
+                .voice-transcript-live { font-size: 16px; color: #94a3b8; font-style: italic; min-height: 24px; margin-bottom: 40px; max-width: 80%; margin-left: auto; margin-right: auto; }
+                .voice-pulse-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+                .voice-mic-ball { width: 70px; height: 70px; background: linear-gradient(135deg, #800020, #a31d3f); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(128, 0, 32, 0.4); z-index: 5; cursor: pointer; }
+                .voice-mic-ball i { color: #ffffff; font-size: 28px; }
+                .pulse-ring { position: absolute; width: 100%; height: 100%; background: rgba(128, 0, 32, 0.3); border-radius: 50%; z-index: 1; animation: googlePulseEffect 2s infinite ease-out; }
+                .pulse-ring-2 { animation-delay: 0.6s; }
+                .pulse-ring-3 { animation-delay: 1.2s; }
+                @keyframes googlePulseEffect { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+                .voice-cancel-btn { margin-top: 50px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 10px 24px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+                .voice-cancel-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+            `;
+            document.head.appendChild(voiceStyle);
+        }
+
+        if (!document.getElementById('google-voice-popup-modal')) {
+            const modalDiv = document.createElement('div');
+            modalDiv.id = 'google-voice-popup-modal';
+            modalDiv.className = 'google-voice-overlay';
+            modalDiv.innerHTML = `
+                <div class="voice-popup-box">
+                    <div class="voice-status-title" id="v-status">Listening Live...</div>
+                    <div class="voice-transcript-live" id="v-transcript">Speak now...</div>
+                    <div class="voice-pulse-container">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring pulse-ring-2"></div>
+                        <div class="pulse-ring pulse-ring-3"></div>
+                        <div class="voice-mic-ball"><i class="fa-solid fa-microphone"></i></div>
+                    </div>
+                    <button class="voice-cancel-btn" id="v-cancel-btn">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modalDiv);
+        }
+
+        // ==========================================
+        // 🎙️ 2. SPEECH RECOGNITION ENGINE LOGIC
+        // ==========================================
+        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognizerInstance = new SpeechEngine();
+        
+        recognizerInstance.lang = 'en-IN';
+        recognizerInstance.interimResults = true; // Real-time text display dynamic output
+        recognizerInstance.maxAlternatives = 1;
+
+        const voiceOverlay = document.getElementById('google-voice-popup-modal');
+        const vStatus = document.getElementById('v-status');
+        const vTranscript = document.getElementById('v-transcript');
+        const vCancelBtn = document.getElementById('v-cancel-btn');
+
+        // Click Event to Start Voice Recognition Popup
+        voiceBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            voiceOverlay.classList.add('active');
+            vStatus.innerText = "Listening Live...";
+            vTranscript.innerText = "Listening for speech input...";
+            try {
+                recognizerInstance.start();
+            } catch(err) { console.log("Instance active bypass."); }
+        });
+
+        // Capture live voice result stream
+        recognizerInstance.onresult = (evt) => {
+            const currentTranscript = evt.results[0][0].transcript;
+            vTranscript.innerText = `"${currentTranscript}"`;
+            
+            // Check if user finished speaking
+            if (evt.results[0].isFinal) {
+                searchInput.value = currentTranscript;
+                vStatus.innerText = "Recognized!";
+                setTimeout(() => {
+                    voiceOverlay.classList.remove('active');
+                    window.renderPostsDataPipeline(); // Trigger Advanced Pipeline Search
+                }, 600);
+            }
+        };
+
+        // Error Handling
+        recognizerInstance.onerror = (evt) => {
+            vStatus.innerText = "Speech not recognized...";
+            vTranscript.innerText = "Please try again or type manually.";
+            setTimeout(() => voiceOverlay.classList.remove('active'), 1800);
+        };
+
+        // Auto Close Safety Layer if quiet
+        recognizerInstance.onend = () => {
+            setTimeout(() => {
+                if(voiceOverlay.classList.contains('active') && vStatus.innerText === "Listening Live...") {
+                    voiceOverlay.classList.remove('active');
+                }
+            }, 4000);
+        };
+
+        // Manual Cancel Button Click
+        vCancelBtn.addEventListener('click', () => {
+            recognizerInstance.abort();
+            voiceOverlay.classList.remove('active');
+        });
+
+    } else {
+        voiceBtn.style.display = 'none';
     }
+}
 
     if (filterBtn) filterBtn.addEventListener('click', () => { if(filterModal) filterModal.style.display = 'flex'; });
     if (closeModal) closeModal.addEventListener('click', () => { if(filterModal) filterModal.style.display = 'none'; });
@@ -1145,23 +1260,4 @@ function executeInquirySubmission() {
         document.getElementById('inquiry-modal').style.display = 'none';
         document.getElementById('inquiry-form').reset();
     });
-}
-function showSkeleton() {
-    const container = document.getElementById('listings-container');
-    container.classList.add('loading');
-    container.innerHTML = `
-        ${[1, 2, 3, 4, 5, 6].map(() => `
-            <div class="property-card">
-                <div class="skeleton skeleton-img"></div>
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text" style="width: 50%;"></div>
-            </div>
-        `).join('')}
-    `;
-}
-
-// Jab data aa jaye, tab ise call karke remove kardein:
-function hideSkeleton() {
-    document.getElementById('listings-container').classList.remove('loading');
-    // Yaha apna real data render karne wala function call karein
 }

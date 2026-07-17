@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Create and Insert Modular Modal Element Dynamically
     setupInquiryModalMarkup();
 
+    // 🔴 [शुरुआती लोड] जब तक Firebase डेटा नहीं दे देता, स्क्रीन पर लोगो एनीमेशन दिखाएं
+    showInitialLogoLoader();
+
     // CONNECT TO FIREBASE & ENFORCE STRICT "PG" FILTER
     const propertiesNodeRef = ref(database, 'properties');
     onValue(propertiesNodeRef, (snapshot) => {
@@ -64,6 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // STRICT EXTRACTION FILTER FOR CATEGORY "PG" ONLY
             masterPGRecords = Object.keys(rawPayload).map(key => ({ id: key, ...rawPayload[key] }))
                                       .filter(item => item.category && item.category.toLowerCase() === 'pg');
+            
+            // डेटा आते ही एनीमेशन रुक जाएगा और लिस्ट दिख जाएगी
+            renderStructuredPGLayout();
+        } else {
+            // अगर डेटा बिल्कुल खाली हो
             renderStructuredPGLayout();
         }
     });
@@ -75,20 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
             renderStructuredPGLayout();
         });
 
-        // Tap to reveal all tags inside autocomplete suggestion bank
         searchInput.addEventListener('focus', () => {
             handleAIAutocompleteDiagnostics(searchInput.value || "");
         });
     }
 
-    // Dismiss Suggestion Lists if user clicks outside
     document.addEventListener('click', (e) => {
         if (aiDropdown && !searchInput.contains(e.target) && !aiDropdown.contains(e.target)) {
             aiDropdown.style.display = 'none';
         }
     });
 
-    // Filter Navigation Tags Pipeline Click Bindings
     filterTags.forEach(tag => {
         tag.addEventListener('click', () => {
             filterTags.forEach(t => t.classList.remove('active'));
@@ -98,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Voice Engine Integration Loop
     if (voiceBtn && searchInput) {
         const SpeechSetup = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechSetup) {
@@ -119,6 +123,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// [नया फंक्शन] ग्रिड्स में प्रारंभिक लोडर सेट करने के लिए
+function showInitialLogoLoader() {
+    const gridRecommended = document.getElementById('grid-recommended');
+    if (!gridRecommended) return;
+
+    const loaderHTML = `
+        <div class="firebase-loading-wrapper" style="grid-column: 1 / -1; width:100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center;">
+            <div class="logo-animation-container">
+                <!-- 🔴 [यहाँ बदलें] अपनी साइट के LOGO का पाथ src में डालें -->
+                <img src="/assets/vendor logo.png" alt="Loading..." class="pulse-logo" style="width: 85px; height: auto; margin-bottom: 18px;">
+            </div>
+            <div class="loading-bar-container" style="width: 140px; height: 4px; background: #f3f4f6; border-radius: 10px; overflow: hidden; position: relative;">
+                <div class="loading-bar-fill" style="position: absolute; width: 50%; height: 100%; background: #800020; border-radius: 10px; animation: loadingSlide 1.5s infinite ease-in-out;"></div>
+            </div>
+            <p style="color: #6b7280; font-size: 13px; font-weight: 500; margin-top: 14px; font-family: sans-serif; letter-spacing: 0.5px;">Loading Stay100%...</p>
+        </div>
+    `;
+    gridRecommended.innerHTML = loaderHTML;
+}
+
 // AI ENGINE: SMART AUTOSUGGEST CONFIGURATION DROPDOWN
 function handleAIAutocompleteDiagnostics(typedPhrase) {
     const dropdown = document.getElementById('ai-autocomplete-dropdown');
@@ -126,9 +150,8 @@ function handleAIAutocompleteDiagnostics(typedPhrase) {
 
     const term = typedPhrase.toLowerCase().trim();
     
-    // If input is clean/empty, show top trending contextual tags as baseline suggestions
     const filteredKeywords = aiKeywordsList.filter(item => {
-        if(term === "") return true; // Show all on empty click context
+        if(term === "") return true; 
         return item.text.toLowerCase().includes(term) || item.matches.some(m => m.includes(term));
     });
 
@@ -147,7 +170,6 @@ function handleAIAutocompleteDiagnostics(typedPhrase) {
 
     dropdown.style.display = 'block';
 
-    // Click interceptors for dropdown tags
     dropdown.querySelectorAll('.ai-dropdown-item').forEach(item => {
         item.addEventListener('click', () => {
             const chosenVal = item.getAttribute('data-value');
@@ -155,7 +177,6 @@ function handleAIAutocompleteDiagnostics(typedPhrase) {
             searchInput.value = chosenVal;
             dropdown.style.display = 'none';
             
-            // Map the selected string directly to target specific filter elements tags
             mapKeywordToActiveFilterTags(chosenVal);
             renderStructuredPGLayout();
         });
@@ -188,22 +209,19 @@ function renderStructuredPGLayout() {
     const savedList = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
     currentSelectedCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
-    // 1. Core Filtration Logic Applied across data streams
+    // 1. Core Filtration Logic
     let compiledPGList = masterPGRecords.filter(post => {
-        // Enforce city selection rules
         const propertyCity = (post.city || "").toLowerCase().trim();
         if (currentSelectedCity !== "all" && currentSelectedCity !== "all cities" && currentSelectedCity !== "") {
             if (propertyCity !== currentSelectedCity) return false;
         }
 
-        // Apply input string search tags lookup values
         const nameMatch = (post.name || post.title || "").toLowerCase().includes(keywordStr);
         const areaMatch = (post.area || post.location || "").toLowerCase().includes(keywordStr);
         const searchValidity = nameMatch || areaMatch || keywordStr === "";
 
         if(!searchValidity) return false;
 
-        // Apply Active Filter Badges Rules Matrix
         const filterTypeNormalized = selectedActiveTagFilter.toLowerCase().trim();
         if(filterTypeNormalized === "all") return true;
         if(filterTypeNormalized === "single room") return post.sharingType && post.sharingType.toLowerCase().includes('single');
@@ -217,18 +235,17 @@ function renderStructuredPGLayout() {
         return true;
     });
 
-    // Capture specific Grid Targets Nodes Elements
     const gridTrending = document.getElementById('grid-trending');
     const gridPreferred = document.getElementById('grid-preferred');
     const gridRecommended = document.getElementById('grid-recommended');
     const gridLatest = document.getElementById('grid-latest');
 
-    // Section Display Wrapper References
     const wrapTrending = document.getElementById('sec-trending-wrapper');
     const wrapPreferred = document.getElementById('sec-preferred-wrapper');
     const wrapLatest = document.getElementById('sec-latest-wrapper');
 
-    // Clear grids to prevent residual injection nodes duplication
+    if (!gridTrending || !gridPreferred || !gridRecommended || !gridLatest) return;
+
     gridTrending.innerHTML = '';
     gridPreferred.innerHTML = '';
     gridRecommended.innerHTML = '';
@@ -236,39 +253,34 @@ function renderStructuredPGLayout() {
 
     if (compiledPGList.length === 0) {
         gridRecommended.innerHTML = `
-            <div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; padding:50px 20px; text-align:center; width:100%;">
+            <div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; padding:50px 20px; text-align:center; width:100%; font-family:sans-serif;">
                 <i class="fa-solid fa-folder-open" style="font-size:48px; color:#cbd5e1; margin-bottom:15px;"></i>
                 <h4 style="margin:0; color:#475569;">No Premium PG Spaces match the criteria.</h4>
             </div>`;
-        wrapTrending.style.display = 'none';
-        wrapPreferred.style.display = 'none';
-        wrapLatest.style.display = 'none';
+        if(wrapTrending) wrapTrending.style.display = 'none';
+        if(wrapPreferred) wrapPreferred.style.display = 'none';
+        if(wrapLatest) wrapLatest.style.display = 'none';
         return;
     }
 
-    // Distribute item segments systematically across array nodes structures
     compiledPGList.forEach((item, index) => {
         const cardMarkup = buildPGCardItemString(item, savedList);
         
-        // 1. Trending Sections Rule Matrix: Items with maximum views
-        if (item.viewsCount > 150 || index === 0 || item.trending === true) {
+        if (wrapTrending && (item.viewsCount > 150 || index === 0 || item.trending === true)) {
             wrapTrending.style.display = 'block';
             gridTrending.insertAdjacentHTML('beforeend', cardMarkup);
         }
         
-        // 2. Stay100% Preferred Section Rules Matrix: Super Verified Vendors
-        if (item.preferred === true || item.rating >= 4.7) {
+        if (wrapPreferred && (item.preferred === true || item.rating >= 4.7)) {
             wrapPreferred.style.display = 'block';
             gridPreferred.insertAdjacentHTML('beforeend', cardMarkup);
         }
 
-        // 3. Latest Arrivals Section Rules Matrix: Added recently
-        if (index <= 2 || item.isNew === true) {
+        if (wrapLatest && (index <= 2 || item.isNew === true)) {
             wrapLatest.style.display = 'block';
             gridLatest.insertAdjacentHTML('beforeend', cardMarkup);
         }
 
-        // 4. Default Base List Stream Engine Container (Recommended Panel ALWAYS Visible)
         gridRecommended.insertAdjacentHTML('beforeend', cardMarkup);
     });
 
@@ -283,7 +295,6 @@ function buildPGCardItemString(item, savedList) {
     const foodStatus = (item.food || item.mess) ? 'Food Inc.' : 'No Food';
     const acStatus = item.ac ? 'AC Room' : 'Non-AC';
     
-    // Dynamic Badge Color Config Tree
     let badgeText = "Stay100% Verified";
     let badgeBg = "#10b981"; 
     
@@ -291,7 +302,7 @@ function buildPGCardItemString(item, savedList) {
     else if (item.preferred) { badgeText = "STAY100% PREFERRED"; badgeBg = "#f59e0b"; }
 
     return `
-        <div class="pg-card" data-view-id="${item.id}">
+        <div class="pg-card" data-view-id="${item.id}" style="font-family:sans-serif;">
             <button class="card-save-btn ${isSaved ? 'active' : ''}" data-save-id="${item.id}">
                 <i class="fa-${isSaved ? 'solid' : 'regular'} fa-heart"></i>
             </button>
@@ -331,7 +342,6 @@ function bindInteractiveCardDelegates() {
     const masterContainer = document.getElementById('pg-sections-master-wrapper');
     if (!masterContainer) return;
 
-    // Remove legacy events to prevent duplicate event triggering
     masterContainer.removeAttribute('data-attached');
 
     masterContainer.onclick = (e) => {
@@ -389,7 +399,7 @@ function handleDatabaseSaveProcess(id) {
 function setupInquiryModalMarkup() {
     if(document.getElementById('inquiry-modal')) return;
     const modalHTML = `
-        <div id="inquiry-modal" class="inq-modal-overlay" style="display:none;">
+        <div id="inquiry-modal" class="inq-modal-overlay" style="display:none; font-family:sans-serif;">
             <div class="inq-modal-card">
                 <div style="background:#800020; color:#fff; padding:15px 20px; display:flex; justify-content:between; align-items:center;">
                     <h3 style="margin:0; font-size:16px;">Instant Slots Booking Hub</h3>

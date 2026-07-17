@@ -1519,25 +1519,21 @@ body.filter-hidden .show-filter-floating-btn {
         justify-content: center;
     }
 }
-/* Skeleton Loading Effects */
-.skeleton {
-    background-color: #e0e0e0;
-    background-image: linear-gradient(90deg, #e0e0e0 0px, #ededed 40px, #e0e0e0 80px);
-    background-size: 200px 100%;
-    background-repeat: no-repeat;
-    animation: skeleton-shimmer 1.5s infinite linear;
-    border-radius: 4px;
+
+
+/* लोगो को धीरे-धीरे ब्लिंक/पल्स कराने का एनीमेशन */
+@keyframes logoPulse {
+    0% { transform: scale(0.95); opacity: 0.6; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.6; }
 }
 
-@keyframes skeleton-shimmer {
-    0% { background-position: -200px 0; }
-    100% { background-position: 200px 0; }
+.pulse-logo {
+    animation: logoPulse 2s infinite ease-in-out;
 }
 
-/* Skeleton elements for your specific containers */
-.listings-grid.loading .property-card {
-    min-height: 250px;
+/* लोडिंग बार को बाएं से दाएं स्लाइड कराने का एनीमेशन */
+@keyframes loadingSlide {
+    0% { left: -50%; }
+    100% { left: 100%; }
 }
-
-.skeleton-text { height: 15px; margin-bottom: 10px; width: 80%; }
-.skeleton-img { height: 180px; width: 100%; margin-bottom: 10px; }
