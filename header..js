@@ -44,27 +44,41 @@ const injectGlobalStyles = () => {
         .header-left-zone {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 24px;
         }
 
+        /* HIGH VISIBILITY PROFESSIONAL LOGO ENGINE */
         .desktop-header .logo-link {
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            transition: transform 0.2s var(--smooth-bezier);
+            padding: 4px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s var(--premium-bounce);
         }
         
         .desktop-header .logo-link:hover {
-            transform: scale(1.02);
+            transform: scale(1.04) translateY(-1px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
         }
 
-        .desktop-header .logo-text {
-            color: var(--pure-white);
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: -0.75px;
-            font-family: 'Poppins', sans-serif;
+        .desktop-header .logo-image {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            /* Filter combo boosts image fidelity out of dull environments */
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15)) contrast(1.05) brightness(1.02);
+            transition: filter 0.3s var(--smooth-bezier);
+        }
+
+        .desktop-header .logo-link:hover .logo-image {
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) contrast(1.1) brightness(1.05);
         }
 
         /* Premium City Picker Button */
@@ -74,7 +88,7 @@ const injectGlobalStyles = () => {
             gap: 8px;
             background: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 50px;
             color: var(--pure-white);
             font-size: 13px;
@@ -351,32 +365,36 @@ const injectGlobalStyles = () => {
         /* --- MOBILE UPGRADE MATRIX (CLEANED & ALIGNED) --- */
         @media (max-width: 768px) {
             .desktop-header {
-                padding: 16px 12px 12px 12px; /* Uniform standard space Allocation */
+                padding: 12px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
             }
 
             .header-left-zone {
-                gap: 0px; /* Purani automatic gap reset kari */
+                gap: 12px;
                 flex-grow: 1;
                 display: flex;
                 align-items: center;
-                justify-content: space-between; /* Space balanced distribution */
+                justify-content: flex-start;
             }
 
-            /* 1. Logo Position Adjustments (Thoda Left aur Niche) */
+            /* Proportional Responsive Rescaling for Logo Container */
             .desktop-header .logo-link {
-                margin-left: -6px;  /* Bilkul safe left edge positioning */
-                margin-top: 6px;    /* Top bar border se thoda niche adjustment */
+                margin: 0;
+                padding: 3px;
+                border-radius: 10px;
             }
 
-            /* 2. City Selector Adjustments (Thoda Right aur Niche) */
+            .desktop-header .logo-image {
+                height: 42px;
+            }
+
+            /* Responsive Scaling for City Selector Dropdown */
             .city-picker-trigger {
-                padding: 6px 12px;   /* Clean touch target proportions */
+                padding: 6px 12px;
                 font-size: 12px;
-                margin-right: 14px;  /* Profile Avatar icon se perfectly safe right-gap */
-                margin-top: 6px;     /* Logo ke parallel center line par niche align karne ke liye */
+                border-radius: 30px;
             }
 
             .desktop-header .header-center {
@@ -463,7 +481,7 @@ class LayoutEngine {
         }
 
         if (path.includes('home.html') || path.endsWith('/')) {
-            this.currentActivePage = "index.html";
+            this.currentActivePage = "home";
         } else if (path.includes('pg.html') || path.includes('details.html')) {
             this.currentActivePage = "pg";
         } else if (path.includes('room.html')) {
@@ -477,7 +495,7 @@ class LayoutEngine {
         } else if (path.includes('ourservices.html') || path.includes('services.html')) {
             this.currentActivePage = "services";
         } else {
-            this.currentActivePage = "index";
+            this.currentActivePage = "home";
         }
     }
 
@@ -490,8 +508,8 @@ class LayoutEngine {
         headerContainer.innerHTML = `
             <header class="desktop-header">
                 <div class="header-left-zone">
-                    <a href="index.html" class="logo-link" style="display: inline-flex; align-items: center;">
-                        <img src="assets/stay100.png" alt="Stay100% Logo"class="logo-image" style="height: 60px; width: auto; object-fit: contain; margin-top: 6px; margin-left: -10px;" />
+                    <a href="index.html" class="logo-link">
+                        <img src="assets/stay100.png" alt="Stay100% Logo" class="logo-image" onerror="this.src='https://placehold.co/150x50?text=Stay100%25'" />
                     </a>
                     <button class="city-picker-trigger" id="global-city-selector-btn">
                         <span id="current-city-icon-display">${activeCityObj.icon}</span>
@@ -561,13 +579,17 @@ class LayoutEngine {
         if (triggerBtn && modalOverlay) {
             triggerBtn.addEventListener('click', () => {
                 modalOverlay.classList.add('open');
-                triggerBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+                const icon = triggerBtn.querySelector('.fa-chevron-down');
+                if (icon) icon.style.transform = 'rotate(180deg)';
             });
         }
 
         const closeModal = () => {
             if (modalOverlay) modalOverlay.classList.remove('open');
-            if (triggerBtn) triggerBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+            if (triggerBtn) {
+                const icon = triggerBtn.querySelector('.fa-chevron-down');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
         };
 
         if (closeBtn) closeBtn.addEventListener('click', closeModal);
@@ -585,8 +607,10 @@ class LayoutEngine {
 
                 const cityObj = this.availableCities.find(c => c.id === cityId);
                 if (cityObj) {
-                    document.getElementById('current-city-icon-display').textContent = cityObj.icon;
-                    document.getElementById('current-city-name-display').textContent = cityObj.name;
+                    const displayIcon = document.getElementById('current-city-icon-display');
+                    const displayName = document.getElementById('current-city-name-display');
+                    if (displayIcon) displayIcon.textContent = cityObj.icon;
+                    if (displayName) displayName.textContent = cityObj.name;
                 }
 
                 document.querySelectorAll('.city-card-item').forEach(c => c.classList.remove('selected'));

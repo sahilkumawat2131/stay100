@@ -1,5 +1,5 @@
 /**
- * StayPremium - Unified Property Card UI Component Engine (Fully Upgraded Version)
+ * StayPremium - Unified Property Card UI Component Engine (Upgraded Version)
  * Extended with Desktop & Mobile Support for "Recommended", "Popular", "Latest Rent", and "Trending".
  * Integrated with 4K Property Video uploads via Cloudinary & Runtime Schema.
  * Fully Upgraded with 99Acres Fields, Premium Field Configurations, Address Specs & Details Sync Layer.
@@ -15,14 +15,14 @@ import {
 
 // Firebase Configuration Block
 const firebaseConfig = {
-    apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
-    authDomain: "stay100-31316.firebaseapp.com",
-    databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "stay100-31316",
-    storageBucket: "stay100-31316.firebasestorage.app",
-    messagingSenderId: "91816784620",
-    appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
-    measurementId: "G-4J40FKKDNT"
+  apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
+  authDomain: "stay100-31316.firebaseapp.com",
+  databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "stay100-31316",
+  storageBucket: "stay100-31316.firebasestorage.app",
+  messagingSenderId: "91816784620",
+  appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
+  measurementId: "G-4J40FKKDNT"
 };
 
 // Instantiation Block
@@ -198,14 +198,16 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
         }
     }
 
-    const targetCategory = document.getElementById('p-category').value;
+  const targetCategory = document.getElementById('p-category').value;
     const basePrice = parseFloat(document.getElementById('p-price').value) || 0;
     const rawMrp = parseFloat(document.getElementById('p-mrp').value) || 0;
     
     let savedPostedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    // Sahi Logic: Default false rahega (Agar vendor verified nahi hai toh unverified rahega)
     let isPropertyVerified = false; 
 
-    // Sync state configuration adjustments from existing records during edits
+    // Agar property pehle se database me hai aur uska status check karna hai (Edit mode me)
     if (editId && localPropertiesCache[editId]) {
         if (localPropertiesCache[editId].postedDate) {
             savedPostedDate = localPropertiesCache[editId].postedDate;
@@ -214,9 +216,11 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
             isPropertyVerified = localPropertiesCache[editId].isVerified;
         }
     } else {
+        // Nayi property ke liye: Agar aapke paas vendor ki profile ka verification variable hai (jaise: currentVendorVerified)
+        // toh aap yahan likh sakte hain: isPropertyVerified = currentVendorVerified || false;
+        // Abhi ke liye naye vendors ki property hamesha pehle check/unverified (false) hi submit hogi.
         isPropertyVerified = false;
     }
-
     // Amenities Capture Pipeline
     const amenitiesArray = [];
     if(document.getElementById('v-wifi')?.checked) amenitiesArray.push("High Speed Wi-Fi");
@@ -238,16 +242,6 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
     let currentOperationRef = editId ? ref(db, `properties/${editId}`) : push(ref(db, 'properties'));
     const propertyUniqueId = editId || currentOperationRef.key;
 
-    // Upgraded Unified Tagging Smart Engine for Promoted Placements
-    let generatedTrendingStatus = false;
-    let generatedPopularStatus = false;
-    let generatedRecommendedStatus = false;
-    let fallbackBadgeValue = document.getElementById('p-badge')?.value.trim() || "";
-
-    if (fallbackBadgeValue.toLowerCase() === 'trending') generatedTrendingStatus = true;
-    if (fallbackBadgeValue.toLowerCase() === 'popular') generatedPopularStatus = true;
-    if (fallbackBadgeValue.toLowerCase() === 'recommended') generatedRecommendedStatus = true;
-
     const propertySchemaPayload = {
         id: propertyUniqueId,
         vendorId: currentVendorId, 
@@ -266,14 +260,7 @@ document.getElementById('property-payload-form')?.addEventListener('submit', asy
         mrp: rawMrp,
         originalPrice: rawMrp,
         deposit: parseFloat(document.getElementById('p-deposit').value) || 0,
-        badge: fallbackBadgeValue,
-        
-        // Unified UI Engine Multi-Route System Integration
-        isTrending: generatedTrendingStatus,
-        isPopular: generatedPopularStatus,
-        isRecommended: generatedRecommendedStatus,
-        isLatestRent: true, // Defaults true for newly refreshed/deployed assets
-
+        badge: document.getElementById('p-badge').value.trim(),
         sharingType: document.getElementById('p-sharing').value,
         furnishing: document.getElementById('p-furnishing').value,
         genderType: document.getElementById('p-gender').value,
@@ -366,21 +353,11 @@ window.fetchLivePropertiesStream = function() {
             const prop = data[key];
             const card = document.createElement('div');
             card.className = 'prop-preview-card';
-            
-            // Build Unified Context Badges Cluster dynamically for Mobile & Desktop Responsive Lists
-            let contextualTagsHtml = '';
-            if (prop.isTrending) contextualTagsHtml += `<span class="tag-badge trending-tag" style="background:#dc2626; color:#fff; font-size:10px; padding:2px 6px; margin-right:4px; border-radius:3px;">Trending</span>`;
-            if (prop.isPopular) contextualTagsHtml += `<span class="tag-badge popular-tag" style="background:#d97706; color:#fff; font-size:10px; padding:2px 6px; margin-right:4px; border-radius:3px;">Popular</span>`;
-            if (prop.isRecommended) contextualTagsHtml += `<span class="tag-badge recommended-tag" style="background:#2563eb; color:#fff; font-size:10px; padding:2px 6px; margin-right:4px; border-radius:3px;">Recommended</span>`;
-
             card.innerHTML = `
-                <div class="prop-img-box" style="position:relative;">
+                <div class="prop-img-box">
                     <img src="${prop.image || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af'}" alt="Property space image">
                     ${prop.badge ? `<span class="prop-badge-ui">${prop.badge}</span>` : ''}
                     <span class="prop-cat-ui">${prop.category} ${prop.flatType ? `(${prop.flatType})` : ''}</span>
-                    <div class="unified-placement-badges" style="position:absolute; top:8px; left:8px; display:flex; flex-wrap:wrap; gap:2px;">
-                        ${contextualTagsHtml}
-                    </div>
                     ${prop.videoUrl ? `<span class="prop-video-indicator-ui" style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.7); color:#fff; padding:2px 6px; font-size:10px; border-radius:4px;"><i class="fa-solid fa-video"></i> 4K Video</span>` : ''}
                 </div>
                 <div class="prop-details-box">

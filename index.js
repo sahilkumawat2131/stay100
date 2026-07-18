@@ -24,7 +24,9 @@ const db = firebase.database();
 // Application State Parameters
 let allPosts = [];
 let currentCategory = 'all';
-let currentSessionUID = localStorage.getItem('stayprimium_uid') || null;
+
+// --- UNIFIED SYSTEM AUTH POINTER MATRIX ---
+let currentSessionUID = localStorage.getItem('stay100_uid') || null;
 
 // --- GLOBAL FILTER STATE MATRIX ---
 window.filterState = {
@@ -105,7 +107,7 @@ function updateUserProfileUI() {
     const profileNameContainer = document.getElementById('user-profile-name-target'); 
     if (profileNameContainer && currentSessionUID) {
         const isVerified = checkVendorVerification(currentSessionUID);
-        const currentName = localStorage.getItem('staypremium_name') || "User Node";
+        const currentName = localStorage.getItem('stay100_name') || "User Node";
         if (isVerified) {
             profileNameContainer.innerHTML = `${currentName} <span style="background:#1da1f2; color:#fff; padding:2px 6px; border-radius:50px; font-size:11px; margin-left:5px;"><i class="fa-solid fa-badge-check"></i> Stay100% Verified</span>`;
         } else {
@@ -275,11 +277,11 @@ function parseAndApplyUrlFilters() {
     const locationParam = urlParams.get('location');
     if (locationParam) {
         localStorage.setItem('staypremium_selected_city', locationParam.toLowerCase().trim());
-        const headerCityLabel = document.getElementById('current-city-label');
+        const headerCityLabel = document.getElementById('current-city-label') || document.getElementById('current-city-name-display');
         if (headerCityLabel) {
             headerCityLabel.innerText = locationParam.charAt(0).toUpperCase() + locationParam.slice(1);
         }
-        window.dispatchEvent(new Event('cityChanged'));
+        window.dispatchEvent(new CustomEvent('cityChanged', { detail: { cityId: locationParam.toLowerCase().trim() } }));
     }
 
     const typeParam = urlParams.get('type');
@@ -363,16 +365,14 @@ const AI_NLP_DICTIONARY = {
 
 // --- DATA FILTERING PIPELINE ENGINE (UPGRADED WITH INTUITY AI SEARCH ENGINE & FALLBACK RECOMMENDATIONS) ---
 window.renderPostsDataPipeline = function() {
-    const listingsGrid = document.getElementById('listings-container');
+    let listingsGrid = document.getElementById('listings-container') || document.getElementById('properties-container-target');
     if (!listingsGrid) return;
     
-    // --- [नया] लोडिंग / कंकाल (Skeleton) स्टेट दिखाना ---
-    // जब तक डेटा रेंडर नहीं हो जाता, यह लोडिंग स्क्रीन एनिमेट करेगी
+    // Skeleton Loading Implementation
     listingsGrid.innerHTML = `
         <div class="site-loading-wrapper" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center;">
             <div class="logo-animation-container">
-                <!-- 🔴 [यहाँ बदलें] अपनी साइट के LOGO का पाथ src में डालें -->
-                <img src="/assets/vendor logo.png" alt="Loading..." class="pulse-logo" style="width: 80px; height: auto; margin-bottom: 15px;">
+                <img src="/assets/vendor logo.png" alt="Loading..." class="pulse-logo" style="width: 80px; height: auto; margin-bottom: 15px;" onerror="this.src='https://placehold.co/80x80?text=Stay100'">
             </div>
             <div class="loading-bar-container" style="width: 140px; height: 4px; background: #f3f4f6; border-radius: 10px; overflow: hidden; position: relative;">
                 <div class="loading-bar-fill" style="position: absolute; width: 50%; height: 100%; background: #800020; border-radius: 10px; animation: loadingSlide 1.5s infinite ease-in-out;"></div>
@@ -381,10 +381,13 @@ window.renderPostsDataPipeline = function() {
         </div>
     `;
 
-    // स्मूथ फ़ेड-इन इफ़ेक्ट के लिए एक छोटे से डिले (Delay) के बाद रेंडरिंग शुरू करना
     setTimeout(() => {
-        const searchInput = document.getElementById('search-input');
+        listingsGrid.innerHTML = "";
+
+        const searchInput = document.getElementById('search-input') || document.getElementById('filter-locality');
         const rawSearchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
+        // CORRECTION: Linked perfectly with header.js layout structure key allocation standard
         const activeSelectedGlobalCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
         // --- 1. LOCAL SEARCH COOPERATIVE ENGINE ---
@@ -395,26 +398,34 @@ window.renderPostsDataPipeline = function() {
             budgetLimit: Infinity
         };
 
+        const activeDictionary = typeof AI_NLP_DICTIONARY !== 'undefined' ? AI_NLP_DICTIONARY : { localities: [], hubs: {}, gender: {} };
+
         if (rawSearchQuery.length > 2) {
-            AI_NLP_DICTIONARY.localities.forEach(loc => {
-                if (rawSearchQuery.includes(loc.toLowerCase())) aiExtractedState.detectedArea = loc.toLowerCase();
-            });
+            if(activeDictionary.localities) {
+                activeDictionary.localities.forEach(loc => {
+                    if (rawSearchQuery.includes(loc.toLowerCase())) aiExtractedState.detectedArea = loc.toLowerCase();
+                });
+            }
 
-            Object.keys(AI_NLP_DICTIONARY.hubs).forEach(hubKey => {
-                AI_NLP_DICTIONARY.hubs[hubKey].forEach(alias => {
-                    if (rawSearchQuery.includes(alias.toLowerCase())) {
-                        if (!aiExtractedState.detectedHubs.includes(hubKey)) {
-                            aiExtractedState.detectedHubs.push(hubKey);
+            if(activeDictionary.hubs) {
+                Object.keys(activeDictionary.hubs).forEach(hubKey => {
+                    activeDictionary.hubs[hubKey].forEach(alias => {
+                        if (rawSearchQuery.includes(alias.toLowerCase())) {
+                            if (!aiExtractedState.detectedHubs.includes(hubKey)) {
+                                aiExtractedState.detectedHubs.push(hubKey);
+                            }
                         }
-                    }
+                    });
                 });
-            });
+            }
 
-            Object.keys(AI_NLP_DICTIONARY.gender).forEach(genderKey => {
-                AI_NLP_DICTIONARY.gender[genderKey].forEach(alias => {
-                    if (rawSearchQuery.includes(alias.toLowerCase())) aiExtractedState.detectedGender = genderKey;
+            if(activeDictionary.gender) {
+                Object.keys(activeDictionary.gender).forEach(genderKey => {
+                    activeDictionary.gender[genderKey].forEach(alias => {
+                        if (rawSearchQuery.includes(alias.toLowerCase())) aiExtractedState.detectedGender = genderKey;
+                    });
                 });
-            });
+            }
 
             const budgetMatches = rawSearchQuery.match(/(?:under|below|around|₹|price|\bsabse sasta\b)\s?(\d+)(k)?/i);
             if (budgetMatches) {
@@ -424,21 +435,23 @@ window.renderPostsDataPipeline = function() {
             }
         }
 
-        // --- 2. RUN EXTRACTION FILTER MATCHES PIPELINE (सुधारित और फिक्स्ड) ---
-        const locallySavedItems = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
+        // --- 2. RUN EXTRACTION FILTER MATCHES PIPELINE ---
+        const locallySavedItems = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
         const globalFilterMaxBudget = window.filterState && window.filterState.maxBudget ? parseFloat(window.filterState.maxBudget) : Infinity;
         const globalFilterArea = window.filterState && window.filterState.area ? window.filterState.area.toLowerCase().trim() : "";
 
-        let filteredOutputs = allPosts.filter(item => {
+        const postsArraySource = typeof allPosts !== 'undefined' ? allPosts : [];
+
+        let filteredOutputs = postsArraySource.filter(item => {
             const title = (item.name || item.title || "").toLowerCase();
             const placement = (item.location || item.area || "").toLowerCase();
             const itemCityNode = (item.city || "").toLowerCase().trim();
             const baseCategory = (item.category || "").toLowerCase().trim();
             const itemGender = (item.gender || "").toLowerCase().trim();
             const itemTags = Array.isArray(item.tags) ? item.tags.map(t => t.toLowerCase()) : [];
-            const itemPrice = parseFloat(item.price || item.rent || 0);
+            const itemPrice = parseFloat(item.price || item.rent || item.budget || 0);
 
-            // A. ग्लोबल सिटी फ़िल्टर (City Match)
+            // Global City Architecture Linkage Evaluation 
             let matchesGlobalCity = false;
             if (activeSelectedGlobalCity === "all" || activeSelectedGlobalCity === "all cities" || activeSelectedGlobalCity === "") {
                 matchesGlobalCity = true;
@@ -449,34 +462,28 @@ window.renderPostsDataPipeline = function() {
             }
             if (!matchesGlobalCity) return false;
 
-            // B. सामान्य सर्च बार (Plain Match) - अगर NLP कुछ न ढूंढ पाए
             if (rawSearchQuery && !aiExtractedState.detectedArea && aiExtractedState.detectedHubs.length === 0 && aiExtractedState.detectedGender === "all") {
                 const isPlainMatch = title.includes(rawSearchQuery) || placement.includes(rawSearchQuery) || itemCityNode.includes(rawSearchQuery);
                 if (!isPlainMatch) return false;
             }
 
-            // C. NLP एरिया फ़िल्टर
             if (aiExtractedState.detectedArea && !placement.includes(aiExtractedState.detectedArea) && !title.includes(aiExtractedState.detectedArea)) {
                 return false;
             }
 
-            // D. UI साइडबार मैन्युअल एरिया फ़िल्टर
             if (globalFilterArea !== "" && !placement.includes(globalFilterArea)) {
                 return false;
             }
 
-            // E. जेंडर फ़िल्टर
             if (aiExtractedState.detectedGender !== "all" && itemGender !== aiExtractedState.detectedGender && !title.includes(aiExtractedState.detectedGender)) {
                 return false;
             }
 
-            // F. संयुक्त बजट फ़िल्टर (NLP + Sidebar Filter दोनों को साथ संभाला)
             const finalMaxBudgetLimit = Math.min(aiExtractedState.budgetLimit, globalFilterMaxBudget);
             if (itemPrice > finalMaxBudgetLimit) {
                 return false;
             }
 
-            // G. NLP हब फ़िल्टर
             if (aiExtractedState.detectedHubs.length > 0) {
                 let matchedHub = aiExtractedState.detectedHubs.some(hub => {
                     if (hub === "coaching" || hub === "college") {
@@ -489,7 +496,6 @@ window.renderPostsDataPipeline = function() {
                 if (!matchedHub) return false;
             }
 
-            // H. कैटेगरी फ़िल्टर (PG / Flat)
             if (typeof currentCategory !== 'undefined' && currentCategory !== 'all' && currentCategory !== '') {
                 if (currentCategory === 'pg' && baseCategory !== 'pg' && baseCategory !== 'hostel') return false;
                 if (currentCategory === 'flat' && baseCategory !== 'flat' && baseCategory !== 'apartment') return false;
@@ -512,7 +518,7 @@ window.renderPostsDataPipeline = function() {
 
         if (finalDisplayItems.length === 0 && rawSearchQuery.length > 0) {
             isShowingRecommended = true;
-            finalDisplayItems = allPosts.filter(item => {
+            finalDisplayItems = postsArraySource.filter(item => {
                 const itemCityNode = (item.city || "").toLowerCase().trim();
                 const placement = (item.location || item.area || "").toLowerCase();
                 if (activeSelectedGlobalCity && activeSelectedGlobalCity !== "all") {
@@ -523,7 +529,7 @@ window.renderPostsDataPipeline = function() {
         }
 
         if (finalDisplayItems.length === 0) {
-            listingsGrid.innerHTML = typeof getEmptyStateHTML === "function" ? getEmptyStateHTML() : '<p style="text-align:center; padding: 40px; color:#666;">No properties found.</p>';
+            listingsGrid.innerHTML = typeof getEmptyStateHTML === "function" ? getEmptyStateHTML() : '<p style="text-align:center; padding: 40px; color:#666; grid-column: 1 / -1;">No properties found.</p>';
             return;
         }
 
@@ -551,13 +557,8 @@ window.renderPostsDataPipeline = function() {
             if (idx > 0 && idx % 3 === 0 && adCounter < adBannersData.length) {
                 const currentAd = adBannersData[adCounter];
                 finalGridHTML += `
-                    <div class="inline-advertisement-card" 
-                         style="grid-column: 1 / -1; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin: 25px 0; cursor: pointer; position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);" 
-                         onclick="window.open('${currentAd.url}', '_blank')">
-                        <div style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.85); color: #1a1a1a; padding: 6px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 30px; letter-spacing: 1px; backdrop-filter: blur(8px); z-index: 10; font-family: sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 4px;">
-                            <span style="display: inline-block; width: 6px; height: 6px; background: #007aff; border-radius: 50%;"></span>Sponsored
-                        </div>
-                        <div style="position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.4); color: #fff; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-family: serif; backdrop-filter: blur(4px); z-index: 10; opacity: 0.8;" title="Advertisement Information">ⓘ</div>
+                    <div class="inline-advertisement-card" style="grid-column: 1 / -1; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin: 25px 0; cursor: pointer; position: relative;" onclick="window.open('${currentAd.url}', '_blank')">
+                        <div style="position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.85); color: #1a1a1a; padding: 6px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 30px; letter-spacing: 1px; backdrop-filter: blur(8px); z-index: 10; font-family: sans-serif;">Sponsored</div>
                         <img src="${currentAd.image}" alt="${currentAd.alt}" style="width: 100%; height: auto; display: block; object-fit: cover;">
                     </div>
                 `;
@@ -602,26 +603,32 @@ window.renderPostsDataPipeline = function() {
         if (typeof renderAuxiliaryDataSections === "function") {
             renderAuxiliaryDataSections();
         }
-    }, 400); // 400ms का स्मूथ डिले एनीमेशन फील कराने के लिए
+    }, 400); 
 };
+
 function renderAuxiliaryDataSections() {
-    let mainContainerEl = document.getElementById('listings-container')?.parentElement;
-    if (!mainContainerEl || document.getElementById('stay100-auxiliary-wrapper')) return;
+    let listingsGrid = document.getElementById('listings-container') || document.getElementById('properties-container-target');
+    let mainContainerEl = listingsGrid?.parentElement;
+    if (!mainContainerEl) return;
+
+    let operationalWrapper = document.getElementById('stay100-auxiliary-wrapper');
+    if (operationalWrapper) operationalWrapper.remove();
 
     const auxContainer = document.createElement('div');
     auxContainer.id = "stay100-auxiliary-wrapper";
-    auxContainer.style.cssText = "margin-top: 50px; display: flex; flex-direction: column; gap: 40px; width: 100%; font-family: sans-serif;";
+    auxContainer.style.cssText = "margin-top: 50px; display: flex; flex-direction: column; gap: 40px; width: 100%; font-family: sans-serif; grid-column: 1 / -1;";
 
-    const latestListings = [...allPosts].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 4);
-    const recommendedListings = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 4);
+    const postsSource = typeof allPosts !== 'undefined' ? allPosts : [];
+    const latestListings = [...postsSource].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 4);
+    const recommendedListings = [...postsSource].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 4);
 
     const generateRowCards = (list) => {
         if (list.length === 0) return `<p style="color:#666; font-size:14px;">No verified entries in this structural category.</p>`;
         return list.map(item => `
             <div onclick="window.location.href='details.html?id=${item.id}'" style="background:#fff; border: 1px solid #e2e8f0; border-radius:12px; padding:16px; min-width:260px; flex:1; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.03); transition: transform 0.2s;">
                 <h5 style="margin:0 0 6px 0; font-size:15px; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name || item.title}</h5>
-                <p style="margin:0 0 10px 0; font-size:12px; color:#64748b;"><i class="fa-solid fa-location-dot"></i> ${item.area || "Jaipur"}</p>
-                <div style="font-weight:700; color:#556b2f; font-size:15px;">₹${item.price || item.rent}<span style="font-size:11px; font-weight:400; color:#64748b;">/mo</span></div>
+                <p style="margin:0 0 10px 0; font-size:12px; color:#64748b;"><i class="fa-solid fa-location-dot"></i> ${item.area || item.location || "Jaipur"}</p>
+                <div style="font-weight:700; color:#800020; font-size:15px;">₹${item.price || item.rent}<span style="font-size:11px; font-weight:400; color:#64748b;">/mo</span></div>
             </div>
         `).join('');
     };
@@ -629,7 +636,7 @@ function renderAuxiliaryDataSections() {
     auxContainer.innerHTML = `
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
         <div>
-            <h3 style="font-size:20px; font-weight:700; color:#1e293b; margin-bottom:15px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-star" style="color:#eab308;"></i> Recommended Properties in City</h3>
+            <h3 style="font-size:20px; font-weight:700; color:#1e293b; margin-bottom:15px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-star" style="color:#eab308;"></i> Recommended Properties</h3>
             <div style="display:flex; gap:20px; overflow-x:auto; padding-bottom:10px;">${generateRowCards(recommendedListings)}</div>
         </div>
         <div>
@@ -641,11 +648,18 @@ function renderAuxiliaryDataSections() {
     mainContainerEl.appendChild(auxContainer);
 }
 
+// --- INITIALIZE & ATTACH EVENTS ON EXECUTION ---
 document.addEventListener('DOMContentLoaded', () => {
-    currentSessionUID = localStorage.getItem('stay100%_uid') || null;
-    if (typeof updateUserProfileUI === 'function') updateUserProfileUI();
+    currentSessionUID = localStorage.getItem('stay100_uid') || null;
+    updateUserProfileUI();
+    parseAndApplyUrlFilters();
+    
+    document.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('change', window.syncAndRenderFilters);
+        element.addEventListener('input', window.syncAndRenderFilters);
+    });
 
-    const listingsGrid = document.getElementById('listings-container');
+    const listingsGrid = document.getElementById('listings-container') || document.getElementById('properties-container-target');
     const filterBtn = document.getElementById('filter-btn');
     const filterModal = document.getElementById('filter-modal');
     const closeModal = document.querySelector('.close-modal');
@@ -653,16 +667,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const categoryCards = document.querySelectorAll('.category-card');
 
-    // ==========================================
-    // 🎛️ DEFAULT HIDE FILTER INIALIZATION LOGIC
-    // ==========================================
     const sidebar = document.querySelector(".desktop-filters-sidebar");
     if (sidebar) {
         sidebar.classList.add("collapsed");
         document.body.classList.add("filter-hidden");
     }
 
-    // Dynamic Filter Trigger Binding Logic
     const toggleDesktopBtn = document.getElementById("toggle-filter-btn");
     if (toggleDesktopBtn) {
         toggleDesktopBtn.addEventListener("click", () => {
@@ -671,7 +681,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Global Floating Show Trigger Node Injection
     const floatingShowBtn = document.createElement("button");
     floatingShowBtn.className = "show-filter-floating-btn";
     floatingShowBtn.innerHTML = "🔍 Show Filters";
@@ -842,8 +851,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.syncAndRenderFilters();
     };
 
-    parseAndApplyUrlFilters();
-
+    // CORRECTIONS: Listening perfectly to window global event pipeline dispatched from header.js
     window.addEventListener('cityChanged', () => {
         window.renderPostsDataPipeline();
     });
@@ -883,8 +891,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeInqBtn) closeInqBtn.addEventListener('click', () => inqModal.style.display = 'none');
 
     if (inqForm) {
-        if(localStorage.getItem('staypremium_name')) document.getElementById('inquiry-name').value = localStorage.getItem('staypremium_name');
-        if(localStorage.getItem('staypremium_phone')) document.getElementById('inquiry-phone').value = localStorage.getItem('staypremium_phone');
+        if(localStorage.getItem('stay100_name')) document.getElementById('inquiry-name').value = localStorage.getItem('stay100_name');
+        if(localStorage.getItem('stay100_phone')) document.getElementById('inquiry-phone').value = localStorage.getItem('stay100_phone');
         
         inqForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -907,38 +915,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = `details.html?id=${targetPropId}`;
             }
 
-           if (targetSaveBtn) {
-    e.preventDefault(); e.stopPropagation();
+            if (targetSaveBtn) {
+                e.preventDefault(); e.stopPropagation();
 
-    const targetPropId = targetSaveBtn.getAttribute('data-save-id');
-    const matchedObj = allPosts.find(p => p.id === targetPropId);
-    if (!matchedObj) return;
+                const targetPropId = targetSaveBtn.getAttribute('data-save-id');
+                const matchedObj = allPosts.find(p => p.id === targetPropId);
+                if (!matchedObj) return;
 
-    let bookmarkArray = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
-    const pointerIdx = bookmarkArray.indexOf(targetPropId);
+                let bookmarkArray = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
+                const pointerIdx = bookmarkArray.indexOf(targetPropId);
 
-    // अगर यूजर लॉगिन है, तभी Firebase पर डेटा सिंक करें
-    if (currentSessionUID) {
-        const userNodeReference = db.ref(`users_saved/${currentSessionUID}/${targetPropId}`);
-        if (pointerIdx === -1) {
-            userNodeReference.set({ id: targetPropId, name: matchedObj.name || matchedObj.title, price: matchedObj.price || 0, location: matchedObj.location || "" });
-        } else {
-            userNodeReference.remove();
-        }
-    }
+                if (currentSessionUID) {
+                    const userNodeReference = db.ref(`users_saved/${currentSessionUID}/${targetPropId}`);
+                    if (pointerIdx === -1) {
+                        userNodeReference.set({ id: targetPropId, name: matchedObj.name || matchedObj.title, price: matchedObj.price || 0, location: matchedObj.location || "" });
+                    } else {
+                        userNodeReference.remove();
+                    }
+                }
 
-    // LocalStorage अपडेट करें
-    if (pointerIdx === -1) {
-        bookmarkArray.push(targetPropId); 
-        localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
-        window.showCenterToast("Saved!");
-    } else {
-        bookmarkArray = bookmarkArray.filter(id => id !== targetPropId); 
-        localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
-        window.showCenterToast("Removed.");
-    }
-    window.renderPostsDataPipeline();
-}
+                if (pointerIdx === -1) {
+                    bookmarkArray.push(targetPropId); 
+                    localStorage.setItem('stay100_saved_properties', JSON.stringify(bookmarkArray));
+                    window.showCenterToast("Saved!");
+                } else {
+                    bookmarkArray = bookmarkArray.filter(id => id !== targetPropId); 
+                    localStorage.setItem('stay100_saved_properties', JSON.stringify(bookmarkArray));
+                    window.showCenterToast("Removed.");
+                }
+                window.renderPostsDataPipeline();
+            }
 
             if (targetInquiryBtn) {
                 if (!currentSessionUID) { window.showCenterToast("Authentication Required: Redirecting to Login...", false); setTimeout(() => window.location.href = 'login.html', 1000); return; }
@@ -959,126 +965,114 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-   if (voiceBtn && searchInput) {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        // ==========================================
-        // 🎨 1. DYNAMIC UI & STYLES INJECTION
-        // ==========================================
-        if (!document.getElementById('premium-voice-ui-styles')) {
-            const voiceStyle = document.createElement('style');
-            voiceStyle.id = 'premium-voice-ui-styles';
-            voiceStyle.innerHTML = `
-                .google-voice-overlay {
-                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
-                    display: flex; flex-direction: column; align-items: center; justify-content: center;
-                    z-index: 99999; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                .google-voice-overlay.active { opacity: 1; pointer-events: auto; }
-                .voice-popup-box { text-align: center; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-                .voice-status-title { font-size: 24px; font-weight: 600; color: #f8fafc; margin-bottom: 8px; }
-                .voice-transcript-live { font-size: 16px; color: #94a3b8; font-style: italic; min-height: 24px; margin-bottom: 40px; max-width: 80%; margin-left: auto; margin-right: auto; }
-                .voice-pulse-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-                .voice-mic-ball { width: 70px; height: 70px; background: linear-gradient(135deg, #800020, #a31d3f); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(128, 0, 32, 0.4); z-index: 5; cursor: pointer; }
-                .voice-mic-ball i { color: #ffffff; font-size: 28px; }
-                .pulse-ring { position: absolute; width: 100%; height: 100%; background: rgba(128, 0, 32, 0.3); border-radius: 50%; z-index: 1; animation: googlePulseEffect 2s infinite ease-out; }
-                .pulse-ring-2 { animation-delay: 0.6s; }
-                .pulse-ring-3 { animation-delay: 1.2s; }
-                @keyframes googlePulseEffect { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
-                .voice-cancel-btn { margin-top: 50px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 10px 24px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-                .voice-cancel-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
-            `;
-            document.head.appendChild(voiceStyle);
-        }
-
-        if (!document.getElementById('google-voice-popup-modal')) {
-            const modalDiv = document.createElement('div');
-            modalDiv.id = 'google-voice-popup-modal';
-            modalDiv.className = 'google-voice-overlay';
-            modalDiv.innerHTML = `
-                <div class="voice-popup-box">
-                    <div class="voice-status-title" id="v-status">Listening Live...</div>
-                    <div class="voice-transcript-live" id="v-transcript">Speak now...</div>
-                    <div class="voice-pulse-container">
-                        <div class="pulse-ring"></div>
-                        <div class="pulse-ring pulse-ring-2"></div>
-                        <div class="pulse-ring pulse-ring-3"></div>
-                        <div class="voice-mic-ball"><i class="fa-solid fa-microphone"></i></div>
-                    </div>
-                    <button class="voice-cancel-btn" id="v-cancel-btn">Cancel</button>
-                </div>
-            `;
-            document.body.appendChild(modalDiv);
-        }
-
-        // ==========================================
-        // 🎙️ 2. SPEECH RECOGNITION ENGINE LOGIC
-        // ==========================================
-        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognizerInstance = new SpeechEngine();
-        
-        recognizerInstance.lang = 'en-IN';
-        recognizerInstance.interimResults = true; // Real-time text display dynamic output
-        recognizerInstance.maxAlternatives = 1;
-
-        const voiceOverlay = document.getElementById('google-voice-popup-modal');
-        const vStatus = document.getElementById('v-status');
-        const vTranscript = document.getElementById('v-transcript');
-        const vCancelBtn = document.getElementById('v-cancel-btn');
-
-        // Click Event to Start Voice Recognition Popup
-        voiceBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            voiceOverlay.classList.add('active');
-            vStatus.innerText = "Listening Live...";
-            vTranscript.innerText = "Listening for speech input...";
-            try {
-                recognizerInstance.start();
-            } catch(err) { console.log("Instance active bypass."); }
-        });
-
-        // Capture live voice result stream
-        recognizerInstance.onresult = (evt) => {
-            const currentTranscript = evt.results[0][0].transcript;
-            vTranscript.innerText = `"${currentTranscript}"`;
-            
-            // Check if user finished speaking
-            if (evt.results[0].isFinal) {
-                searchInput.value = currentTranscript;
-                vStatus.innerText = "Recognized!";
-                setTimeout(() => {
-                    voiceOverlay.classList.remove('active');
-                    window.renderPostsDataPipeline(); // Trigger Advanced Pipeline Search
-                }, 600);
+    if (voiceBtn && searchInput) {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            if (!document.getElementById('premium-voice-ui-styles')) {
+                const voiceStyle = document.createElement('style');
+                voiceStyle.id = 'premium-voice-ui-styles';
+                voiceStyle.innerHTML = `
+                    .google-voice-overlay {
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                        background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        z-index: 99999; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    }
+                    .google-voice-overlay.active { opacity: 1; pointer-events: auto; }
+                    .voice-popup-box { text-align: center; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+                    .voice-status-title { font-size: 24px; font-weight: 600; color: #f8fafc; margin-bottom: 8px; }
+                    .voice-transcript-live { font-size: 16px; color: #94a3b8; font-style: italic; min-height: 24px; margin-bottom: 40px; max-width: 80%; margin-left: auto; margin-right: auto; }
+                    .voice-pulse-container { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+                    .voice-mic-ball { width: 70px; height: 70px; background: linear-gradient(135deg, #800020, #a31d3f); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(128, 0, 32, 0.4); z-index: 5; cursor: pointer; }
+                    .voice-mic-ball i { color: #ffffff; font-size: 28px; }
+                    .pulse-ring { position: absolute; width: 100%; height: 100%; background: rgba(128, 0, 32, 0.3); border-radius: 50%; z-index: 1; animation: googlePulseEffect 2s infinite ease-out; }
+                    .pulse-ring-2 { animation-delay: 0.6s; }
+                    .pulse-ring-3 { animation-delay: 1.2s; }
+                    @keyframes googlePulseEffect { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+                    .voice-cancel-btn { margin-top: 50px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 10px 24px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+                    .voice-cancel-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+                `;
+                document.head.appendChild(voiceStyle);
             }
-        };
 
-        // Error Handling
-        recognizerInstance.onerror = (evt) => {
-            vStatus.innerText = "Speech not recognized...";
-            vTranscript.innerText = "Please try again or type manually.";
-            setTimeout(() => voiceOverlay.classList.remove('active'), 1800);
-        };
+            if (!document.getElementById('google-voice-popup-modal')) {
+                const modalDiv = document.createElement('div');
+                modalDiv.id = 'google-voice-popup-modal';
+                modalDiv.className = 'google-voice-overlay';
+                modalDiv.innerHTML = `
+                    <div class="voice-popup-box">
+                        <div class="voice-status-title" id="v-status">Listening Live...</div>
+                        <div class="voice-transcript-live" id="v-transcript">Speak now...</div>
+                        <div class="voice-pulse-container">
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring pulse-ring-2"></div>
+                            <div class="pulse-ring pulse-ring-3"></div>
+                            <div class="voice-mic-ball"><i class="fa-solid fa-microphone"></i></div>
+                        </div>
+                        <button class="voice-cancel-btn" id="v-cancel-btn">Cancel</button>
+                    </div>
+                `;
+                document.body.appendChild(modalDiv);
+            }
 
-        // Auto Close Safety Layer if quiet
-        recognizerInstance.onend = () => {
-            setTimeout(() => {
-                if(voiceOverlay.classList.contains('active') && vStatus.innerText === "Listening Live...") {
-                    voiceOverlay.classList.remove('active');
+            const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognizerInstance = new SpeechEngine();
+            
+            recognizerInstance.lang = 'en-IN';
+            recognizerInstance.interimResults = true; 
+            recognizerInstance.maxAlternatives = 1;
+
+            const voiceOverlay = document.getElementById('google-voice-popup-modal');
+            const vStatus = document.getElementById('v-status');
+            const vTranscript = document.getElementById('v-transcript');
+            const vCancelBtn = document.getElementById('v-cancel-btn');
+
+            voiceBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                voiceOverlay.classList.add('active');
+                vStatus.innerText = "Listening Live...";
+                vTranscript.innerText = "Listening for speech input...";
+                try {
+                    recognizerInstance.start();
+                } catch(err) { console.log("Instance active bypass."); }
+            });
+
+            recognizerInstance.onresult = (evt) => {
+                const currentTranscript = evt.results[0][0].transcript;
+                vTranscript.innerText = `"${currentTranscript}"`;
+                
+                if (evt.results[0].isFinal) {
+                    searchInput.value = currentTranscript;
+                    vStatus.innerText = "Recognized!";
+                    setTimeout(() => {
+                        voiceOverlay.classList.remove('active');
+                        window.renderPostsDataPipeline(); 
+                    }, 600);
                 }
-            }, 4000);
-        };
+            };
 
-        // Manual Cancel Button Click
-        vCancelBtn.addEventListener('click', () => {
-            recognizerInstance.abort();
-            voiceOverlay.classList.remove('active');
-        });
+            recognizerInstance.onerror = (evt) => {
+                vStatus.innerText = "Speech not recognized...";
+                vTranscript.innerText = "Please try again or type manually.";
+                setTimeout(() => voiceOverlay.classList.remove('active'), 1800);
+            };
 
-    } else {
-        voiceBtn.style.display = 'none';
+            recognizerInstance.onend = () => {
+                setTimeout(() => {
+                    if(voiceOverlay.classList.contains('active') && vStatus.innerText === "Listening Live...") {
+                        voiceOverlay.classList.remove('active');
+                    }
+                }, 4000);
+            };
+
+            vCancelBtn.addEventListener('click', () => {
+                recognizerInstance.abort();
+                voiceOverlay.classList.remove('active');
+            });
+
+        } else {
+            voiceBtn.style.display = 'none';
+        }
     }
-}
 
     if (filterBtn) filterBtn.addEventListener('click', () => { if(filterModal) filterModal.style.display = 'flex'; });
     if (closeModal) closeModal.addEventListener('click', () => { if(filterModal) filterModal.style.display = 'none'; });
@@ -1205,7 +1199,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "Search Luxury Flats",
         "Students Friendly Pg's",
         "Jaipur"
-         
     ];
 
     let word = 0;
@@ -1238,26 +1231,48 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function executeInquirySubmission() {
-    if (!currentSessionUID) return;
-    const itemPropId = document.getElementById('inquiry-property-id').value;
-    const clientNameInput = document.getElementById('inquiry-name').value.trim();
-    const clientPhoneInput = document.getElementById('inquiry-phone').value.trim();
-    const clientMsgInput = document.getElementById('inquiry-msg').value.trim();
+    const itemPropId = document.getElementById('inquiry-property-id')?.value || "";
+    const clientNameInput = document.getElementById('inquiry-name')?.value.trim() || "";
+    const clientPhoneInput = document.getElementById('inquiry-phone')?.value.trim() || "";
+    const clientMsgInput = document.getElementById('inquiry-msg')?.value.trim() || "";
 
-    const currentTargetObject = allPosts.find(p => p.id === itemPropId);
+    const postsSource = typeof allPosts !== 'undefined' ? allPosts : [];
+    const currentTargetObject = postsSource.find(p => p.id === itemPropId);
     const resolvedTitle = currentTargetObject ? (currentTargetObject.name || currentTargetObject.title) : "Premium Listing Inquiry";
     const absoluteTimestamp = Date.now();
 
     const structuredPayload = {
-        propertyId: itemPropId, propertyName: resolvedTitle, clientName: clientNameInput, clientPhone: clientPhoneInput, message: clientMsgInput, userId: currentSessionUID, timestamp: absoluteTimestamp, date: new Date(absoluteTimestamp).toLocaleString('en-IN')
+        propertyId: itemPropId, 
+        propertyName: resolvedTitle, 
+        clientName: clientNameInput, 
+        clientPhone: clientPhoneInput, 
+        message: clientMsgInput, 
+        userId: currentSessionUID || "anonymous_lead", 
+        timestamp: absoluteTimestamp, 
+        date: new Date(absoluteTimestamp).toLocaleString('en-IN')
     };
 
     Promise.all([
         db.ref('leads_inquiries').push().set(structuredPayload),
         db.ref('inquiries').push().set(structuredPayload)
     ]).then(() => {
-        window.showCenterToast(`🎉 Application Transferred!`);
-        document.getElementById('inquiry-modal').style.display = 'none';
-        document.getElementById('inquiry-form').reset();
+        if (typeof window.showCenterToast === "function") {
+            window.showCenterToast(`🎉 Application Transferred!`);
+        }
+        
+        const inquiryModal = document.getElementById('inquiry-modal');
+        if (inquiryModal) inquiryModal.style.display = 'none';
+        
+        const inquiryForm = document.getElementById('inquiry-form');
+        if (inquiryForm) inquiryForm.reset();
+    }).catch(err => {
+        console.error("Database writing operational pipe failure:", err);
     });
+}
+
+function openInquiryModalWindow() {
+    const inquiryModal = document.getElementById('inquiry-modal');
+    if (inquiryModal) {
+        inquiryModal.style.display = 'block';
+    }
 }

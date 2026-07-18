@@ -9,9 +9,10 @@ const firebaseConfig = {
   appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
   measurementId: "G-4J40FKKDNT"
 };
+
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-// Dynamic Internal Memory Buffer to cache data between Step 1 and Step 2
+// Dynamic Local Memory Buffer to cache step states
 let temporaryRegistrationFormCache = null;
 
 // Global Router Session Guard System
@@ -21,14 +22,14 @@ firebase.auth().onAuthStateChanged((user) => {
         firebase.database().ref(`vendors/${user.uid}`).once('value')
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    // Scenario A: User is already registered completely -> Skip forms, send straight to dashboard
+                    // Scenario A: Already registered completely -> Skip forms, send straight to profile dashboard
                     window.location.href = "vendor-profile.html";
                 } else if (temporaryRegistrationFormCache) {
                     // Scenario B: User just completed Step 1 and now authenticated Step 2 -> Save structural node record
                     commitVendorDataToCloudDatabase(user);
                 } else {
-                    // Scenario C: Rogue login with no structural payload -> Force profile data filling
-                    alert("No partner node registration details found. Please complete Step 1 first.");
+                    // Scenario C: Rogue login attempt with no cached registration data -> Force registration view
+                    alert("No partner data matched. Please complete Step 1 registration first.");
                     firebase.auth().signOut();
                     toggleViewMode('REGISTER');
                 }
@@ -37,10 +38,17 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 /**
- * Handles Step 1 UI Transitions after validation confirmation mapping routines
+ * Handles Step 1 Transitions after strict validation and T&C authorization check
  */
 function transitionToStep2(event) {
     event.preventDefault();
+
+    // Checkbox Validation Check (Axis-Style Gate)
+    const tclCheck = document.getElementById("step1TermsCheck");
+    if (!tclCheck || !tclCheck.checked) {
+        alert("Please accept the Terms & Conditions declaration to continue authorization registration.");
+        return;
+    }
 
     // Capture Multiple Checkbox Data Arrays
     const checkboxNodes = document.querySelectorAll('input[name="propDealType"]:checked');
@@ -52,7 +60,7 @@ function transitionToStep2(event) {
         return;
     }
 
-    // Build temporary registration object schema cache
+    // Build cached payload map array structure
     temporaryRegistrationFormCache = {
         displayName: document.getElementById("fullName").value.trim(),
         vendorSegmentClassification: document.querySelector('input[name="vendorType"]:checked').value,
@@ -73,18 +81,21 @@ function transitionToStep2(event) {
         }
     };
 
-    // Transition Wizards step nodes UI classes
+    // Transition wizard element views 
     document.getElementById("step1Form").classList.remove("active");
     document.getElementById("step2AuthView").classList.add("active");
     document.getElementById("badgeStep1").classList.remove("active");
     document.getElementById("badgeStep2").classList.add("active");
+    
+    // Smooth scroll inside form panel component for desktop tracking engine
+    const formPanel = document.querySelector('.main-form-panel');
+    if(formPanel) formPanel.scrollTop = 0;
 }
 
 /**
- * Master controller method to orchestrate Firebase RTDB saving matrices
+ * Syncs structural payloads to cloud database parameters
  */
 function commitVendorDataToCloudDatabase(userAuthInstance) {
-    // Inject dynamic verification system structures along with auth metadata logs
     const unifiedPayload = {
         uid: userAuthInstance.uid,
         displayName: temporaryRegistrationFormCache.displayName,
@@ -96,7 +107,7 @@ function commitVendorDataToCloudDatabase(userAuthInstance) {
         },
         businessProfile: temporaryRegistrationFormCache.businessProfile,
         legalKYC: temporaryRegistrationFormCache.legalKYC,
-        profileImage: userAuthInstance.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png", // Fallback system dynamic default DP asset URL
+        profileImage: userAuthInstance.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png", 
         verificationData: {
             isVerified: false,
             assignedPlanType: "FREE_TIER_TRIAL",
@@ -106,18 +117,28 @@ function commitVendorDataToCloudDatabase(userAuthInstance) {
         accountCreationTimestamp: Date.now()
     };
 
-    // Commit directly into Realtime Database instance parameters node mappings
+    // Commit cleanly to Realtime Database
     firebase.database().ref(`vendors/${userAuthInstance.uid}`).set(unifiedPayload)
         .then(() => {
-            temporaryRegistrationFormCache = null; // Purge storage buffer memory
+            temporaryRegistrationFormCache = null; // Clear local instance cache
             window.location.href = "vendor-profile.html";
         })
-        .catch(err => alert("Error syncing data nodes pipeline configurations: " + err.message));
+        .catch(err => alert("Error syncing data nodes pipeline: " + err.message));
 }
 
 // ================= AUTHENTICATION ACTIONS LOGIC =================
 
 function handleGoogleAuthLink() {
+    // If user is inside Step 2, run a programmatic check on the secondary Axis T&C checkbox
+    const step2Visible = document.getElementById("step2AuthView").classList.contains("active");
+    if (step2Visible) {
+        const sc2 = document.getElementById("step2TermsCheck");
+        if(!sc2 || !sc2.checked) {
+            alert("Please acknowledge the Platform User Agreement checkbox before authenticating.");
+            return;
+        }
+    }
+
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).catch(err => alert(err.message));
 }
@@ -125,8 +146,17 @@ function handleGoogleAuthLink() {
 function handleEmailPasswordRegistration() {
     const emailInput = document.getElementById("vendorEmail").value.trim();
     const passInput = document.getElementById("registerPassword").value;
+    const sc2 = document.getElementById("step2TermsCheck");
 
-    if (passInput.length < 6) return alert("Password length configuration should exceed 6 elements.");
+    if(!sc2 || !sc2.checked) {
+        alert("Please check and accept the Platform User Agreement to create an account.");
+        return;
+    }
+
+    if (passInput.length < 6) {
+        alert("Password length configuration should exceed 6 elements.");
+        return;
+    }
     
     firebase.auth().createUserWithEmailAndPassword(emailInput, passInput).catch(err => alert(err.message));
 }
@@ -135,13 +165,16 @@ function handleDirectEmailLogin() {
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value;
     
-    if(!email || !password) return alert("Please complete authentication input fields parameters.");
+    if(!email || !password) {
+        alert("Please complete authentication input fields parameters.");
+        return;
+    }
 
     firebase.auth().signInWithEmailAndPassword(email, password).catch(err => alert(err.message));
 }
 
 /**
- * Master view toggle logic wrapper mapping layouts contexts components
+ * Toggles interface presentation profiles dynamically
  */
 function toggleViewMode(targetMode) {
     if (targetMode === 'LOGIN') {
@@ -155,7 +188,7 @@ function toggleViewMode(targetMode) {
         document.getElementById("stepIndicatorContainer").style.display = "flex";
         document.getElementById("main-panel-title").innerText = "Stay100% Partner Network";
         
-        // Reset steps parameters alignment context mapping routine rules loops
+        // Reset steps back to step 1 cleanly
         document.getElementById("step1Form").classList.add("active");
         document.getElementById("step2AuthView").classList.remove("active");
         document.getElementById("badgeStep1").classList.add("active");
