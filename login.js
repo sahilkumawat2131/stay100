@@ -4,7 +4,6 @@
  */
 
 // --- INITIALIZATION ---
-// Ensure Firebase config matches your index.js infrastructure
 const firebaseConfig = {
   apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
   authDomain: "stay100-31316.firebaseapp.com",
@@ -57,11 +56,30 @@ function showAuthToast(message, isSuccess = true) {
 
 // --- CORE AUTH PIPELINE ---
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    const logoutBtn = document.getElementById('logout-action-trigger');
+    // 1. TAB SWITCHING ENGINE
+    const loginTabBtn = document.getElementById('toggle-login-tab');
+    const registerTabBtn = document.getElementById('toggle-register-tab');
+    const loginPanel = document.getElementById('login-panel');
+    const registerPanel = document.getElementById('register-panel');
 
-    // 1. LOGIN HANDLER
+    if (loginTabBtn && registerTabBtn) {
+        loginTabBtn.addEventListener('click', () => {
+            loginTabBtn.classList.add('active');
+            registerTabBtn.classList.remove('active');
+            loginPanel.classList.add('active');
+            registerPanel.classList.remove('active');
+        });
+
+        registerTabBtn.addEventListener('click', () => {
+            registerTabBtn.classList.add('active');
+            loginTabBtn.classList.remove('active');
+            registerPanel.classList.add('active');
+            loginPanel.classList.remove('active');
+        });
+    }
+
+    // 2. LOGIN HANDLER
+    const loginForm = document.getElementById('email-login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -85,13 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     let userData = null;
                     let userId = null;
 
+                    // Extract the singular user payload
                     snapshot.forEach((childSnapshot) => {
                         userId = childSnapshot.key;
                         userData = childSnapshot.val();
                     });
 
                     // Validate matching password context
-                    if (userData.password === passwordInput) {
+                    if (userData && userData.password === passwordInput) {
                         // Establish synchronized local keys
                         localStorage.setItem('stay100_uid', userId);
                         localStorage.setItem('stay100_name', userData.name || "User Node");
@@ -119,18 +138,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. REGISTRATION HANDLER
+    // 3. REGISTRATION HANDLER
+    const registerForm = document.getElementById('email-register-form');
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const fullName = document.getElementById('reg-name').value.trim();
-            const phoneNumber = document.getElementById('reg-phone').value.trim();
-            const newPassword = document.getElementById('reg-password').value;
-            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            const fullName = document.getElementById('register-name').value.trim();
+            const phoneNumber = document.getElementById('register-phone').value.trim();
+            const newPassword = document.getElementById('register-password').value;
 
-            if (newPassword !== confirmPassword) {
-                showAuthToast("Password strings mismatch. Verify both values.", false);
+            if (!fullName || !phoneNumber || !newPassword) {
+                showAuthToast("All fields are mandatory.", false);
                 return;
             }
 
@@ -181,22 +200,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. LOGOUT MECHANISM
+    // 4. LOGOUT MECHANISM
+    const logoutBtn = document.getElementById('logout-action-trigger');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // Purge matching stay100 state keys completely
-            localStorage.removeItem('stay100_uid');
-            localStorage.removeItem('stay100_name');
-            localStorage.removeItem('stay100_phone');
-            
-            // Clean dynamic vendor specific strings cached locally if present
             const targetUID = localStorage.getItem('stay100_uid');
+            
             if (targetUID) {
                 localStorage.removeItem(`stay100_plan_${targetUID}`);
                 localStorage.removeItem(`stay100_start_${targetUID}`);
             }
+
+            // Purge core stay100 state keys completely
+            localStorage.removeItem('stay100_uid');
+            localStorage.removeItem('stay100_name');
+            localStorage.removeItem('stay100_phone');
 
             showAuthToast("Session terminated. Reverting entry profile.", true);
             

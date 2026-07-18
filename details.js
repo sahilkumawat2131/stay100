@@ -5,6 +5,7 @@
  * Bug Fix: Stabilized Amenities Grid Show More / Center Modal Popup View Toggling System.
  * Advanced Features: 99Acres Premium Layout Matrix Mapping, Complex Address Blocks & Automated Search String SEO Mask.
  * FIX: Redirection link corrected in Horizontal Recommendation Card to fix broken clicks.
+ * CORRECTED SYSTEM MIGRATION: All local storage auth keys normalized to 'stay100_' pattern matching login.js framework.
  */
 
 // --- 1. FIREBASE INITIALIZATION MATRIX ---
@@ -195,6 +196,33 @@ function injectResponsiveAndBadgeStyles() {
             background: #20ba5a;
         }
 
+        /* Collapsible Read More Toggle Styling */
+        .readmore-wrapper {
+            position: relative;
+            margin-bottom: 8px;
+        }
+        .readmore-content-collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .readmore-toggle-btn {
+            background: none;
+            border: none;
+            color: #4f46e5;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 4px 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .readmore-toggle-btn:hover {
+            text-decoration: underline;
+        }
+
         /* Responsive Overrides for Call and WhatsApp Button Mobile Overlay Layout */
         @media (max-width: 768px) {
             .action-communication-wrap {
@@ -324,6 +352,86 @@ const getVerifiedBadgeMarkup = (isVerified) => {
         </span>`;
 };
 
+/**
+ * Universal Inline Read More / Less Toggle Injector System
+ */
+function setupReadMoreToggle(elementId, fallbackText) {
+    const container = document.getElementById(elementId);
+    if (!container) return;
+
+    const fullText = fallbackText || container.innerText.trim();
+    if (fullText.length <= 160) {
+        container.innerText = fullText;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="readmore-wrapper">
+            <span class="readmore-text-node readmore-content-collapsed">${fullText}</span>
+            <button class="readmore-toggle-btn">Read More <i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+    `;
+
+    const textNode = container.querySelector('.readmore-text-node');
+    const toggleBtn = container.querySelector('.readmore-toggle-btn');
+
+    toggleBtn.onclick = (e) => {
+        e.preventDefault();
+        const isCollapsed = textNode.classList.contains('readmore-content-collapsed');
+        if (isCollapsed) {
+            textNode.classList.remove('readmore-content-collapsed');
+            toggleBtn.innerHTML = `Read Less <i class="fa-solid fa-chevron-up"></i>`;
+        } else {
+            textNode.classList.add('readmore-content-collapsed');
+            toggleBtn.innerHTML = `Read More <i class="fa-solid fa-chevron-down"></i>`;
+        }
+    };
+}
+
+/**
+ * Advanced Matrix View Toggle Framework for Specifications Section
+ */
+function setupMatrixSpecificationsToggle() {
+    // Select the containing grid element for specs key/values
+    const specContainer = document.querySelector('.specifications-matrix-grid') || document.getElementById('specifications-section-container');
+    if (!specContainer) return;
+
+    // Fetch child specification nodes
+    const specItems = Array.from(specContainer.children);
+    if (specItems.length <= 6) return;
+
+    // Check if the button toggle already exists
+    let matrixToggleBtn = document.getElementById('btn-matrix-spec-toggle');
+    if (!matrixToggleBtn) {
+        matrixToggleBtn = document.createElement('button');
+        matrixToggleBtn.id = 'btn-matrix-spec-toggle';
+        matrixToggleBtn.className = 'readmore-toggle-btn';
+        matrixToggleBtn.setAttribute('style', 'margin-top: 15px; display: inline-flex; width: auto;');
+        matrixToggleBtn.innerHTML = `View All Specifications (${specItems.length}) <i class="fa-solid fa-chevron-down"></i>`;
+        specContainer.parentNode.insertBefore(matrixToggleBtn, specContainer.nextSibling);
+    }
+
+    // Initialize hidden state elements
+    let isMatrixExpanded = false;
+    const updateMatrixState = () => {
+        specItems.forEach((item, index) => {
+            if (index >= 6) {
+                item.style.display = isMatrixExpanded ? '' : 'none';
+            }
+        });
+    };
+    updateMatrixState();
+
+    matrixToggleBtn.onclick = (e) => {
+        e.preventDefault();
+        isMatrixExpanded = !isMatrixExpanded;
+        updateMatrixState();
+        matrixToggleBtn.innerHTML = isMatrixExpanded 
+            ? `Hide Extra Specifications <i class="fa-solid fa-chevron-up"></i>`
+            : `View All Specifications (${specItems.length}) <i class="fa-solid fa-chevron-down"></i>`;
+    };
+}
+
 // --- 3. DOM RENDERING INJECTION ENGINE ---
 const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     if (!targetPropertyObject) return;
@@ -359,13 +467,9 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     }
 
     // Dynamic Address Binding Logic Blocks
-    // 1. Full Address Text Configuration
     const cleanFullAddressText = targetPropertyObject.address || `${targetPropertyObject.landmark || 'Near Metro Station'}, ${locArea}, ${locCity}, Rajasthan`;
-
-    // 2. Google Maps Search Redirect URL Compilation
     const googleMapsNavUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanFullAddressText)}`;
 
-    // 3. Address layout element configuration with direction route injection
     const fullAddressWithDirectionHTML = `
         <span style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" 
               onclick="window.open('${googleMapsNavUrl}', '_blank', 'noopener,noreferrer');"
@@ -376,7 +480,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         </span>
     `;
 
-    // 4. Update address nodes inside active layouts
     updateText('lbl-location', `${locArea}, ${locCity}`);
 
     const addressElement = document.getElementById('lbl-full-address');
@@ -399,8 +502,9 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     updateText('lbl-config-bathrooms', targetPropertyObject.bathroomsCount || targetPropertyObject.bathroomConfig || "1 Bathroom");
     updateText('lbl-config-balconies', targetPropertyObject.balconiesCount || targetPropertyObject.balconyConfig || "2 Balconies");
     
-    updateText('lbl-house-rules', targetPropertyObject.houseRules || "Standard disciplined premises norms apply.");
-    updateText('lbl-about-property', targetPropertyObject.aboutProperty || targetPropertyObject.description || "No metadata provided.");
+    // Process Expandable Read More Content Toggles safely
+    setupReadMoreToggle('lbl-house-rules', targetPropertyObject.houseRules || "Standard disciplined premises norms apply.");
+    setupReadMoreToggle('lbl-about-property', targetPropertyObject.aboutProperty || targetPropertyObject.description || "No metadata provided.");
     
     updateText('lbl-spec-property-type', targetPropertyObject.propertyTypeMeta || targetPropertyObject.propertyType || "Studio Apartment");
     updateText('lbl-spec-balconies', targetPropertyObject.balconiesCount || targetPropertyObject.balconyCount || "2");
@@ -422,6 +526,9 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     if (targetPropertyObject.electricityPolicy) updateText('lbl-spec-electricity-rules', targetPropertyObject.electricityPolicy);
     if (targetPropertyObject.mealsConfig) updateText('lbl-spec-meal-type', targetPropertyObject.mealsConfig);
 
+    // Initialize Specifications Dynamic View Grid Toggle
+    setupMatrixSpecificationsToggle();
+
     // Google Maps Iframe Injector Logic Block
     const mapWrapper = document.getElementById('map-iframe-wrapper');
     const mapContainerBox = document.getElementById('map-visualization-box');
@@ -431,7 +538,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     }
 
     // --- RESTRUCTURED CONTACT BUTTON LAYOUT MATRIX ---
-    // Target action container box dynamically or restructure previous call element setup
     let phoneBtn = document.getElementById('btn-owner-phone');
     if (phoneBtn) {
         let commWrap = document.getElementById('comm-action-group-wrapper');
@@ -442,7 +548,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
             phoneBtn.parentNode.insertBefore(commWrap, phoneBtn);
         }
         
-        // Assemble highly clean authenticated, responsive Call and WhatsApp elements 
         commWrap.innerHTML = `
             <a href="javascript:void(0);" onclick="triggerSecureCall()" class="btn-comm-call" id="btn-owner-phone">
                 <i class="fa-solid fa-phone"></i> Call Vendor
@@ -451,7 +556,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
                 <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i> WhatsApp
             </a>
         `;
-        // Safely remove redundant legacy isolated button if detached
         if (phoneBtn.parentNode && phoneBtn.parentNode !== commWrap) {
             phoneBtn.remove();
         }
@@ -472,7 +576,7 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     const track = document.getElementById('image-slider-track');
     if (track) {
         let slidesHTMLArray = [];
-        let allMediaSources = []; // फुल स्क्रीन व्यू में इस्तेमाल करने के लिए सोर्सेस ट्रैक करेंगे
+        let allMediaSources = []; 
         
         // 1. First inject autoplaying visual video feeds if hosted online
         if (targetPropertyObject.videoUrl && targetPropertyObject.videoUrl.trim() !== "") {
@@ -525,17 +629,13 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         activeSliderPositionIndex = 0;
         track.style.transform = `translateX(0%)`;
 
-        // 3. वैश्विक विंडो ऑब्जेक्ट में मीडिया स्टोर करें ताकि फुलस्क्रीन फंक्शन इसे एक्सेस कर सके
         window.currentPropertyMediaAssets = allMediaSources;
 
-        // 4. Google स्टाइल का मल्टीपल इमेज काउंटर बटन (Bottom-Right) पैरेंट कंटेनर में जोड़ें
         const sliderWrapper = track.parentElement;
         if (sliderWrapper) {
-            // पुराने काउंटर को हटाएं अगर पहले से मौजूद हो
             const oldCounter = sliderWrapper.querySelector('.google-image-counter');
             if (oldCounter) oldCounter.remove();
 
-            // नया Google स्टाइल काउंटर बनाएँ
             const counterDiv = document.createElement('div');
             counterDiv.className = 'google-image-counter';
             counterDiv.setAttribute('style', `
@@ -552,22 +652,19 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
             `;
             counterDiv.onclick = () => openMediaFullScreen(0);
             
-            // सुनिश्चित करें कि पैरेंट की पोजीशन relative हो ताकि काउंटर सही जगह चिपके
             sliderWrapper.style.position = 'relative';
             sliderWrapper.appendChild(counterDiv);
         }
     }
 
-    // 5. फुल स्क्रीन लाइटबॉक्स खोलने और बंद करने के फंक्शन्स
+    // 5. Optimized Full Screen Lightbox Handler Block
     window.openMediaFullScreen = function(index) {
         const assets = window.currentPropertyMediaAssets || [];
         if (assets.length === 0) return;
 
-        // पुराना फुलस्क्रीन ओवरले हटाएं अगर मौजूद हो
         const oldOverlay = document.getElementById('fullscreen-media-overlay');
         if (oldOverlay) oldOverlay.remove();
 
-        // नया ओवरले बनाएँ
         const overlay = document.createElement('div');
         overlay.id = 'fullscreen-media-overlay';
         overlay.setAttribute('style', `
@@ -577,7 +674,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
             transition: opacity 0.3s ease; font-family: sans-serif;
         `);
 
-        // क्लोज बटन
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
         closeBtn.setAttribute('style', `
@@ -592,7 +688,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
             setTimeout(() => overlay.remove(), 300);
         };
 
-        // मीडिया कंटेनर
         const contentBox = document.createElement('div');
         contentBox.setAttribute('style', 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;');
 
@@ -607,10 +702,8 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         overlay.appendChild(contentBox);
         document.body.appendChild(overlay);
 
-        // फेड-इन इफ़ेक्ट के लिए
         setTimeout(() => overlay.style.opacity = '1', 50);
     };
-
 
     // --- COMPLETE UPGRADED DYNAMIC AMENITIES MATRIX PACK ---
     globalGeneratedFacilitiesArray = [];
@@ -632,7 +725,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         "elevator": { text: "Lift / Elevator", icon: "fa-elevator" }
     };
 
-    // --- EXTRACT TRUE ACTIVATED AMENITIES ---
     Object.keys(facilityIconMap).forEach(key => {
         let dataHasIt = targetPropertyObject[key] === true || targetPropertyObject[key] === "true";
         if (!dataHasIt && targetPropertyObject.amenities) {
@@ -644,7 +736,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         }
     });
 
-    // Fallback sync strategy for raw schemas
     if (globalGeneratedFacilitiesArray.length === 0) {
         if (targetPropertyObject.amenities) {
             const rawAmenities = Array.isArray(targetPropertyObject.amenities) ? targetPropertyObject.amenities : Object.values(targetPropertyObject.amenities);
@@ -660,14 +751,13 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         }
     }
 
-    // Trigger optimized fresh render grid matching state
     renderAmenitiesGridMatrix();
     if (typeof updateReviewsUIRenderBlocks === 'function') updateReviewsUIRenderBlocks();
 };
 
 // --- AUTHENTICATED COMMUNICATION TRIGGERS ---
 function triggerSecureCall() {
-    const currentSessionUID = localStorage.getItem('staypremium_uid');
+    const currentSessionUID = localStorage.getItem('stay100_uid');
     if (!currentSessionUID) {
         alert("🔒 Access Protected! Please sign in to verify your account and contact the owner.");
         window.location.href = 'login.html';
@@ -681,7 +771,7 @@ function triggerSecureCall() {
 }
 
 function triggerSecureWhatsApp() {
-    const currentSessionUID = localStorage.getItem('staypremium_uid');
+    const currentSessionUID = localStorage.getItem('stay100_uid');
     if (!currentSessionUID) {
         alert("🔒 Access Protected! Please sign in to verify your account and contact the owner on WhatsApp.");
         window.location.href = 'login.html';
@@ -691,14 +781,15 @@ function triggerSecureWhatsApp() {
         const propTitle = targetPropertyObject.name || targetPropertyObject.title || "Premium Co-Living Space";
         const propPrice = targetPropertyObject.price || targetPropertyObject.currentPrice || 0;
         const propGender = targetPropertyObject.genderType || "Boys/Girls";
-        const propLocation = targetPropertyObject.area || "Mansarovar";
-        const cleanUrl = window.location.href;
+        const propLocation = targetPropertyObject.area || targetPropertyObject.city || "Mansarovar";
+        
+        // Dynamic construction of a perfectly generated live URL string configuration
+        const dynamicLiveRoutingUrl = window.location.origin + window.location.pathname + `?id=${activePropertySlugId}`;
 
-        // Structured, highly converting text fallback template message
-        const compiledMessageText = `Hi, I tried calling you regarding your listing: *${propTitle}* (${propGender} PG in ${propLocation}) listed on STAY100% at ₹${propPrice.toLocaleString('en-IN')}/mo.\n\nI couldn't reach you over the call. Please share if this space is still available for booking.\n\nListing link: ${cleanUrl}`;
+        // Structured, premium, highly converting inquiries text template message for owners
+        const compiledMessageText = `Dear Property Owner,\n\nI am reaching out regarding your listed property space: *${propTitle}* (${propGender} setup in ${propLocation}) published on STAY100% at a monthly rental matrix value of *₹${propPrice.toLocaleString('en-IN')}/mo*.\n\nI am deeply interested in scheduling a site walkthrough and verification check for immediate lock-in. Please confirm vacancy details and current availability status.\n\nVerified Listing Reference Link: ${dynamicLiveRoutingUrl}`;
         
         const cleanPhoneNo = targetPropertyObject.ownerPhone.replace(/[^0-9]/g, '');
-        // Append dynamic international dialing parameter safely
         const targetWhatsAppNumber = cleanPhoneNo.length === 10 ? `91${cleanPhoneNo}` : cleanPhoneNo;
 
         window.open(`https://wa.me/${targetWhatsAppNumber}?text=${encodeURIComponent(compiledMessageText)}`, '_blank');
@@ -713,11 +804,9 @@ const renderAmenitiesGridMatrix = () => {
     if (!facGrid) return;
 
     const facilitiesList = globalGeneratedFacilitiesArray || [];
-    // Always list top 6 elements inside plain preview baseline
     const initialPreviewLimit = 6;
     let itemsToRender = facilitiesList.slice(0, initialPreviewLimit);
 
-    // Grid nodes update
     facGrid.innerHTML = itemsToRender.map(item => `
         <div class="facility-item-node">
             <i class="fa-solid ${item.icon || 'fa-circle-check'}" style="color: #4f46e5; font-size: 16px;"></i> 
@@ -726,7 +815,6 @@ const renderAmenitiesGridMatrix = () => {
     `).join('');
 };
 
-// POPUP INTERACTIVE ACTIONS SYSTEM CONTROL INJECTIONS
 const toggleCentralAmenitiesModalPopup = (showFlag) => {
     const mask = document.getElementById('amenities-popup-mask');
     const modalTargetGrid = document.getElementById('modal-amenities-target-row');
@@ -756,7 +844,6 @@ const shiftSliderStep = (dir) => {
     activeSliderPositionIndex = (activeSliderPositionIndex + dir + maxElements) % maxElements;
     track.style.transform = `translateX(-${activeSliderPositionIndex * 100}%)`;
     
-    // Video play state sync on carousel change
     Array.from(track.children).forEach((slide, idx) => {
         const video = slide.querySelector('video');
         if (video) {
@@ -780,11 +867,9 @@ const bindInteractiveUIElements = () => {
     bindClick('btn-slide-prev', () => shiftSliderStep(-1));
     bindClick('btn-slide-next', () => shiftSliderStep(1));
 
-    // Refactored dynamic click interceptor hook for explicit "Show More Modal Popup" functionality
     bindClick('btn-facilities-expand', () => toggleCentralAmenitiesModalPopup(true));
     bindClick('btn-popup-close', () => toggleCentralAmenitiesModalPopup(false));
     
-    // Close modal when user clicks outside the core template container body box
     const maskElement = document.getElementById('amenities-popup-mask');
     if (maskElement) {
         maskElement.onclick = (e) => {
@@ -800,14 +885,14 @@ const bindInteractiveUIElements = () => {
 
     const inquiryForm = document.getElementById('frm-instant-inquiry');
     if (inquiryForm) {
-        const cachedName = localStorage.getItem('staypremium_name');
-        const cachedPhone = localStorage.getItem('staypremium_phone');
+        const cachedName = localStorage.getItem('stay100_name');
+        const cachedPhone = localStorage.getItem('stay100_phone');
         if (cachedName && document.getElementById('inq-name')) document.getElementById('inq-name').value = cachedName;
         if (cachedPhone && document.getElementById('inq-phone')) document.getElementById('inq-phone').value = cachedPhone;
 
         inquiryForm.onsubmit = (event) => {
             event.preventDefault();
-            const currentSessionUID = localStorage.getItem('staypremium_uid');
+            const currentSessionUID = localStorage.getItem('stay100_uid');
             if (!currentSessionUID) {
                 alert("Session expired! Please login first to submit an inquiry.");
                 window.location.href = 'login.html';
@@ -889,67 +974,109 @@ const showCenterToasterAlert = (message) => {
 // --- 6. ADVANCED DYNAMIC WEB SHARE SYSTEM ENGINE ---
 const executeWebSharePipeline = () => {
     const shareTitle = targetPropertyObject ? (targetPropertyObject.name || targetPropertyObject.title) : "STAY100% Space";
-    const shareUrl = window.location.href;
+    const sharePrice = targetPropertyObject ? (targetPropertyObject.price || targetPropertyObject.currentPrice || 0) : 0;
+    const shareArea = targetPropertyObject ? (targetPropertyObject.area || "Jaipur") : "Jaipur";
+    const dynamicLiveRoutingUrl = window.location.origin + window.location.pathname + `?id=${activePropertySlugId}`;
+
+    // Highly professional property sharing copy block structured for WhatsApp distribution channels
+    const professionalShareMsg = `Hey! Check out this amazing accommodation listed on STAY100%:\n\n🏡 *${shareTitle}*\n📍 Location: ${shareArea}\n💰 Price: ₹${sharePrice.toLocaleString('en-IN')}/mo\n\n✨ Features fully managed verification checks, verified security nodes, high speed Wi-Fi, and premium amenities.\n\n🔗 View Live Property Details & Media Matrix: ${dynamicLiveRoutingUrl}`;
+
     if (navigator.share) {
-        navigator.share({ title: shareTitle, text: `Check out this space on STAY100%!`, url: shareUrl });
+        navigator.share({
+            title: shareTitle,
+            text: professionalShareMsg,
+            url: dynamicLiveRoutingUrl
+        }).catch((err) => console.log("Web share execution halted cleanly:", err));
     } else {
-        navigator.clipboard.writeText(shareUrl)
-            .then(() => showCenterToasterAlert("🔗 Link copied to clipboard!"))
-            .catch(() => alert("Failed to copy link."));
+        // Fallback context: Redirect straight to WhatsApp web engine or clip directly
+        const fallbackWhatsappWebUrl = `https://wa.me/?text=${encodeURIComponent(professionalShareMsg)}`;
+        window.open(fallbackWhatsappWebUrl, '_blank');
+        
+        // Meticulously clone into buffer stack as a solid failover option
+        navigator.clipboard.writeText(dynamicLiveRoutingUrl)
+            .then(() => showCenterToasterAlert("🔗 Professional share link copied to clipboard!"))
+            .catch(() => alert("Failed to access buffer clipboard registry matrix."));
     }
 };
 
 // --- 7. DATABASE BOOKMARKS/WISHLIST ENGINE ---
 const toggleSavePropertyWishlist = () => {
     if (!activePropertySlugId || !targetPropertyObject) return;
-    const currentSessionUID = localStorage.getItem('staypremium_uid');
-    if (!currentSessionUID) {
-        alert("Authentication required. Please log in to bookmark spaces.");
-        window.location.href = 'login.html';
-        return;
-    }
-
-    let savedList = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
+    const currentSessionUID = localStorage.getItem('stay100_uid');
+    
+    // Core LocalStorage Failover Cache System Architecture
+    let savedList = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
     const index = savedList.indexOf(activePropertySlugId);
-    const userSavedRefNode = db.ref(`users_saved/${currentSessionUID}/${activePropertySlugId}`);
 
     if (index === -1) {
-        const cardData = {
-            id: activePropertySlugId,
-            name: targetPropertyObject.name || "Premium Space",
-            price: targetPropertyObject.price || 0,
-            location: targetPropertyObject.location || "Premium Area",
-            image: targetPropertyObject.image || (targetPropertyObject.allImages ? Object.values(targetPropertyObject.allImages)[0] : "")
-        };
-        userSavedRefNode.set(cardData).then(() => {
-            savedList.push(activePropertySlugId);
-            localStorage.setItem('staypremium_saved_properties', JSON.stringify(savedList));
-            showCenterToasterAlert("Saved!");
-        });
+        savedList.push(activePropertySlugId);
+        localStorage.setItem('stay100_saved_properties', JSON.stringify(savedList));
     } else {
-        userSavedRefNode.remove().then(() => {
-            savedList = savedList.filter(id => id !== activePropertySlugId);
-            localStorage.setItem('staypremium_saved_properties', JSON.stringify(savedList));
-            showCenterToasterAlert("Removed .");
-        });
+        savedList = savedList.filter(id => id !== activePropertySlugId);
+        localStorage.setItem('stay100_saved_properties', JSON.stringify(savedList));
+    }
+
+    // Secondary Path Sync Sequence: Authenticated Cloud Mirror
+    if (currentSessionUID) {
+        const userSavedRefNode = db.ref(`users_saved/${currentSessionUID}/${activePropertySlugId}`);
+        if (index === -1) {
+            const cardData = {
+                id: activePropertySlugId,
+                name: targetPropertyObject.name || "Premium Space",
+                price: targetPropertyObject.price || 0,
+                location: targetPropertyObject.location || "Premium Area",
+                image: targetPropertyObject.image || (targetPropertyObject.allImages ? Object.values(targetPropertyObject.allImages)[0] : "")
+            };
+            userSavedRefNode.set(cardData).then(() => {
+                showCenterToasterAlert("⭐ Added to Wishlist Portfolio!");
+                localRenderSaveButtonActiveState(true);
+            });
+        } else {
+            userSavedRefNode.remove().then(() => {
+                showCenterToasterAlert("🗑️ Removed from Wishlist!");
+                localRenderSaveButtonActiveState(false);
+            });
+        }
+    } else {
+        // Failsafe Mode Execution: Complete interaction processing using local storage caches cleanly
+        if (index === -1) {
+            showCenterToasterAlert("⭐ Saved to device local portfolio!");
+            localRenderSaveButtonActiveState(true);
+        } else {
+            showCenterToasterAlert("🗑️ Removed from local tracking maps.");
+            localRenderSaveButtonActiveState(false);
+        }
+    }
+};
+
+const localRenderSaveButtonActiveState = (isActive) => {
+    const saveBtn = document.getElementById('btn-save-toggle') || document.getElementById('btn-save-property');
+    if (!saveBtn) return;
+    if (isActive) {
+        saveBtn.innerHTML = `<i class="fa-solid fa-bookmark" style="color: #ef4444;"></i>`;
+        saveBtn.style.background = "#fee2e2";
+    } else {
+        saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>`;
+        saveBtn.style.background = "";
     }
 };
 
 const updateSaveButtonUI = () => {
     const saveBtn = document.getElementById('btn-save-toggle') || document.getElementById('btn-save-property');
     if (!saveBtn || !activePropertySlugId) return;
-    const currentSessionUID = localStorage.getItem('staypremium_uid');
-    if (!currentSessionUID) return;
+    const currentSessionUID = localStorage.getItem('stay100_uid');
 
-    db.ref(`users_saved/${currentSessionUID}/${activePropertySlugId}`).on('value', (snapshot) => {
-        if (snapshot.exists()) {
-            saveBtn.innerHTML = `<i class="fa-solid fa-bookmark" style="color: #ef4444;"></i>`;
-            saveBtn.style.background = "#fee2e2";
-        } else {
-            saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>`;
-            saveBtn.style.background = "";
-        }
-    });
+    // First, sync against the Local Cache Matrix (Ensures working states when offline/unauthenticated)
+    const savedList = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
+    const isSavedLocally = savedList.includes(activePropertySlugId);
+    localRenderSaveButtonActiveState(isSavedLocally);
+
+    // If a cloud session exists, overlay realtime synchronization streams
+    if (currentSessionUID) {
+        db.ref(`users_saved/${currentSessionUID}/${activePropertySlugId}`).on('value', (snapshot) => {
+            localRenderSaveButtonActiveState(snapshot.exists());
+        });
+    }
 };
 
 // --- 8. RECOMMENDATIONS CARD PIPELINE ---
@@ -971,16 +1098,16 @@ const renderSimilarPropertiesEngine = () => {
 };
 
 const registerRecentPropertyFootprint = (propertyId) => {
-    let footprints = JSON.parse(localStorage.getItem('staypremium_history_footprints')) || [];
+    let footprints = JSON.parse(localStorage.getItem('stay100_history_footprints')) || [];
     footprints = footprints.filter(id => id !== propertyId);
     footprints.unshift(propertyId);
-    localStorage.setItem('staypremium_history_footprints', JSON.stringify(footprints.slice(0, 6)));
+    localStorage.setItem('stay100_history_footprints', JSON.stringify(footprints.slice(0, 6)));
 };
 
 const renderRecentlyViewedPropertiesEngine = () => {
     const container = document.getElementById('recently-viewed-container');
     if (!container) return;
-    const historyIds = JSON.parse(localStorage.getItem('staypremium_history_footprints')) || [];
+    const historyIds = JSON.parse(localStorage.getItem('stay100_history_footprints')) || [];
     const targetedHistoryIds = historyIds.filter(id => id !== activePropertySlugId);
 
     if (targetedHistoryIds.length === 0) {
@@ -1024,6 +1151,7 @@ const generateHorizontalRecommendationCard = (item) => {
         cardImageSrc = cardImageSrc.split('?')[0] + "?auto=format&fit=crop&w=800&q=90";
     }
 
+    // DYNAMIC live redirection routing fix applied explicitly to handle clean routing matrix parameters
     return `
         <div class="mini-property-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.03); padding-bottom: 4px; cursor:pointer;" onclick="window.location.href='details.html?id=${item.id}'">
             <div style="width:100%; height:160px; background:#0f172a; display:flex; align-items:center; justify-content:center; overflow:hidden;">
@@ -1055,7 +1183,7 @@ const publishLiveUserReview = () => {
     if (!commentText) { alert("Please input public feedback review text description!"); return; }
 
     const generatedReviewObjectNode = {
-        username: localStorage.getItem('staypremium_name') || "Verified User",
+        username: localStorage.getItem('stay100_name') || "Verified User",
         userDp: "https://cdn-icons-png.flaticon.com/512/3177/3177440.png",
         rating: chosenFormInputStarRatingValue,
         comment: commentText,

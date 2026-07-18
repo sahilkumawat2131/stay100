@@ -4,29 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-   <title>Stay100% | Budget & Luxury Rooms, PG's, Flats 1BHK, 2BHK ,3BHK for Rent</title>
+    <title>Stay100% | Budget & Luxury Rooms, PG's, Flats 1BHK, 2BHK ,3BHK for Rent</title>
     <meta name="description" content="Sign in or create an account on Stay100% to unlock exclusive luxury hotel deals, premium stays, and seamless holiday bookings. Experience 100% comfort today.">
     <meta name="keywords" content="Stay100%, luxury hotels, hotel booking, premium accommodation, resort booking, online hotel reservation">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Stay100%">
     <link rel="canonical" href="https://www.stay100percent.com/login">
 
+    <!-- Open Graph Metadata -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.stay100percent.com/login">
     <meta property="og:title" content="Stay100% | Premium Hotel Booking & Luxury Stays">
     <meta property="og:description" content="Sign in or create an account on Stay100% to unlock exclusive luxury hotel deals and premium stays.">
     <meta property="og:image" content="https://www.stay100percent.com/assets/og-image.jpg">
 
+    <!-- Twitter Card Metadata -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://www.stay100percent.com/login">
     <meta property="twitter:title" content="Stay100% | Premium Hotel Booking & Luxury Stays">
     <meta property="twitter:description" content="Sign in or create an account on Stay100% to unlock exclusive luxury hotel deals and premium stays.">
     <meta property="twitter:image" content="https://www.stay100percent.com/assets/og-image.jpg">
+    
+    <!-- Dependencies -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="login.css">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
+
+    <!-- Firebase Legacy Compatibility SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -35,6 +42,7 @@
     <main class="login-container">
         <div class="auth-box">
             
+            <!-- Tab Headers -->
             <div class="auth-toggle-header">
                 <button id="toggle-login-tab" class="auth-tab-btn active">Sign In</button>
                 <button id="toggle-register-tab" class="auth-tab-btn">Create Account</button>
@@ -46,40 +54,30 @@
 
             <div class="divider"><span>OR</span></div>
 
+            <!-- Login Panel -->
             <div id="login-panel" class="auth-panel active">
                 <form id="email-login-form" class="auth-form">
                     <div class="input-group">
                         <label for="login-email">Email Address</label>
-                        <input type="email" id="login-email" placeholder="name@example.com" required>
+                        <input type="email" id="login-email" placeholder="name@example.com">
                     </div>
                     <div class="input-group">
                         <label for="login-password">Password</label>
                         <input type="password" id="login-password" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" class="btn-primary">Sign In</button>
-                </form>
-
-                <div class="divider"><span>OR</span></div>
-
-                <div class="phone-auth-wrapper">
-                    <div class="input-group" id="phone-field-block">
-                        <label for="login-phone">Phone Number</label>
+                    <!-- Using phone number as login identifier as per your JS login logic -->
+                    <div class="input-group">
+                        <label for="login-phone">Registered Phone Number</label>
                         <div class="phone-input-row">
                             <span class="country-code">+91</span>
-                            <input type="tel" id="login-phone" placeholder="9876543210" maxlength="10">
+                            <input type="tel" id="login-phone" placeholder="9876543210" maxlength="10" required>
                         </div>
-                        <div id="recaptcha-container" style="margin-top: 10px;"></div>
-                        <button id="send-otp-btn" class="btn-secondary" style="margin-top: 10px;">Send Verification OTP</button>
                     </div>
-
-                    <div class="input-group" id="otp-field-block" style="display: none;">
-                        <label for="login-otp">Enter 6-Digit OTP</label>
-                        <input type="text" id="login-otp" placeholder="123456" maxlength="6" style="letter-spacing: 4px; text-align: center;">
-                        <button id="verify-otp-btn" class="btn-primary" style="margin-top: 15px;">Verify & Login</button>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
             </div>
 
+            <!-- Registration Panel -->
             <div id="register-panel" class="auth-panel">
                 <form id="email-register-form" class="auth-form">
                     <div class="input-group">
@@ -107,6 +105,6 @@
 
     <div id="dynamic-footer-container"></div>
 
-    <script type="module" src="login.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>

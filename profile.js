@@ -21,9 +21,99 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// --- CUSTOM SYSTEM NOTIFICATIONS ENGINE ---
+
+// 1. Center Notification Toast
+function showCenterToast(message, isSuccess = true) {
+    const activeToast = document.getElementById('profile-system-toast');
+    if (activeToast) activeToast.remove();
+
+    const container = document.createElement('div');
+    container.id = 'profile-system-toast';
+    container.innerHTML = `
+        <div style="
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: ${isSuccess ? '#1e293b' : '#800020'}; color: #ffffff; padding: 16px 32px;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: sans-serif;
+            font-size: 15px; font-weight: 600; z-index: 100000; display: flex; align-items: center; gap: 12px;
+            opacity: 0; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        ">
+            <i class="fa-solid ${isSuccess ? 'fa-circle-check' : 'fa-circle-xmark'}" style="color: ${isSuccess ? '#38bdf8' : '#fda4af'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    document.body.appendChild(container);
+    const inner = container.querySelector('div');
+
+    setTimeout(() => {
+        inner.style.opacity = '1';
+        inner.style.transform = 'translate(-50%, -50%) scale(1)';
+    }, 50);
+
+    setTimeout(() => {
+        inner.style.opacity = '0';
+        inner.style.transform = 'translate(-50%, -50%) scale(0.95)';
+        setTimeout(() => container.remove(), 250);
+    }, 2500);
+}
+
+// 2. Center Confirmation Modal Container
+function showCenterConfirmModal(title, message, onConfirm) {
+    const activeModal = document.getElementById('profile-confirm-modal');
+    if (activeModal) activeModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'profile-confirm-modal';
+    overlay.style = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 99999; opacity: 0; transition: opacity 0.2s ease;
+    `;
+
+    overlay.innerHTML = `
+        <div style="
+            background: #ffffff; padding: 28px; border-radius: 16px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            transform: scale(0.9); transition: transform 0.2s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        ">
+            <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #0f172a; font-weight: 700;">${title}</h3>
+            <p style="margin: 0 0 24px 0; font-size: 14px; color: #64748b; line-height: 1.5;">${message}</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="modal-cancel-btn" style="flex: 1; padding: 10px 16px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">Cancel</button>
+                <button id="modal-confirm-btn" style="flex: 1; padding: 10px 16px; background: #ef4444; border: none; color: #ffffff; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">Log Out</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    const box = overlay.querySelector('div');
+
+    setTimeout(() => {
+        overlay.style.opacity = '1';
+        box.style.transform = 'scale(1)';
+    }, 50);
+
+    const closeModal = () => {
+        overlay.style.opacity = '0';
+        box.style.transform = 'scale(0.9)';
+        setTimeout(() => overlay.remove(), 200);
+    };
+
+    overlay.querySelector('#modal-cancel-btn').onclick = closeModal;
+    overlay.querySelector('#modal-confirm-btn').onclick = () => {
+        closeModal();
+        onConfirm();
+    };
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Harmonized storage keys pointing cleanly to staypremium authentication state inputs[cite: 1]
+    // Harmonized storage keys pointing cleanly to staypremium authentication state inputs
     const currentSessionUID = localStorage.getItem('staypremium_uid') || localStorage.getItem('stay100_uid'); 
     const sessionName = localStorage.getItem('staypremium_name') || localStorage.getItem('stay100_name');
     const sessionEmail = localStorage.getItem('staypremium_email') || localStorage.getItem('stay100_email'); 
@@ -32,8 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. AUTH RECOVERY & AUTO FILL ENGINE ---
     function handleProfileAutoFillEngine() {
         if (!currentSessionUID) {
-            alert("Session expired or user not logged in. Redirecting to login...");
-            window.location.href = 'login.html';
+            showCenterToast("Session expired. Redirecting to login...", false);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
             return;
         }
 
@@ -76,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = snapshot.val();
         if (data) {
-            // Evaluates standard structural variations across dynamic inquiry contexts
             const recordsList = Object.values(data).filter(item => 
                 item && (item.userId === currentSessionUID || 
                 item.userUid === currentSessionUID || 
@@ -203,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }).catch(e => console.error(e));
                 } else {
                     navigator.clipboard.writeText(targetUrl).then(() => {
-                        alert("🔗 Link copied to clipboard via profile dashboard context!");
+                        showCenterToast("🔗 Link copied to clipboard!", true);
                     });
                 }
             };
@@ -212,17 +303,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.btn-remove-bookmark').forEach(btn => {
             btn.onclick = () => {
                 const targetId = btn.dataset.id;
-                if(confirm("Remove this property from your saved bookmarks vault?")) {
-                    const specificNodeRef = ref(db, `users_saved/${currentSessionUID}/${targetId}`);
-                    remove(specificNodeRef).then(() => {
-                        try {
-                            let localList = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
-                            localList = localList.filter(id => id !== targetId);
-                            localStorage.setItem('staypremium_saved_properties', JSON.stringify(localList));
-                            localStorage.setItem('stay100_saved_properties', JSON.stringify(localList));
-                        } catch(err) { console.error(err); }
-                    });
-                }
+                
+                showCenterConfirmModal(
+                    "Remove Bookmark?",
+                    "Are you sure you want to remove this property from your saved bookmarks vault?",
+                    () => {
+                        const specificNodeRef = ref(db, `users_saved/${currentSessionUID}/${targetId}`);
+                        remove(specificNodeRef).then(() => {
+                            try {
+                                let localList = JSON.parse(localStorage.getItem('staypremium_saved_properties')) || JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
+                                localList = localList.filter(id => id !== targetId);
+                                localStorage.setItem('staypremium_saved_properties', JSON.stringify(localList));
+                                localStorage.setItem('stay100_saved_properties', JSON.stringify(localList));
+                                showCenterToast("Bookmark removed successfully.", true);
+                            } catch(err) { console.error(err); }
+                        });
+                    }
+                );
             };
         });
     }
@@ -231,28 +328,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to log out?")) {
-                // Clear state tracking parameters cleanly[cite: 1]
-                localStorage.removeItem('staypremium_uid');
-                localStorage.removeItem('staypremium_name');
-                localStorage.removeItem('staypremium_phone');
-                localStorage.removeItem('staypremium_email');
-                localStorage.removeItem('staypremium_saved_properties');
+            showCenterConfirmModal(
+                "Confirm Logout", 
+                "Are you sure you want to log out of your session?", 
+                () => {
+                    // Clear state tracking parameters cleanly
+                    localStorage.removeItem('staypremium_uid');
+                    localStorage.removeItem('staypremium_name');
+                    localStorage.removeItem('staypremium_phone');
+                    localStorage.removeItem('staypremium_email');
+                    localStorage.removeItem('staypremium_saved_properties');
 
-                localStorage.removeItem('stay100_uid');
-                localStorage.removeItem('stay100_name');
-                localStorage.removeItem('stay100_phone');
-                localStorage.removeItem('stay100_email');
-                localStorage.removeItem('stay100_saved_properties');
-                
-                // Remove specific vendor plans cache if allocated[cite: 1]
-                if (currentSessionUID) {
-                    localStorage.removeItem(`stay100_plan_${currentSessionUID}`);
-                    localStorage.removeItem(`stay100_start_${currentSessionUID}`);
+                    localStorage.removeItem('stay100_uid');
+                    localStorage.removeItem('stay100_name');
+                    localStorage.removeItem('stay100_phone');
+                    localStorage.removeItem('stay100_email');
+                    localStorage.removeItem('stay100_saved_properties');
+                    
+                    // Remove specific vendor plans cache if allocated
+                    if (currentSessionUID) {
+                        localStorage.removeItem(`stay100_plan_${currentSessionUID}`);
+                        localStorage.removeItem(`stay100_start_${currentSessionUID}`);
+                    }
+
+                    showCenterToast("Session terminated. Reverting entry profile...", true);
+
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                 }
-
-                window.location.href = 'login.html';
-            }
+            );
         });
     }
 });

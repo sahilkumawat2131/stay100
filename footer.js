@@ -1,5 +1,5 @@
 /**
- * StayPremium - Dynamic UI Layout Component Engine (Professional Edition V2.5)
+ * StayPremium - Dynamic UI Layout Component Engine (Professional Edition V2.6)
  * Upgraded with High-Fidelity Architectural SVG City Line-Art & Premium Color Variables
  * Optimized Multi-Tab SEO Matrix, Unified Viewport Toggle Mechanics & Shimmering Free Property List Button
  */
@@ -974,10 +974,10 @@ class LayoutEngine {
                                     <h5>Bangalore Hubs</h5>
                                     <div class="seo-links-list">
                                         <a href="city.html?type=flat&area=hsrlayout">Premium 1 & 2 BHK HSR Layout</a>
-                                        <a href="bengluru.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
-                                        <a href="bengluru.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
-                                        <a href="bengluru.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>
-                                        <a href="bengluru.html?type=flat&budget=15k">Fully Furnished Units under 15k</a>
+                                        <a href="bangalore.html?type=pg&area=koramangala">Luxury Tech Co-living Koramangala</a>
+                                        <a href="bangalore.html?type=flatmate&area=indiranagar">Shared Roommate Systems Indiranagar</a>
+                                        <a href="bangalore.html?type=flat&area=marathahalli">IT Corridor Rental Flats Marathahalli</a>
+                                        <a href="bangalore.html?type=flat&budget=15k">Fully Furnished Units under 15k</a>
                                     </div>
                                 </div>
                                 <div class="seo-column-group">
@@ -1041,7 +1041,8 @@ class LayoutEngine {
             const toggleText = document.getElementById('toggle-text');
 
             if (toggleButton && footerElement) {
-                toggleButton.addEventListener('click', () => {
+                // Remove pre-existing listener instances if DOM nodes are re-injected
+                const cleanToggleHandler = () => {
                     const isMobile = window.innerWidth <= 768;
 
                     if (isMobile) {
@@ -1055,6 +1056,7 @@ class LayoutEngine {
                             toggleButton.innerHTML = `<i class="fa-solid fa-circle-chevron-down" style="margin-right: 4px;"></i> Show Full Directory`;
                         }
                     } else {
+                        // Desktop visibility management via class matching logic flags
                         if (footerElement.style.display === 'none' || footerElement.style.display === '') {
                             footerElement.style.display = 'block';
                             setTimeout(() => {
@@ -1071,7 +1073,10 @@ class LayoutEngine {
                             if (toggleIcon) toggleIcon.style.transform = 'rotate(0deg)';
                         }
                     }
-                });
+                };
+
+                toggleButton.replaceWith(toggleButton.cloneNode(true));
+                document.getElementById('btn-global-footer-toggle').addEventListener('click', cleanToggleHandler);
             }
 
             const tabTriggers = desktopFooterContainer.querySelectorAll('.seo-tab-trigger');

@@ -6,9 +6,130 @@
     <title>StayPremium - Ultimate Control Matrix Engine</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admin.css">
+    
+    <style>
+        /* PIN Lock Overlay Styles */
+        .pin-lock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999; /* Ensure it stays above everything */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #ffffff;
+        }
+        
+        .pin-lock-card {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #334155;
+        }
+
+        .pin-lock-card i.lock-icon {
+            font-size: 48px;
+            color: #ffb300;
+            margin-bottom: 20px;
+        }
+
+        .pin-lock-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .pin-lock-card p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .pin-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .pin-field {
+            width: 45px;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #475569;
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+            font-weight: 700;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .pin-field:focus {
+            border-color: #556b2f;
+        }
+
+        .pin-error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: -12px;
+            margin-bottom: 16px;
+            min-height: 20px;
+            visibility: hidden;
+        }
+
+        .btn-unlock {
+            background: #556b2f;
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .btn-unlock:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Local PIN Authentication Layer -->
+    <div id="pin-auth-screen" class="pin-lock-overlay">
+        <div class="pin-lock-card">
+            <i class="fa-solid fa-shield-halved lock-icon"></i>
+            <h3>Security Verification</h3>
+            <p>Enter the 6-digit access PIN to unlock the Engine Matrix.</p>
+            
+            <div class="pin-input-container">
+                <input type="password" maxlength="1" class="pin-field" autofocus>
+                <input type="password" maxlength="1" class="pin-field">
+                <input type="password" maxlength="1" class="pin-field">
+                <input type="password" maxlength="1" class="pin-field">
+                <input type="password" maxlength="1" class="pin-field">
+                <input type="password" maxlength="1" class="pin-field">
+            </div>
+            
+            <div id="pin-error-element" class="pin-error-msg">Invalid PIN sequence! Access Denied.</div>
+            
+            <button type="button" class="btn-unlock" onclick="verifyPinSequence()">Verify Identity Matrix</button>
+        </div>
+    </div>
 
     <div class="mobile-header">
         <h2>StayPremium Panel</h2>
@@ -34,10 +155,10 @@
                     <button><i class="fa-solid fa-images"></i> Slider Banners</button>
                 </li>
                  <li class="sidebar-item" data-target="primium-panel">
-    <button onclick="window.location.href='subscriptionadmin.html'">
-        <i class="fa-solid fa-crown" style="color: #ffb300; margin-right: 8px;"></i> subscription manage
-    </button>
-</li>
+                    <button onclick="window.location.href='subscriptionadmin.html'">
+                        <i class="fa-solid fa-crown" style="color: #ffb300; margin-right: 8px;"></i> subscription manage
+                    </button>
+                </li>
             </ul>
         </aside>
 
@@ -308,175 +429,239 @@
                 </div>
             </section>
 
-         <section id="banner-panel" class="panel-view">
-    <div class="content-header" style="margin-bottom: 20px;">
-        <h1><i class="fa-solid fa-layer-group" style="color: var(--primary-olive, #556b2f); margin-right: 8px;"></i> Dynamic 3-Banner Matrix Setup</h1>
-        <p>Manage exactly 3 active promo banners simultaneously with separate desktop and mobile viewport optimizations.</p>
-    </div>
-    
-    <div class="matrix-form-container" style="display: flex; flex-direction: column; gap: 25px;">
-        
-        <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--primary-olive, #556b2f);">
-            <h3 style="margin-bottom: 15px; color: var(--primary-olive, #556b2f); font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 1 (Default Active)</h3>
-            
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                        <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
-                        <input type="file" id="b1-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                    </div>
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                        <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
-                        <input type="file" id="b1-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                    </div>
+            <section id="banner-panel" class="panel-view">
+                <div class="content-header" style="margin-bottom: 20px;">
+                    <h1><i class="fa-solid fa-layer-group" style="color: var(--primary-olive, #556b2f); margin-right: 8px;"></i> Dynamic 3-Banner Matrix Setup</h1>
+                    <p>Manage exactly 3 active promo banners simultaneously with separate desktop and mobile viewport optimizations.</p>
                 </div>
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                    <input type="text" id="b1-title" placeholder="Banner 1 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                    <input type="text" id="b1-subtitle" placeholder="Banner 1 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                </div>
-                <input type="text" id="b1-link" placeholder="Redirection Link (e.g., pg.html)" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
-            </div>
-        </div>
+                
+                <div class="matrix-form-container" style="display: flex; flex-direction: column; gap: 25px;">
+                    
+                    <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--primary-olive, #556b2f);">
+                        <h3 style="margin-bottom: 15px; color: var(--primary-olive, #556b2f); font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 1 (Default Active)</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
+                                    <input type="file" id="b1-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                                </div>
+                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
+                                    <input type="file" id="b1-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <input type="text" id="b1-title" placeholder="Banner 1 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                <input type="text" id="b1-subtitle" placeholder="Banner 1 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                            </div>
+                            <input type="text" id="b1-link" placeholder="Redirection Link (e.g., pg.html)" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
+                        </div>
+                    </div>
 
-        <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid #b8860b;">
-            <h3 style="margin-bottom: 15px; color: #b8860b; font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 2</h3>
-            
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                        <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
-                        <input type="file" id="b2-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                    <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid #b8860b;">
+                        <h3 style="margin-bottom: 15px; color: #b8860b; font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 2</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
+                                    <input type="file" id="b2-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                                </div>
+                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
+                                    <input type="file" id="b2-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <input type="text" id="b2-title" placeholder="Banner 2 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                <input type="text" id="b2-subtitle" placeholder="Banner 2 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                            </div>
+                            <input type="text" id="b2-link" placeholder="Redirection Link" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
+                        </div>
                     </div>
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                        <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
-                        <input type="file" id="b2-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                    </div>
-                </div>
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                    <input type="text" id="b2-title" placeholder="Banner 2 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                    <input type="text" id="b2-subtitle" placeholder="Banner 2 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                </div>
-                <input type="text" id="b2-link" placeholder="Redirection Link" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
-            </div>
-        </div>
 
-        <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--mehrum, #800020);">
-            <h3 style="margin-bottom: 15px; color: var(--mehrum, #800020); font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 3</h3>
-            
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                        <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
-                        <input type="file" id="b3-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                    <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--mehrum, #800020);">
+                        <h3 style="margin-bottom: 15px; color: var(--mehrum, #800020); font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 3</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
+                                    <input type="file" id="b3-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                                </div>
+                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
+                                    <input type="file" id="b3-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <input type="text" id="b3-title" placeholder="Banner 3 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                <input type="text" id="b3-subtitle" placeholder="Banner 3 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                            </div>
+                            <input type="text" id="b3-link" placeholder="Redirection Link" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
+                        </div>
                     </div>
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                        <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
-                        <input type="file" id="b3-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                    </div>
-                </div>
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                    <input type="text" id="b3-title" placeholder="Banner 3 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                    <input type="text" id="b3-subtitle" placeholder="Banner 3 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                </div>
-                <input type="text" id="b3-link" placeholder="Redirection Link" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
-            </div>
-        </div>
 
-        <button type="button" class="btn-primary" id="b-submit-btn" onclick="deployAllBannersMatrix()" style="background: var(--primary-olive, #556b2f); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(85, 107, 47, 0.25);">
-            <i class="fa-solid fa-cloud-arrow-up"></i> Deploy & Sync All 3 Banners Live
-        </button>
-    </div>
-</section>
+                    <button type="button" class="btn-primary" id="b-submit-btn" onclick="deployAllBannersMatrix()" style="background: var(--primary-olive, #556b2f); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(85, 107, 47, 0.25);">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Deploy & Sync All 3 Banners Live
+                    </button>
+                </div>
+            </section>
 
         </main>
     </div>
 
- <nav class="mobile-nav" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #cbd5e1; z-index: 9999;">
-    <button class="mobile-nav-item active" data-target="deployment-panel" onclick="closeMobileMoreMenu()">
-        <i class="fa-solid fa-circle-plus"></i>
-        <span>Manage</span>
-    </button>
-    <button class="mobile-nav-item" data-target="properties-panel" onclick="fetchLivePropertiesStream(); closeMobileMoreMenu();">
-        <i class="fa-solid fa-house-chimney-window"></i>
-        <span>Live Assets</span>
-    </button>
-    <button class="mobile-nav-item" data-target="inbox-panel" onclick="closeMobileMoreMenu()">
-        <i class="fa-solid fa-inbox"></i>
-        <span>Inbox</span>
-    </button>
-    <button class="mobile-nav-item" id="mobile-more-btn" onclick="toggleMobileMoreMenu(event)">
-        <i class="fa-solid fa-ellipsis"></i>
-        <span>More</span>
-    </button>
-</nav>
+    <nav class="mobile-nav" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #cbd5e1; z-index: 9999;">
+        <button class="mobile-nav-item active" data-target="deployment-panel" onclick="closeMobileMoreMenu()">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>Manage</span>
+        </button>
+        <button class="mobile-nav-item" data-target="properties-panel" onclick="fetchLivePropertiesStream(); closeMobileMoreMenu();">
+            <i class="fa-solid fa-house-chimney-window"></i>
+            <span>Live Assets</span>
+        </button>
+        <button class="mobile-nav-item" data-target="inbox-panel" onclick="closeMobileMoreMenu()">
+            <i class="fa-solid fa-inbox"></i>
+            <span>Inbox</span>
+        </button>
+        <button class="mobile-nav-item" id="mobile-more-btn" onclick="toggleMobileMoreMenu(event)">
+            <i class="fa-solid fa-ellipsis"></i>
+            <span>More</span>
+        </button>
+    </nav>
 
-<div id="mobile-more-dropdown" style="display: none; position: fixed; bottom: 70px; right: 16px; background: #ffffff; border-radius: 14px; box-shadow: 0 10px 25px rgba(15,23,42,0.15); border: 1px solid #e2e8f0; width: 200px; z-index: 10000; overflow: hidden; animation: slideUpMobile 0.2s ease-out;">
-    <div style="padding: 6px 0;">
-        <button class="mobile-nav-item" data-target="banner-panel" onclick="handleMoreMenuPanelSelection(this)" style="display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1e293b; text-align: left; cursor: pointer;">
-            <i class="fa-solid fa-images" style="color: #64748b; font-size: 16px; width: 20px;"></i>
-            <span>Manage Banners</span>
-        </button>
-        
-        <button onclick="window.location.href='subscriptionadmin.html'" style="display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1e293b; text-align: left; cursor: pointer; border-top: 1px solid #f1f5f9;">
-            <i class="fa-solid fa-crown" style="color: #ffb300; font-size: 16px; width: 20px;"></i>
-            <span>Subscription Admin</span>
-        </button>
+    <div id="mobile-more-dropdown" style="display: none; position: fixed; bottom: 70px; right: 16px; background: #ffffff; border-radius: 14px; box-shadow: 0 10px 25px rgba(15,23,42,0.15); border: 1px solid #e2e8f0; width: 200px; z-index: 10000; overflow: hidden; animation: slideUpMobile 0.2s ease-out;">
+        <div style="padding: 6px 0;">
+            <button class="mobile-nav-item" data-target="banner-panel" onclick="handleMoreMenuPanelSelection(this)" style="display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1e293b; text-align: left; cursor: pointer;">
+                <i class="fa-solid fa-images" style="color: #64748b; font-size: 16px; width: 20px;"></i>
+                <span>Manage Banners</span>
+            </button>
+            
+            <button onclick="window.location.href='subscriptionadmin.html'" style="display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1e293b; text-align: left; cursor: pointer; border-top: 1px solid #f1f5f9;">
+                <i class="fa-solid fa-crown" style="color: #ffb300; font-size: 16px; width: 20px;"></i>
+                <span>Subscription Admin</span>
+            </button>
+        </div>
     </div>
-</div>
 
-<style>
-    @keyframes slideUpMobile {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .mobile-nav-item {
-        background: none; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #64748b; cursor: pointer; gap: 4px;
-    }
-    .mobile-nav-item i { font-size: 18px; }
-    .mobile-nav-item.active { color: #556b2f !important; font-weight: 700; }
-</style>
+    <style>
+        @keyframes slideUpMobile {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .mobile-nav-item {
+            background: none; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #64748b; cursor: pointer; gap: 4px;
+        }
+        .mobile-nav-item i { font-size: 18px; }
+        .mobile-nav-item.active { color: #556b2f !important; font-weight: 700; }
+    </style>
 
-<script>
-    // More menu ko open/close toggle karne ke liye
-    function toggleMobileMoreMenu(event) {
-        event.stopPropagation();
-        const menu = document.getElementById('mobile-more-dropdown');
-        if (menu.style.display === 'none' || menu.style.display === '') {
-            menu.style.display = 'block';
-            document.getElementById('mobile-more-btn').classList.add('active');
-        } else {
+    <script>
+        // --- LOCAL PIN AUTHENTICATION CONTROLLER ---
+        const TARGET_PIN = "312131";
+        const sessionAuthKey = "staypremium_session_auth";
+
+        // Check verification immediately when document loads
+        document.addEventListener("DOMContentLoaded", function() {
+            if (sessionStorage.getItem(sessionAuthKey) === "verified") {
+                document.getElementById("pin-auth-screen").style.display = "none";
+            } else {
+                setupPinInputsBehavior();
+            }
+        });
+
+        // Set up field switching logic (auto-focusing next block)
+        function setupPinInputsBehavior() {
+            const fields = document.querySelectorAll('.pin-field');
+            
+            fields.forEach((field, index) => {
+                field.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    // Keep only numeric values
+                    e.target.value = val.replace(/[^0-9]/g, '');
+                    
+                    if (e.target.value.length === 1 && index < fields.length - 1) {
+                        fields[index + 1].focus();
+                    }
+                    
+                    // If all inputs filled, automatically attempt check
+                    const combined = Array.from(fields).map(f => f.value).join('');
+                    if (combined.length === 6) {
+                        verifyPinSequence();
+                    }
+                });
+
+                field.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        fields[index - 1].focus();
+                    }
+                });
+            });
+        }
+
+        // Complete matching execution 
+        function verifyPinSequence() {
+            const fields = document.querySelectorAll('.pin-field');
+            const errorText = document.getElementById('pin-error-element');
+            const entryPin = Array.from(fields).map(f => f.value).join('');
+
+            if (entryPin === TARGET_PIN) {
+                sessionStorage.setItem(sessionAuthKey, "verified");
+                errorText.style.visibility = "hidden";
+                
+                // Animate lock screen away clean
+                const overlay = document.getElementById("pin-auth-screen");
+                overlay.style.transition = "opacity 0.3s ease";
+                overlay.style.opacity = "0";
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            } else {
+                errorText.style.visibility = "visible";
+                // Clear out inputs for clean retry sequence
+                fields.forEach((f, idx) => {
+                    f.value = "";
+                    if (idx === 0) f.focus();
+                });
+            }
+        }
+
+        // --- ORIGINAL INTERACTIVE CONTROLS ---
+        function toggleMobileMoreMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('mobile-more-dropdown');
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+                document.getElementById('mobile-more-btn').classList.add('active');
+            } else {
+                closeMobileMoreMenu();
+            }
+        }
+
+        function closeMobileMoreMenu() {
+            document.getElementById('mobile-more-dropdown').style.display = 'none';
+            document.getElementById('mobile-more-btn').classList.remove('active');
+        }
+
+        function handleMoreMenuPanelSelection(buttonElement) {
             closeMobileMoreMenu();
+            if (typeof showPanel === 'function') {
+                const target = buttonElement.getAttribute('data-target');
+                showPanel(target);
+            }
         }
-    }
 
-    // Dropdown sheet close handler
-    function closeMobileMoreMenu() {
-        document.getElementById('mobile-more-dropdown').style.display = 'none';
-        document.getElementById('mobile-more-btn').classList.remove('active');
-    }
-
-    // Jab More ke andar wale 'Banners' panel par click ho toh normal application panels open honge
-    function handleMoreMenuPanelSelection(buttonElement) {
-        closeMobileMoreMenu();
-        // Agar aapke script me dynamic nav handling h toh ye execute karega:
-        if (typeof showPanel === 'function') {
-            const target = buttonElement.getAttribute('data-target');
-            showPanel(target);
-        }
-    }
-
-    // Mobile viewport screen par kahi bhi click hone par menu automatically hide ho jaye
-    document.addEventListener('click', function(e) {
-        const menu = document.getElementById('mobile-more-dropdown');
-        const moreBtn = document.getElementById('mobile-more-btn');
-        if (menu && !menu.contains(e.target) && !moreBtn.contains(e.target)) {
-            closeMobileMoreMenu();
-        }
-    });
-</script>
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('mobile-more-dropdown');
+            const moreBtn = document.getElementById('mobile-more-btn');
+            if (menu && !menu.contains(e.target) && !moreBtn.contains(e.target)) {
+                closeMobileMoreMenu();
+            }
+        });
+    </script>
 
     <div id="center-toast"></div>
-
-     <script type="module" src="admin.js"></script>
+    <script type="module" src="admin.js"></script>
 </body>
 </html>

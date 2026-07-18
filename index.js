@@ -26,7 +26,7 @@ let allPosts = [];
 let currentCategory = 'all';
 
 // --- UNIFIED SYSTEM AUTH POINTER MATRIX ---
-let currentSessionUID = localStorage.getItem('stay100_uid') || null;
+let currentSessionUID = localStorage.getItem('stay100_uid') || localStorage.getItem('staypremium_uid') || null;
 
 // --- GLOBAL FILTER STATE MATRIX ---
 window.filterState = {
@@ -107,7 +107,7 @@ function updateUserProfileUI() {
     const profileNameContainer = document.getElementById('user-profile-name-target'); 
     if (profileNameContainer && currentSessionUID) {
         const isVerified = checkVendorVerification(currentSessionUID);
-        const currentName = localStorage.getItem('stay100_name') || "User Node";
+        const currentName = localStorage.getItem('stay100_name') || localStorage.getItem('staypremium_name') || "User Node";
         if (isVerified) {
             profileNameContainer.innerHTML = `${currentName} <span style="background:#1da1f2; color:#fff; padding:2px 6px; border-radius:50px; font-size:11px; margin-left:5px;"><i class="fa-solid fa-badge-check"></i> Stay100% Verified</span>`;
         } else {
@@ -257,12 +257,15 @@ window.clearAllFilters = function() {
     window.renderPostsDataPipeline();
 };
 
-function getEmptyStateHTML() {
+function getEmptyStateHTML(searchSummary = "") {
     return `
         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 600px; margin: 30px auto;">
-            <img src="assets/stay100.png" alt="No Results" style="width: 100%; max-width: 280px; height: auto; margin-bottom: 25px; filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.08));" onerror="this.src='https://placehold.co/280x200?text=No+Spaces+Available'">
-            <h3 style="margin: 0 0 8px 0; color: #1e293b; font-family: sans-serif; font-size: 22px; font-weight: 700;">No Matching Spaces Found</h3>
-            <p style="margin: 0 0 20px 0; color: #64748b; font-family: sans-serif; font-size: 14px; line-height: 1.5; max-width: 400px;">We couldn't find any properties matching your selected filters. Try widening your budget or clearing some filters to explore more options!</p>
+            <div style="width: 80px; height: 80px; background: #fee2e2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 20px;">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </div>
+            <h3 style="margin: 0 0 8px 0; color: #1e293b; font-family: sans-serif; font-size: 22px; font-weight: 700;">No Results Found</h3>
+            ${searchSummary ? `<p style="margin: 0 0 12px 0; color: #800020; font-family: sans-serif; font-size: 15px; font-weight: 600;">${searchSummary}</p>` : ''}
+            <p style="margin: 0 0 20px 0; color: #64748b; font-family: sans-serif; font-size: 14px; line-height: 1.5; max-width: 400px;">We couldn't find any properties matching your criteria. Try widening your options, changing locations, or adjusting the filters!</p>
             <button onclick="window.clearAllFilters()" style="background: #800020; color: #ffffff; border: none; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s; box-shadow: 0 4px 12px rgba(128,0,32,0.2);">
                 <i class="fa-solid fa-filter-circle-xmark"></i> Clear All Filters
             </button>
@@ -363,7 +366,7 @@ const AI_NLP_DICTIONARY = {
     }
 };
 
-// --- DATA FILTERING PIPELINE ENGINE (UPGRADED WITH INTUITY AI SEARCH ENGINE & FALLBACK RECOMMENDATIONS) ---
+// --- DATA FILTERING PIPELINE ENGINE (UPGRADED WITH INTUITY AI SEARCH ENGINE & DYNAMIC COUNTERS) ---
 window.renderPostsDataPipeline = function() {
     let listingsGrid = document.getElementById('listings-container') || document.getElementById('properties-container-target');
     if (!listingsGrid) return;
@@ -387,7 +390,6 @@ window.renderPostsDataPipeline = function() {
         const searchInput = document.getElementById('search-input') || document.getElementById('filter-locality');
         const rawSearchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
         
-        // CORRECTION: Linked perfectly with header.js layout structure key allocation standard
         const activeSelectedGlobalCity = (localStorage.getItem('staypremium_selected_city') || "all").toLowerCase().trim();
 
         // --- 1. LOCAL SEARCH COOPERATIVE ENGINE ---
@@ -436,7 +438,7 @@ window.renderPostsDataPipeline = function() {
         }
 
         // --- 2. RUN EXTRACTION FILTER MATCHES PIPELINE ---
-        const locallySavedItems = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
+        const locallySavedItems = JSON.parse(localStorage.getItem('stay100_saved_properties')) || JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
         const globalFilterMaxBudget = window.filterState && window.filterState.maxBudget ? parseFloat(window.filterState.maxBudget) : Infinity;
         const globalFilterArea = window.filterState && window.filterState.area ? window.filterState.area.toLowerCase().trim() : "";
 
@@ -451,7 +453,6 @@ window.renderPostsDataPipeline = function() {
             const itemTags = Array.isArray(item.tags) ? item.tags.map(t => t.toLowerCase()) : [];
             const itemPrice = parseFloat(item.price || item.rent || item.budget || 0);
 
-            // Global City Architecture Linkage Evaluation 
             let matchesGlobalCity = false;
             if (activeSelectedGlobalCity === "all" || activeSelectedGlobalCity === "all cities" || activeSelectedGlobalCity === "") {
                 matchesGlobalCity = true;
@@ -513,35 +514,32 @@ window.renderPostsDataPipeline = function() {
         });
         scoredOutputs.sort((a, b) => b.sortingScore - a.sortingScore);
 
-        let isShowingRecommended = false;
         let finalDisplayItems = [...scoredOutputs];
 
-        if (finalDisplayItems.length === 0 && rawSearchQuery.length > 0) {
-            isShowingRecommended = true;
-            finalDisplayItems = postsArraySource.filter(item => {
-                const itemCityNode = (item.city || "").toLowerCase().trim();
-                const placement = (item.location || item.area || "").toLowerCase();
-                if (activeSelectedGlobalCity && activeSelectedGlobalCity !== "all") {
-                    return itemCityNode === activeSelectedGlobalCity || placement.includes(activeSelectedGlobalCity);
-                }
-                return true;
-            }).slice(0, 6); 
-        }
+        // --- CONSTRUCT DYNAMIC STRING TEXT FOR SEARCH / FILTER RESULTS ---
+        let displaySearchTags = [];
+        if (currentCategory && currentCategory !== 'all') displaySearchTags.push(currentCategory.toUpperCase());
+        if (rawSearchQuery) displaySearchTags.push(`"${rawSearchQuery}"`);
+        if (globalFilterArea) displaySearchTags.push(globalFilterArea);
+        
+        let targetCityText = activeSelectedGlobalCity !== "all" ? activeSelectedGlobalCity : "All Cities";
+        let finalQueryPhrase = displaySearchTags.length > 0 ? displaySearchTags.join(' in ') + ` in ${targetCityText}` : `properties in ${targetCityText}`;
+        let resultSummaryString = `Results for ${finalQueryPhrase}: ${finalDisplayItems.length} property found`;
 
         if (finalDisplayItems.length === 0) {
-            listingsGrid.innerHTML = typeof getEmptyStateHTML === "function" ? getEmptyStateHTML() : '<p style="text-align:center; padding: 40px; color:#666; grid-column: 1 / -1;">No properties found.</p>';
+            listingsGrid.innerHTML = getEmptyStateHTML(resultSummaryString.replace("0 property found", "No property found"));
             return;
         }
 
         let finalGridHTML = "";
         
-        if (isShowingRecommended) {
-            finalGridHTML += `
-                <div style="grid-column: 1/-1; background: #fffbeb; border: 1px solid #fef3c7; color: #b45309; padding: 16px; border-radius: 12px; margin-bottom: 15px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; font-family: sans-serif;">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Direct match not found. Showing smart recommended listings in ${activeSelectedGlobalCity.toUpperCase()}:
-                </div>
-            `;
-        }
+        // Dynamic Counter Banner Inject
+        finalGridHTML += `
+            <div class="filter-results-counter-banner" style="grid-column: 1/-1; background: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; padding: 14px 20px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: space-between; font-family: sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                <span style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-list-check" style="color: #800020;"></i> ${resultSummaryString}</span>
+                <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 20px;">Stay100% Live Engine</span>
+            </div>
+        `;
 
         // --- 4. DYNAMIC SPONSORED ADS BANNERS ---
         const adBannersData = [
@@ -650,7 +648,7 @@ function renderAuxiliaryDataSections() {
 
 // --- INITIALIZE & ATTACH EVENTS ON EXECUTION ---
 document.addEventListener('DOMContentLoaded', () => {
-    currentSessionUID = localStorage.getItem('stay100_uid') || null;
+    currentSessionUID = localStorage.getItem('stay100_uid') || localStorage.getItem('staypremium_uid') || null;
     updateUserProfileUI();
     parseAndApplyUrlFilters();
     
@@ -851,7 +849,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.syncAndRenderFilters();
     };
 
-    // CORRECTIONS: Listening perfectly to window global event pipeline dispatched from header.js
     window.addEventListener('cityChanged', () => {
         window.renderPostsDataPipeline();
     });
@@ -922,13 +919,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const matchedObj = allPosts.find(p => p.id === targetPropId);
                 if (!matchedObj) return;
 
-                let bookmarkArray = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
+                let bookmarkArray = JSON.parse(localStorage.getItem('stay100_saved_properties')) || JSON.parse(localStorage.getItem('staypremium_saved_properties')) || [];
                 const pointerIdx = bookmarkArray.indexOf(targetPropId);
 
                 if (currentSessionUID) {
                     const userNodeReference = db.ref(`users_saved/${currentSessionUID}/${targetPropId}`);
                     if (pointerIdx === -1) {
-                        userNodeReference.set({ id: targetPropId, name: matchedObj.name || matchedObj.title, price: matchedObj.price || 0, location: matchedObj.location || "" });
+                        userNodeReference.set({ 
+                            id: targetPropId, 
+                            name: matchedObj.name || matchedObj.title, 
+                            price: matchedObj.price || matchedObj.rent || 0, 
+                            location: matchedObj.location || matchedObj.area || "",
+                            image: matchedObj.image || matchedObj.imageUrl || ""
+                        });
                     } else {
                         userNodeReference.remove();
                     }
@@ -937,10 +940,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (pointerIdx === -1) {
                     bookmarkArray.push(targetPropId); 
                     localStorage.setItem('stay100_saved_properties', JSON.stringify(bookmarkArray));
+                    localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
                     window.showCenterToast("Saved!");
                 } else {
                     bookmarkArray = bookmarkArray.filter(id => id !== targetPropId); 
                     localStorage.setItem('stay100_saved_properties', JSON.stringify(bookmarkArray));
+                    localStorage.setItem('staypremium_saved_properties', JSON.stringify(bookmarkArray));
                     window.showCenterToast("Removed.");
                 }
                 window.renderPostsDataPipeline();
@@ -1185,94 +1190,4 @@ function handleSliderResize() {
         const targetBg = isMobile ? slide.getAttribute('data-mobile-bg') : slide.getAttribute('data-desktop-bg');
         slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.2)), url('${targetBg}')`;
     });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("search-input");
-    if (!searchInput) return;
-
-    const keywords = [
-        "Try 'PG near Mansarovar with coachings'",
-        "Try 'boys hostel in Jaipur under 7000'",
-        "Try 'girls flat near luxury areas'",
-        "Search Premium Rooms",
-        "Search Luxury Flats",
-        "Students Friendly Pg's",
-        "Jaipur"
-    ];
-
-    let word = 0;
-    let letter = 0;
-    let deleting = false;
-    let cursor = true;
-
-    setInterval(() => { cursor = !cursor; }, 500);
-
-    function animate() {
-        let text = keywords[word];
-        if (!deleting) {
-            letter++;
-            if (letter >= text.length) {
-                deleting = true;
-                setTimeout(animate, 1800);
-                return;
-            }
-        } else {
-            letter--;
-            if (letter <= 0) {
-                deleting = false;
-                word = (word + 1) % keywords.length;
-            }
-        }
-        searchInput.placeholder = text.substring(0, letter) + (cursor ? "|" : "");
-        setTimeout(animate, deleting ? 40 : 70);
-    }
-    animate();
-});
-
-function executeInquirySubmission() {
-    const itemPropId = document.getElementById('inquiry-property-id')?.value || "";
-    const clientNameInput = document.getElementById('inquiry-name')?.value.trim() || "";
-    const clientPhoneInput = document.getElementById('inquiry-phone')?.value.trim() || "";
-    const clientMsgInput = document.getElementById('inquiry-msg')?.value.trim() || "";
-
-    const postsSource = typeof allPosts !== 'undefined' ? allPosts : [];
-    const currentTargetObject = postsSource.find(p => p.id === itemPropId);
-    const resolvedTitle = currentTargetObject ? (currentTargetObject.name || currentTargetObject.title) : "Premium Listing Inquiry";
-    const absoluteTimestamp = Date.now();
-
-    const structuredPayload = {
-        propertyId: itemPropId, 
-        propertyName: resolvedTitle, 
-        clientName: clientNameInput, 
-        clientPhone: clientPhoneInput, 
-        message: clientMsgInput, 
-        userId: currentSessionUID || "anonymous_lead", 
-        timestamp: absoluteTimestamp, 
-        date: new Date(absoluteTimestamp).toLocaleString('en-IN')
-    };
-
-    Promise.all([
-        db.ref('leads_inquiries').push().set(structuredPayload),
-        db.ref('inquiries').push().set(structuredPayload)
-    ]).then(() => {
-        if (typeof window.showCenterToast === "function") {
-            window.showCenterToast(`🎉 Application Transferred!`);
-        }
-        
-        const inquiryModal = document.getElementById('inquiry-modal');
-        if (inquiryModal) inquiryModal.style.display = 'none';
-        
-        const inquiryForm = document.getElementById('inquiry-form');
-        if (inquiryForm) inquiryForm.reset();
-    }).catch(err => {
-        console.error("Database writing operational pipe failure:", err);
-    });
-}
-
-function openInquiryModalWindow() {
-    const inquiryModal = document.getElementById('inquiry-modal');
-    if (inquiryModal) {
-        inquiryModal.style.display = 'block';
-    }
 }

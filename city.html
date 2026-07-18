@@ -3,311 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Properties in Jaipur | Stay100%</title>
+    <title>Premium Verified Properties for Rent | Stay100%</title>
+    <meta name="description" content="Explore premium PGs, co-living spaces, rooms, and flats for rent across top Indian cities. Direct verified listings with no broker fees.">
     
-    <!-- Dependencies -->
+    <!-- Core Engine Dependencies -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="pg.css">
     <link rel="stylesheet" href="pgapp.css">
+    <link rel="stylesheet" href="city.css">
 
-    <style>
-        /* Embedded styling ensuring high fidelity alignment to visual core layout rules */
-        :root {
-            --primary-olive: #556b2f;
-            --primary-hover: #3d4f22;
-            --bg-cream: #f4f6f0;
-            --text-dark: #1a1a1a;
-            --text-muted: #666666;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-cream);
-            color: var(--text-dark);
-        }
-
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .search-filter-wrapper {
-            background: var(--white);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-            margin-bottom: 30px;
-        }
-
-        .search-bar-core {
-            display: flex;
-            align-items: center;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 4px 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .search-bar-core:focus-within {
-            border-color: var(--primary-olive);
-            box-shadow: 0 0 0 4px rgba(85, 107, 47, 0.15);
-            background: var(--white);
-        }
-
-        .search-bar-core i {
-            color: var(--text-muted);
-            font-size: 18px;
-        }
-
-        .search-bar-core input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 14px 16px;
-            font-size: 16px;
-            outline: none;
-            color: var(--text-dark);
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
-            color: var(--text-muted);
-        }
-
-        .icon-btn:hover {
-            background: #e5e7eb;
-            color: var(--primary-olive);
-        }
-
-        .icon-btn.listening {
-            color: #dc2626;
-            animation: pulseRecord 1.5s infinite alternate;
-        }
-
-        @keyframes pulseRecord {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.15); opacity: 0.7; }
-        }
-
-        .ai-tags-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ai-label {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--primary-olive);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .filter-tag {
-            padding: 8px 18px;
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .filter-tag:hover {
-            background: #e5e7eb;
-        }
-
-        .filter-tag.active {
-            background: var(--primary-olive);
-            color: var(--white);
-            border-color: var(--primary-olive);
-            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.2);
-        }
-
-        .listings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            min-height: 400px;
-        }
-
-        .loader-text {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 80px 0;
-            font-size: 16px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Inquiry Modal Framework Styling */
-        .inq-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(4px);
-        }
-
-        .inq-modal-content {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
-        }
-
-        .inq-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .inq-modal-header h3 {
-            font-size: 18px;
-            color: var(--text-dark);
-        }
-
-        .inq-form-group {
-            margin-bottom: 16px;
-        }
-
-        .inq-form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-muted);
-        }
-
-        .inq-form-group input, .inq-form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .inq-submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary-olive);
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .inq-submit-btn:hover {
-            background: var(--primary-hover);
-        }
-    </style>
+    <!-- Structured Local SEO Schema injection Target -->
+    <script type="application/ld+json" id="seo-schema-graph"></script>
 </head>
 <body>
 
     <div id="dynamic-header-container"></div>
 
-    <main class="main-container">
-        <h1 style="font-size: 28px; margin-bottom: 25px; color: var(--text-dark); font-weight: 700;">Premium Properties in Jaipur</h1>
+    <!-- Sticky Sub-Navigation Action Bar -->
+    <div class="action-bar-sticky">
+        <button id="sidebar-toggle-trigger" class="action-bar-btn">
+            <i class="fa-solid fa-sliders"></i> Filter Criteria
+        </button>
+        <div class="active-city-indicator">
+            <i class="fa-solid fa-location-crosshairs"></i> <span id="current-city-label">Detecting Location...</span>
+        </div>
+    </div>
+
+    <main class="viewport-layout-wrapper">
         
-        <section class="search-filter-wrapper">
-            <div class="search-bar-core">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="pg-search-input" placeholder="Search Jaipur PGs, flats, hostels by name or locality...">
-                <button id="voice-search-trigger" class="icon-btn" title="Voice Search">
-                    <i class="fa-solid fa-microphone"></i>
-                </button>
+        <!-- Sliding Filters Sidebar Panel Wrapper -->
+        <aside class="filters-sidebar-panel" id="filters-sidebar">
+            <div class="sidebar-header-node">
+                <h3>Refine Selection</h3>
+                <button id="sidebar-close-trigger" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="ai-tags-container">
-                <span class="ai-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Filters:</span>
-                <div class="filter-tag active" data-type="all">All Properties</div>
-                <div class="filter-tag" data-type="rooms">Rooms</div>
-                <div class="filter-tag" data-type="flats">Flats</div>
-                <div class="filter-tag" data-type="single sharing">Single Sharing</div>
-                <div class="filter-tag" data-type="food included">Food Included</div>
-                <div class="filter-tag" data-type="ac">AC Available</div>
-            </div>
-        </section>
+            <div class="sidebar-content-scrollable">
+                <!-- Property Classification Type -->
+                <div class="filter-section-block">
+                    <h4>Accommodation Type</h4>
+                    <div class="filter-tag-stack">
+                        <div class="filter-tag active" data-filter-type="type" data-value="all">All Properties</div>
+                        <div class="filter-tag" data-filter-type="type" data-value="room">Shared/Private Rooms</div>
+                        <div class="filter-tag" data-filter-type="type" data-value="flat">Independent Flats</div>
+                    </div>
+                </div>
 
-        <section class="listings-grid" id="pg-cards-container">
-            <div class="loader-text"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading premium properties in Jaipur...</div>
-        </section>
+                <!-- Sharing Allocation -->
+                <div class="filter-section-block">
+                    <h4>Occupancy Model</h4>
+                    <div class="filter-tag-stack">
+                        <div class="filter-tag" data-filter-type="sharing" data-value="single">Single Sharing</div>
+                        <div class="filter-tag" data-filter-type="sharing" data-value="multiple">Multi-Sharing</div>
+                    </div>
+                </div>
+
+                <!-- Budgetary Rent Scale Range Slider -->
+                <div class="filter-section-block">
+                    <h4>Monthly Rent Ceiling</h4>
+                    <div class="range-slider-meta">
+                        <span>₹2,000</span>
+                        <span id="price-slider-label" style="font-weight: 700; color: var(--primary-olive);">₹45,000</span>
+                    </div>
+                    <input type="range" id="price-range-control" min="2000" max="50000" step="1000" value="45000" style="width: 100%; accent-color: var(--primary-olive);">
+                </div>
+
+                <!-- Modern Amenities Core Checkboxes -->
+                <div class="filter-section-block">
+                    <h4>Premium Amenities</h4>
+                    <label class="custom-checkbox-row">
+                        <input type="checkbox" data-filter-type="amenities" data-value="ac">
+                        <span>Air Conditioning (AC)</span>
+                    </label>
+                    <label class="custom-checkbox-row">
+                        <input type="checkbox" data-filter-type="amenities" data-value="food">
+                        <span>Catering / Food Included</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer-action">
+                <button id="filter-reset-trigger" class="inq-submit-btn" style="background:#e5e7eb; color: var(--text-dark); margin-bottom:8px;">Reset Filters</button>
+                <button id="filter-apply-trigger" class="inq-submit-btn">Apply Filters</button>
+            </div>
+        </aside>
+
+        <!-- Overlay backdrop layer for mobile layout viewports -->
+        <div class="sidebar-backdrop-overlay" id="sidebar-backdrop"></div>
+
+        <!-- Master Content Engine Component Grid Area -->
+        <div class="main-content-display-pipeline">
+            <header class="dynamic-seo-hero-node">
+                <h1 id="dynamic-main-heading">Premium Properties for Rent</h1>
+                <p id="dynamic-subheading">Browse real-time fully verified rentals with explicit transparent pricing configurations.</p>
+            </header>
+
+            <section class="search-filter-wrapper">
+                <div class="search-bar-core">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="pg-search-input" placeholder="Search spaces by locality, building name, landmark...">
+                    <button id="voice-search-trigger" class="icon-btn" title="Voice Search Input Integration Engine">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Active Property Cards Core View Grid -->
+            <section class="listings-grid" id="pg-cards-container">
+                <div class="loader-text"><i class="fa-solid fa-circle-notch fa-spin"></i> Initializing multi-city telemetry synchronization stream...</div>
+            </section>
+
+            <!-- Dynamic Localized SEO Inline Map & Area Profile Section -->
+            <section class="seo-area-profile-block" id="seo-area-profile" style="margin-top: 50px; display: none;">
+                <!-- Dynamically populated via Javascript for high topical authority ranking -->
+            </section>
+
+            <!-- Hyper-Targeted Cross-Sell Recommendations Grid Engine Section Component -->
+            <section class="recommendations-container-drawer">
+                <div class="drawer-header">
+                    <h2>Trending Alternative Recommendations</h2>
+                    <p>High-affinity properties listed nearby aligned to search trends.</p>
+                </div>
+                <div class="listings-grid" id="recommendations-cards-container">
+                    <!-- Recommended properties injected asynchronously dynamically -->
+                </div>
+            </section>
+        </div>
     </main>
 
-    <!-- Native Custom Inquiry Modal -->
+    <!-- Native Dynamic Modular Inquiry Modal Layer Element -->
     <div class="inq-modal" id="inquiry-modal">
         <div class="inq-modal-content">
             <div class="inq-modal-header">
-                <h3>Send Business Inquiry</h3>
+                <h3>Send Business Verification Inquiry</h3>
                 <button class="icon-btn" onclick="closeInquiryModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="modal-inquiry-form">
                 <input type="hidden" id="inq-prop-id">
                 <div class="inq-form-group">
-                    <label>Selected Property</label>
+                    <label>Selected Asset Identity</label>
                     <input type="text" id="inq-prop-name" readonly style="background: #f3f4f6; font-weight: 600;">
                 </div>
                 <div class="inq-form-group">
-                    <label>Your Message / Requirements</label>
-                    <textarea id="inq-user-message" rows="3" placeholder="Enter scheduling requirements or basic questions..." required></textarea>
+                    <label>Your Verification Requirements / Message</label>
+                    <textarea id="inq-user-message" rows="3" placeholder="Specify moving timeline windows or lease structural parameters..." required></textarea>
                 </div>
                 <button type="submit" class="inq-submit-btn">Submit Verification Inquiry</button>
             </form>
         </div>
     </div>
 
+    <!-- Instagram Widget Section Container Footer -->
+    <div class="insta-profile-footer-card" onclick="window.open('https://www.instagram.com/stay100.in?igsh=MTdoajkwdTlvZmgy')">
+        <div class="insta-card-wrapper">
+            <div class="insta-left-node">
+                <div class="insta-avatar-ring">
+                    <img src="/assets/dp.png" alt="Stay100 Logo" class="insta-dp" onerror="this.src='https://placehold.co/100'">
+                </div>
+                <div class="insta-meta-info">
+                    <div class="insta-username-row">
+                        <span class="insta-username">Stay100.in</span>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLbzHZg6xcp3UsysM5zI2fG1ulmvT8AMnjotaGnEY4pg&s=10" alt="Verified Badge" class="insta-verified-badge" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;">
+                    </div>
+                    <p class="insta-fullname">Stay100% | Premium Spaces</p>
+                </div>
+            </div>
+            <div class="insta-right-node">
+                <div class="insta-stats-group">
+                    <div class="insta-stat-item">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    
+                </div>
+                <button class="btn-insta-follow">
+                    <i class="fa-brands fa-instagram"></i> Follow 
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="dynamic-desktop-footer-container"></div>
     <div id="dynamic-footer-container"></div>
 
-    <!-- Firebase SDK Layer Stack -->
+    <!-- SDK Infrastructure Injection Layout Matrix -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
-    <!-- Fallback Component Architecture Injection if external file fails -->
     <script>
+        // Fallback Property Renderer UI logic context injection layer matrix engine bounds if external script execution encounters pipeline error
         if (!window.PropertyCardComponent) {
             window.PropertyCardComponent = {
                 render: function(item, savedList) {
-                    const isSaved = savedList.includes(item.id);
+                    const isSaved = Array.isArray(savedList) && savedList.includes(item.id);
                     return `
-                        <div class="property-card" data-view-id="${item.id}" style="background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer; display: flex; flex-direction: column;">
-                            <div style="height: 200px; background: #e5e7eb; position: relative; background-image: url('${item.image || ''}'); background-size: cover; background-position: center;">
-                                <button data-save-id="${item.id}" style="position: absolute; top: 15px; right: 15px; background: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div class="property-card" data-view-id="${item.id}">
+                            <div class="card-image-wrapper" style="background-image: url('${item.image || 'https://placehold.co/600x400'}');">
+                                <button data-save-id="${item.id}" class="card-heart-action-node">
                                     <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart" style="color: ${isSaved ? '#dc2626' : '#666'}"></i>
                                 </button>
                             </div>
-                            <div style="padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="card-body-details">
                                 <div>
-                                    <h3 style="font-size: 18px; margin-bottom: 8px; color: #1a1a1a;">${item.name || 'Premium Property'}</h3>
-                                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;"><i class="fa-solid fa-location-dot" style="color: #556b2f;"></i> ${item.location || 'Jaipur'}</p>
+                                    <h3>${item.name || 'Verified Managed Space'}</h3>
+                                    <p class="locality-element"><i class="fa-solid fa-location-dot"></i> ${item.location || 'Premium Locality'}, ${item.city || ''}</p>
+                                    <div class="pill-badge-row">
+                                        <span class="attr-pill">${item.type ? item.type.toUpperCase() : 'CO-LIVING'}</span>
+                                        ${item.ac ? '<span class="attr-pill"><i class="fa-solid fa-snowflake"></i> AC</span>' : ''}
+                                        ${item.food ? '<span class="attr-pill"><i class="fa-solid fa-utensils"></i> Food</span>' : ''}
+                                    </div>
                                 </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                                    <span style="font-weight: 700; color: #556b2f; font-size: 18px;">₹${item.price || 'N/A'}<span style="font-size: 12px; font-weight: 400; color: #666;">/mo</span></span>
-                                    <button data-inquiry-id="${item.id}" style="padding: 8px 16px; background: #556b2f; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">Quick Inquiry</button>
+                                <div class="card-footer-pricing">
+                                    <span class="price-bold">₹${item.price || 'N/A'}<span class="per-month-span">/mo</span></span>
+                                    <button data-inquiry-id="${item.id}" class="inq-trigger-btn">Quick Inquiry</button>
                                 </div>
                             </div>
                         </div>
@@ -316,222 +225,9 @@
             };
         }
     </script>
-    <script src="propertycardscomponants.js" onerror="console.log('Using local fallback card engine')"></script>
-    
-    <!-- Logic Pipeline scripts -->
+    <script src="propertycardscomponants.js" onerror="console.warn('Fallback dynamic components deployed.')"></script>
     <script src="header.js"></script>
     <script type="module" src="city.js"></script>
     <script type="module" src="footer.js"></script>
-    </script>
-
-<!-- 1. इंस्टाग्राम लाइव प्रोफाइल सेक्शन कंटेनर -->
-<div class="insta-profile-footer-card" onclick="window.open('https://www.instagram.com/stay100.in?igsh=MTdoajkwdTlvZmgy')">
-    <div class="insta-card-wrapper">
-        
-        <!-- लेफ्ट साइड: डीपी और यूजरनेम -->
-        <div class="insta-left-node">
-            <div class="insta-avatar-ring">
-                <!-- अपनी इंस्टाग्राम डीपी का लिंक यहाँ डालें -->
-                <img src="/assets/dp.png" alt="Instagram Profile DP" class="insta-dp">
-            </div>
-            <div class="insta-meta-info">
-                <div class="insta-username-row">
-                    <span class="insta-username">Stay100.in</span>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLbzHZg6xcp3UsysM5zI2fG1ulmvT8AMnjotaGnEY4pg&s=10" alt="Verified" class="insta-verified-badge" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;">
-                </div>
-                <p class="insta-fullname">Stay100% | Premium Spaces</p>
-            </div>
-        </div>
-
-        <!-- राइट साइड: लाइव स्टेट्स और फॉलो बटन -->
-        <div class="insta-right-node">
-            <div class="insta-stats-group">
-                <div class="insta-stat-item">
-                    <span class="stat-number">0</span>
-                    <span class="stat-label">Followers</span>
-                </div>
-                <div class="insta-stat-item live-indicator-dot">
-                    <span class="stat-number" style="color: #16a34a;">LIVE</span>
-                    <span class="stat-label">Active Now</span>
-                </div>
-            </div>
-            
-            <!-- फॉलो बटन -->
-            <button class="btn-insta-follow">
-                <i class="fa-brands fa-instagram"></i> Follow Us
-            </button>
-        </div>
-
-    </div>
-</div>
-
-<!-- 2. प्रीमियम इंस्टाग्राम विजेट स्टाइल्स (CSS) -->
-<style>
-.insta-profile-footer-card {
-    width: 100%;
-    max-width: 600px;
-    margin: 40px auto 20px auto;
-    background: #ffffff;
-    border: 1px solid #e1e1e1;
-    border-radius: 20px;
-    padding: 16px 24px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-    cursor: pointer;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-}
-
-/* होवर करने पर हल्का सा ज़ूम और शैडो */
-.insta-profile-footer-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-}
-
-.insta-card-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.insta-left-node {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-/* इंस्टाग्राम स्टोरी जैसा सतरंगी रिंग */
-.insta-avatar-ring {
-    width: 68px;
-    height: 68px;
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-}
-
-.insta-dp {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    object-fit: cover;
-}
-
-.insta-username-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.insta-username {
-    font-size: 15px;
-    font-weight: 700;
-    color: #262626;
-}
-
-.insta-fullname {
-    font-size: 13px;
-    color: #737373;
-    margin: 3px 0 0 0;
-}
-
-.insta-right-node {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-.insta-stats-group {
-    display: flex;
-    gap: 16px;
-}
-
-.insta-stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stat-number {
-    font-size: 15px;
-    font-weight: 700;
-    color: #262626;
-}
-
-.stat-label {
-    font-size: 11px;
-    color: #737373;
-    font-weight: 500;
-}
-
-/* लाइव ब्लिंकिंग पल्स एनीमेशन */
-.live-indicator-dot .stat-number::after {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #16a34a;
-    border-radius: 50%;
-    margin-left: 4px;
-    vertical-align: middle;
-    animation: instaLivePulse 1.5s infinite ease-in-out;
-}
-
-/* प्रीमियम इंस्टाग्राम ब्लू फॉलो बटन */
-.btn-insta-follow {
-    background: #0095f6;
-    color: #ffffff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.2s;
-}
-
-.btn-insta-follow:hover {
-    background: #1877f2;
-}
-
-@keyframes instaLivePulse {
-    0% { opacity: 0.3; transform: scale(0.9); }
-    50% { opacity: 1; transform: scale(1.2); }
-    100% { opacity: 0.3; transform: scale(0.9); }
-}
-
-/* मोबाइल रिस्पॉन्सिव सपोर्ट */
-@media (max-width: 480px) {
-    .insta-card-wrapper {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .insta-left-node {
-        flex-direction: column;
-    }
-    .insta-right-node {
-        flex-direction: column;
-        gap: 12px;
-        width: 100%;
-    }
-    .insta-stats-group {
-        justify-content: center;
-        width: 100%;
-    }
-    .btn-insta-follow {
-        width: 100%;
-        justify-content: center;
-    }
-}
-</style>
-
 </body>
 </html>
