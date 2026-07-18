@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <link rel="stylesheet" href="vendor-registration.css">
+    <style>
+        .marketing-banner {
+            background: #fff1f3;
+            border-left: 4px solid #800020;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .marketing-banner h3 { color: #800020; margin: 0 0 10px 0; font-size: 16px; }
+        .marketing-banner p { font-size: 14px; color: #475569; margin: 0; line-height: 1.5; }
+    </style>
 </head>
 <body>
 
@@ -15,7 +26,11 @@
     <div class="desktop-sidebar-branding">
         <div class="branding-overlay-content">
             <h2>Stay100% Partner Network</h2>
-            <p>Unlock access to thousands of premium verified residents. Fast on-boarding, Zero commission options, and real-time smart tracking analytics tools dashboard.</p>
+            <div class="marketing-banner">
+                <h3>List Your Property for FREE!</h3>
+                <p><strong>List your property for free with zero charges, from anywhere in your city on Stay100%! Stay100% is India's fastest-growing property rental marketplace.</strong></p>
+                <p style="margin-top:10px; font-style: italic;">Stay100% पर अपनी प्रॉपर्टी मुफ्त में लिस्ट करें, बिना किसी शुल्क के, अपने शहर में कहीं से भी! Stay100% भारत का सबसे तेजी से बढ़ता प्रॉपर्टी रेंटल मार्केटप्लेस है।</p>
+            </div>
             <div class="branding-feature-tag"><i class="fa-solid fa-circle-check"></i> RERA Compliant Matrix</div>
             <div class="branding-feature-tag"><i class="fa-solid fa-bolt"></i> Instant Cloud Node Direct Connect</div>
         </div>
@@ -37,6 +52,12 @@
         </div>
 
         <div class="form-body">
+            <!-- Mobile Marketing Message -->
+            <div class="marketing-banner" style="display: block; margin-bottom: 20px;">
+                <p><strong>List your property for free with zero charges, from anywhere in your city on Stay100%!</strong><br>
+                Stay100% पर अपनी प्रॉपर्टी मुफ्त में लिस्ट करें, बिना किसी शुल्क के!</p>
+            </div>
+
             <div id="registrationWizardView">
                 <form id="step1Form" class="wizard-step active" onsubmit="transitionToStep2(event)">
                     <div class="form-section-title"><i class="fa-solid fa-user-tie"></i> Personal & Account Information</div>
@@ -110,7 +131,6 @@
                         </div>
                     </div>
 
-                    <!-- AXIS BANK INSPIRED T&C CONTEXT BLOCK FOR STEP 1 -->
                     <div class="axis-tc-container">
                         <label class="axis-tc-label">
                             <input type="checkbox" id="step1TermsCheck" required>
@@ -138,7 +158,6 @@
                             <input type="password" id="registerPassword" placeholder="Minimum 6 characters long">
                         </div>
 
-                        <!-- AXIS BANK INSPIRED T&C CONTEXT BLOCK FOR STEP 2 EXECUTIONS -->
                         <div class="axis-tc-container">
                             <label class="axis-tc-label">
                                 <input type="checkbox" id="step2TermsCheck">
@@ -179,7 +198,6 @@
     </div>
 </div>
 
-<!-- Firebase Modular App Compat Loaders Pipeline -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>

@@ -3,31 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stay100% Jaipur: Best Rental Properties, PGs & Rooms | Budget & Luxury</title>
-    <meta name="description" content="Find and book premium PGs, luxury flats, co-living spaces, and private rooms across India. Real-time availability, verified listings, and zero brokerage options on Stay100%.">
-    <meta name="keywords" content="premium pg, luxury flats, private rooms, co-living spaces, hostels near me, stay100, verified property rent">
+    <title>Stay100%: Find Best PGs, 1 BHK, 2 BHK, 3 BHK Flats & Budget Rooms in India</title>
+    <meta name="description" content="Discover premium PGs, affordable 1 BHK, 2 BHK, 3 BHK flats, and budget rooms in Jaipur, Pune, Mumbai, Delhi, Gurugram, Noida, Hyderabad, Bengaluru, and Udaipur. Verified listings for students, families, and professionals on Stay100%. Book your ideal home with zero brokerage.">
+    <meta name="keywords" content="PG in Jaipur, flats in Pune, 1 BHK in Mumbai, 2 BHK flats in Delhi, 3 BHK for rent in Gurugram, budget rooms in Noida, student PGs in Hyderabad, luxury flats in Bengaluru, house for rent in Udaipur, co-living spaces, verified property rent, cheapest PG, rental apartments India">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://stay100.in/index.html"> 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Premium PG & Luxury Rooms for Rent | Stay100%">
-    <meta property="og:description" content="Explore verified premium accommodations, single/sharing rooms, and luxury flats with elite amenities on Stay100%.">
+    <meta property="og:title" content="Find Best PGs, Flats & Rooms for Rent | Stay100%">
+    <meta property="og:description" content="Explore verified PGs, luxury 1/2/3 BHK flats, and budget rooms across major Indian cities. Designed for students and working professionals. Find your space on Stay100%.">
     <meta property="og:image" content="assets/stay100-og-banner.png"> 
     <meta property="og:url" content="https://stay100.in/index.html">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Premium PG & Luxury Rooms for Rent | Stay100%">
-    <meta name="twitter:description" content="Find the best verified co-living properties and luxury flats near you with Stay100%.">
+    <meta name="twitter:description" content="Find the best verified co-living properties, 1 BHK, 2 BHK, 3 BHK flats, and PGs near you with Stay100%.">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="index.css">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
+
+    <style>
+        /* User Onboarding Tour System Custom Styles */
+        .tour-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 99999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        .tour-highlight {
+            position: relative;
+            z-index: 100000 !important;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255,255,255,0.5) !important;
+            border-radius: 8px;
+            pointer-events: auto !important;
+            background-color: #fff;
+        }
+        .tour-popover {
+            position: fixed;
+            background: #ffffff;
+            color: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            z-index: 100001;
+            font-family: system-ui, -apple-system, sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(10px);
+            display: none;
+        }
+        .tour-popover.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+        .tour-popover h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #800020;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tour-popover p {
+            margin: 0 0 16px 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #64748b;
+        }
+        .tour-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tour-progress {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        .tour-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .tour-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        .tour-btn-skip {
+            background: transparent;
+            color: #64748b;
+        }
+        .tour-btn-skip:hover {
+            color: #1e293b;
+        }
+        .tour-btn-next {
+            background: #800020;
+            color: white;
+        }
+        .tour-btn-next:hover {
+            background: #600018;
+        }
+        /* Fix for hidden header accessibility during tour */
+        h1.hidden-title {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+    </style>
 </head>
 <body>
 
     <div id="dynamic-header-container"></div>
 
     <main class="container">
-        <h1 style="display: none;">Verified Premium PGs, Luxury Flats & Co-Living Spaces Across India</h1>
+        <h1 class="hidden-title">Verified Premium PGs, Luxury Flats & Co-Living Spaces Across India</h1>
 
         <!-- Fraud Alert Modal -->
         <div id="fraud-alert-modal" class="modal-overlay" style="display: none;">
@@ -58,13 +158,13 @@
         </div>
 
         <!-- Hero Viewport -->
-        <div class="hero-viewport-container">
+        <div class="hero-viewport-container" id="tour-step-search">
             <div id="dynamic-banners-container" class="slider-wrapper-container"></div>
             <div class="search-card-wrapper">
                 <div class="search-bar-row">
                     <div class="search-input-container">
                         <i class="fa-solid fa-magnifying-glass main-search-icon" aria-hidden="true"></i>
-                        <input type="text" id="search-input" placeholder='Search "Farm house in Punjab below 1 cr"' aria-label="Search accommodations">
+                        <input type="text" id="search-input" placeholder='Search "PG in Jaipur" or "2 BHK in Pune"' aria-label="Search accommodations">
                     </div>
                     <div class="search-actions">
                         <button id="location-search-btn" class="action-icon-btn" type="button" title="Search near me">
@@ -112,17 +212,16 @@
         <div class="main-layout">
             
             <!-- Desktop Filters Sidebar Matrix -->
-            <aside class="desktop-filters-sidebar" aria-label="Filter Properties Matrix">
+            <aside class="desktop-filters-sidebar" id="tour-step-filters" aria-label="Filter Properties Matrix">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">Filters Matrix</h3>
                     <button type="button" class="clear-all-btn" onclick="clearAllFilters()" style="background: none; border: none; color: #800020; font-weight: 600; font-size: 13px; cursor: pointer;">Clear All</button>
                 </div>
                 <div class="active-filters-container" id="desktop-active-chips" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;"></div>
   
-                <!-- फ़िल्टर साइडबार के अंदर सबसे ऊपर ये बटन डालें -->
-<button id="toggle-filter-btn" class="toggle-filter-btn">
-    <i class="fas fa-chevron-left"></i> Hide Filters
-</button>
+                <button id="toggle-filter-btn" class="toggle-filter-btn">
+                    <i class="fas fa-chevron-left"></i> Hide Filters
+                </button>
                 <div class="filter-group">
                     <h4>Budget (Max)</h4>
                     <select class="filter-select" id="filter-budget" aria-label="Select Maximum Budget">
@@ -196,14 +295,13 @@
                 <h2 id="listings-heading">Stay100% Properties</h2> 
                 
                 <!-- Hero Banner Box -->
-                <section class="hero-banner">
+                <section class="hero-banner" id="tour-step-post">
                     <div class="banner-container">
                         <div class="banner-content">
                             <h2 class="banner-title">Rent faster at the right price!</h2>
                             <p class="banner-subtitle">Your perfect Rentals is waiting, list your property now</p>
                             <div class="banner-cta-group">
                                 <a href="vendor-registration.html" class="btn-primary">Post Property, It's FREE</a>
-                               
                             </div>
                         </div>
                         <div class="banner-image">
@@ -224,9 +322,7 @@
                 <h3 id="modal-title-filter">Filters Selection Matrix</h3>
                 <span class="close-modal" role="button" aria-label="Close Filter Modal">&times;</span>
             </div>
-            <div class="modal-body" id="mobile-filter-body-container">
-                <!-- Programmatically populated inputs align completely with JS requirements -->
-            </div>
+            <div class="modal-body" id="mobile-filter-body-container"></div>
             <div class="modal-footer" style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
                 <button class="btn-mehrum w-100" onclick="applyFilters()">Apply Filters</button>
             </div>
@@ -246,6 +342,20 @@
     <!-- Desktop Complex SEO Footer System Layout -->
     <div id="dynamic-desktop-footer-container"></div>
 
+    <!-- Onboarding User Guide Layout Injector Components -->
+    <div id="tour-backdrop" class="tour-backdrop"></div>
+    <div id="tour-popover" class="tour-popover">
+        <h4 id="tour-title">Title</h4>
+        <p id="tour-desc">Description text goes here.</p>
+        <div class="tour-footer">
+            <span class="tour-progress" id="tour-progress">1/3</span>
+            <div class="tour-buttons">
+                <button class="tour-btn tour-btn-skip" onclick="endTour()">Skip</button>
+                <button class="tour-btn tour-btn-next" id="tour-next-btn" onclick="nextTourStep()">Next</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
@@ -255,73 +365,170 @@
     <script type="module" src="footer.js"></script>
     <script type="module" src="indexextra.js"></script>
     
-
-<script>document.addEventListener("DOMContentLoaded", function() {
-    const toggleBtn = document.getElementById("toggle-filter-btn");
-    const sidebar = document.querySelector(".desktop-filters-sidebar");
-    
-    // अगर आप शो बटन लगाना चाहते हैं तो डायनामिकली बॉडी में ऐड कर सकते हैं
-    const showBtn = document.createElement("button");
-    showBtn.className = "show-filter-floating-btn";
-    showBtn.innerHTML = "🔍 Show Filters";
-    document.body.appendChild(showBtn);
-
-    toggleBtn.addEventListener("click", function() {
-        sidebar.classList.add("collapsed");
-        document.body.classList.add("filter-hidden");
-    });
-
-    showBtn.addEventListener("click", function() {
-        sidebar.classList.remove("collapsed");
-        document.body.classList.remove("filter-hidden");
-    });
-});</script>
-
-<!-- 1. इंस्टाग्राम लाइव प्रोफाइल सेक्शन कंटेनर -->
-<div class="insta-profile-footer-card" onclick="window.open('https://www.instagram.com/stay100.in?igsh=MTdoajkwdTlvZmgy')">
-    <div class="insta-card-wrapper">
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleBtn = document.getElementById("toggle-filter-btn");
+        const sidebar = document.querySelector(".desktop-filters-sidebar");
         
-        <!-- लेफ्ट साइड: डीपी और यूजरनेम -->
-        <div class="insta-left-node">
-            <div class="insta-avatar-ring">
-                <!-- अपनी इंस्टाग्राम डीपी का लिंक यहाँ डालें -->
-                <img src="/assets/dp.png" alt="Instagram Profile DP" class="insta-dp">
-            </div>
-            <div class="insta-meta-info">
-                <div class="insta-username-row">
-                    <span class="insta-username">Stay100.in</span>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLbzHZg6xcp3UsysM5zI2fG1ulmvT8AMnjotaGnEY4pg&s=10" alt="Verified" class="insta-verified-badge" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;">
+        const showBtn = document.createElement("button");
+        showBtn.className = "show-filter-floating-btn";
+        showBtn.innerHTML = "🔍 Show Filters";
+        document.body.appendChild(showBtn);
+
+        if(toggleBtn) {
+            toggleBtn.addEventListener("click", function() {
+                sidebar.classList.add("collapsed");
+                document.body.classList.add("filter-hidden");
+            });
+        }
+
+        showBtn.addEventListener("click", function() {
+            sidebar.classList.remove("collapsed");
+            document.body.classList.remove("filter-hidden");
+        });
+    });
+    </script>
+
+    <!-- Instagram Live Profile Section Container -->
+    <div class="insta-profile-footer-card" onclick="window.open('https://www.instagram.com/stay100.in?igsh=MTdoajkwdTlvZmgy')">
+        <div class="insta-card-wrapper">
+            <div class="insta-left-node">
+                <div class="insta-avatar-ring">
+                    <img src="/assets/dp.png" alt="Instagram Profile DP" class="insta-dp">
                 </div>
-                <p class="insta-fullname">Stay100% | Premium Spaces</p>
+                <div class="insta-meta-info">
+                    <div class="insta-username-row">
+                        <span class="insta-username">Stay100.in</span>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLbzHZg6xcp3UsysM5zI2fG1ulmvT8AMnjotaGnEY4pg&s=10" alt="Verified" class="insta-verified-badge" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;">
+                    </div>
+                    <p class="insta-fullname">Stay100% | Premium Spaces</p>
+                </div>
+            </div>
+            <div class="insta-right-node">
+                <div class="insta-stats-group">
+                    <div class="insta-stat-item">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    <div class="insta-stat-item live-indicator-dot">
+                        <span class="stat-number" style="color: #16a34a;">LIVE</span>
+                        <span class="stat-label">Active Now</span>
+                    </div>
+                </div>
+                <button class="btn-insta-follow">
+                    <i class="fa-brands fa-instagram"></i> Follow Us
+                </button>
             </div>
         </div>
-
-        <!-- राइट साइड: लाइव स्टेट्स और फॉलो बटन -->
-        <div class="insta-right-node">
-            <div class="insta-stats-group">
-                <div class="insta-stat-item">
-                    <span class="stat-number">0</span>
-                    <span class="stat-label">Followers</span>
-                </div>
-                <div class="insta-stat-item live-indicator-dot">
-                    <span class="stat-number" style="color: #16a34a;">LIVE</span>
-                    <span class="stat-label">Active Now</span>
-                </div>
-            </div>
-            
-            <!-- फॉलो बटन -->
-            <button class="btn-insta-follow">
-                <i class="fa-brands fa-instagram"></i> Follow Us
-            </button>
-        </div>
-
     </div>
-</div>
 
+    <!-- Native Smooth User Guide Tour Script Core -->
+    <script>
+        const tourSteps = [
+            {
+                element: "#tour-step-search",
+                title: "🔍 Find Your Perfect Stay",
+                desc: "Use our intelligent multi-modal smart search box. You can search by custom voice entry, location profiling, or target budget configurations instantly.",
+                position: "bottom"
+            },
+            {
+                element: "#tour-step-filters",
+                title: "⚡ Filter Matrix Panel",
+                desc: "Narrow down matching spaces based on exact choices like single/sharing occupancy, fully furnished status, student accommodation requirements, and customized budgets.",
+                position: "right"
+            },
+            {
+                element: "#tour-step-post",
+                title: "🏠 List Your Property For Free",
+                desc: "Are you a vendor or landlord looking to lease your premium space? Click right here to quickly list properties across India without paying middleman fees.",
+                position: "top"
+            }
+        ];
 
+        let currentTourIndex = 0;
 
+        function startFirstTimeUserTour() {
+            if (localStorage.getItem("stay100_tour_completed") === "true") return;
+            
+            setTimeout(() => {
+                document.getElementById("tour-backdrop").style.display = "block";
+                renderTourStep();
+            }, 1800); 
+        }
 
+        function renderTourStep() {
+            if (currentTourIndex >= tourSteps.length) {
+                endTour();
+                return;
+            }
 
+            // Remove previous step highlights
+            document.querySelectorAll(".tour-highlight").forEach(el => el.classList.remove("tour-highlight"));
 
+            const step = tourSteps[currentTourIndex];
+            const targetElement = document.querySelector(step.element);
+            const popover = document.getElementById("tour-popover");
+
+            if (!targetElement || window.getComputedStyle(targetElement).display === 'none') {
+                // If element is hidden on mobile layout context, bypass cleanly to next step
+                currentTourIndex++;
+                renderTourStep();
+                return;
+            }
+
+            targetElement.classList.add("tour-highlight");
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            document.getElementById("tour-title").innerText = step.title;
+            document.getElementById("tour-desc").innerText = step.desc;
+            document.getElementById("tour-progress").innerText = `${currentTourIndex + 1}/${tourSteps.length}`;
+            
+            const nextBtn = document.getElementById("tour-next-btn");
+            nextBtn.innerText = currentTourIndex === tourSteps.length - 1 ? "Finish" : "Next";
+
+            popover.className = "tour-popover active";
+
+            // Precise dynamic bounding calculation placement mechanics
+            const rect = targetElement.getBoundingClientRect();
+            const offset = 15;
+
+            if (step.position === "bottom") {
+                popover.style.top = `${window.scrollY + rect.bottom + offset}px`;
+                popover.style.left = `${rect.left + (rect.width / 2) - 160}px`;
+            } else if (step.position === "top") {
+                popover.style.top = `${window.scrollY + rect.top - popover.offsetHeight - offset - 120}px`; 
+                popover.style.left = `${rect.left + (rect.width / 2) - 160}px`;
+            } else {
+                // Default side alignment standardizations
+                popover.style.top = `${window.scrollY + rect.top}px`;
+                popover.style.left = `${rect.right + offset}px`;
+            }
+
+            // Screen boundary validation normalization parameters
+            if (parseFloat(popover.style.left) < 10) popover.style.left = "10px";
+            if (parseFloat(popover.style.left) + 330 > window.innerWidth) {
+                popover.style.left = `${window.innerWidth - 340}px`;
+            }
+        }
+
+        function nextTourStep() {
+            currentTourIndex++;
+            renderTourStep();
+        }
+
+        function endTour() {
+            document.getElementById("tour-backdrop").style.display = "none";
+            document.getElementById("tour-popover").classList.remove("active");
+            document.querySelectorAll(".tour-highlight").forEach(el => el.classList.remove("tour-highlight"));
+            localStorage.setItem("stay100_tour_completed", "true");
+
+            // Gently open the safety prevention system warning once tour completes
+            const safetyModal = document.getElementById("fraud-alert-modal");
+            if (safetyModal) safetyModal.style.display = "flex";
+        }
+
+        // Initialize Onboarding Tour Hook Routine Configuration
+        window.addEventListener("load", startFirstTimeUserTour);
+    </script>
 </body>
 </html>

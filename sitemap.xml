@@ -1,103 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+    <!-- Primary Pages -->
     <url>
         <loc>https://www.stay100.in/</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://www.stay100.in/aboutus</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <loc>https://www.stay100.in/pg</loc>
+        <lastmod>2026-07-18</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/room</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://www.stay100.in/pg</loc>
-        <changefreq>daily</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.stay100.in/vendor-registration</loc>
+        <loc>https://www.stay100.in/aboutus</loc>
+        <lastmod>2026-07-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
+    <url>
+        <loc>https://www.stay100.in/vendor-registration</loc>
+        <lastmod>2026-07-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
+    <!-- Location-Based Filtered Pages -->
     <url>
         <loc>https://www.stay100.in/?location=jaipur&amp;type=flat</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/?location=delhi&amp;type=flat</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/?location=gurugram&amp;type=flat</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/?location=noida&amp;type=flat</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
-
     <url>
         <loc>https://www.stay100.in/?location=mumbai&amp;type=pg</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/?location=pune&amp;type=pg</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/?location=hyderabad&amp;type=pg</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.stay100.in/?location=chennai&amp;type=pg</loc>
-        <changefreq>daily</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.stay100.in/?location=chandigarh&amp;type=pg</loc>
-        <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stay100.in/?location=udaipur&amp;type=pg</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
     </url>
-
     <url>
         <loc>https://www.stay100.in/?location=bangalore&amp;type=flatmate</loc>
+        <lastmod>2026-07-18</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://www.stay100.in/?location=delhi&amp;type=flatmate</loc>
-        <changefreq>daily</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://www.stay100.in/?location=mumbai&amp;type=flatmate</loc>
-        <changefreq>daily</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://www.stay100.in/?location=pune&amp;type=flatmate</loc>
-        <changefreq>daily</changefreq>
-        <priority>0.8</priority>
+        <priority>0.6</priority>
     </url>
 
 </urlset>
