@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginPanel = document.getElementById('login-panel');
     const registerPanel = document.getElementById('register-panel');
 
-    if (loginTabBtn && registerTabBtn) {
+    if (loginTabBtn && registerTabBtn && loginPanel && registerPanel) {
         loginTabBtn.addEventListener('click', () => {
             loginTabBtn.classList.add('active');
             registerTabBtn.classList.remove('active');
@@ -92,9 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
             // Query Firebase users node by phone number index
             db.ref('users').orderByChild('phone').equalTo(phoneInput).once('value')
                 .then((snapshot) => {
+                    if (submitBtn) submitBtn.disabled = false;
+
                     if (!snapshot.exists()) {
                         showAuthToast("No user account matching this number exists.", false);
                         return;
@@ -103,20 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     let userData = null;
                     let userId = null;
 
-                    // Extract the singular user payload
                     snapshot.forEach((childSnapshot) => {
                         userId = childSnapshot.key;
                         userData = childSnapshot.val();
                     });
 
-                    // Validate matching password context
                     if (userData && userData.password === passwordInput) {
-                        // Establish synchronized local keys
                         localStorage.setItem('stay100_uid', userId);
                         localStorage.setItem('stay100_name', userData.name || "User Node");
                         localStorage.setItem('stay100_phone', phoneInput);
 
-                        // If user has vendor plan allocations, push details to LocalStorage mapping
                         if (userData.planType && userData.planStartDate) {
                             localStorage.setItem(`stay100_plan_${userId}`, userData.planType);
                             localStorage.setItem(`stay100_start_${userId}`, userData.planStartDate);
@@ -132,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .catch((err) => {
+                    if (submitBtn) submitBtn.disabled = false;
                     console.error("Auth transaction runtime error: ", err);
                     showAuthToast("Server processing anomaly. Please retry later.", false);
                 });
@@ -158,15 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Check if account node space already exists
+            const submitBtn = registerForm.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
             db.ref('users').orderByChild('phone').equalTo(phoneNumber).once('value')
                 .then((snapshot) => {
                     if (snapshot.exists()) {
+                        if (submitBtn) submitBtn.disabled = false;
                         showAuthToast("An account already belongs to this phone sequence.", false);
                         return;
                     }
 
-                    // Build user payload structure
                     const newUserRef = db.ref('users').push();
                     const newUserId = newUserRef.key;
                     const timestamp = Date.now();
@@ -181,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     newUserRef.set(userPayload)
                         .then(() => {
-                            // Automatically provision localized auth matrix pointers
+                            if (submitBtn) submitBtn.disabled = false;
                             localStorage.setItem('stay100_uid', newUserId);
                             localStorage.setItem('stay100_name', fullName);
                             localStorage.setItem('stay100_phone', phoneNumber);
@@ -191,11 +195,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             setTimeout(() => {
                                 window.location.href = 'index.html';
                             }, 1200);
+                        })
+                        .catch((err) => {
+                            if (submitBtn) submitBtn.disabled = false;
+                            console.error("Registration write error: ", err);
+                            showAuthToast("Critical storage error. Registration postponed.", false);
                         });
                 })
                 .catch((err) => {
-                    console.error("Registration write operation failure: ", err);
-                    showAuthToast("Critical storage error. Registration postponed.", false);
+                    if (submitBtn) submitBtn.disabled = false;
+                    console.error("Query lookup error: ", err);
+                    showAuthToast("Server connectivity issue. Try again.", false);
                 });
         });
     }
@@ -213,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.removeItem(`stay100_start_${targetUID}`);
             }
 
-            // Purge core stay100 state keys completely
             localStorage.removeItem('stay100_uid');
             localStorage.removeItem('stay100_name');
             localStorage.removeItem('stay100_phone');

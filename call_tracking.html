@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAY100% | Admin Communication & Support Desk</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-olive: #556b2f;
+            --primary-hover: #3d4f22;
+            --mehrum: #800020;
+            --bg-slate: #f8fafc;
+            --text-dark: #0f172a;
+            --text-gray: #64748b;
+            --border-color: #e2e8f0;
+            --white: #ffffff;
+            --error-color: #dc2626;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-slate); color: var(--text-dark); padding: 20px; }
+        .container { max-width: 1300px; margin: 0 auto; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .header h1 { font-size: 22px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
+        
+        /* Navigation Tabs */
+        .admin-nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .tab-btn { padding: 10px 18px; background: var(--white); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; cursor: pointer; color: var(--text-gray); transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .tab-btn.active { background: var(--primary-olive); color: var(--white); border-color: var(--primary-olive); box-shadow: 0 4px 12px rgba(85,107,47,0.2); }
+
+        .tab-content-panel { display: none; }
+        .tab-content-panel.active { display: block; }
+
+        /* Stats Cards Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--white); padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .stat-card h3 { margin: 0 0 8px 0; font-size: 13px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; }
+        .stat-card .value { font-size: 24px; font-weight: 700; color: var(--primary-olive); }
+
+        /* Tables */
+        .table-container { background: var(--white); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; white-space: nowrap; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+        th { background: #f8fafc; font-weight: 600; color: #475569; }
+        tr:hover { background: #f8fafc; }
+
+        .badge { padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .badge-call { background: #e0e7ff; color: #4338ca; }
+        .badge-whatsapp { background: #dcfce7; color: #15803d; }
+        .badge-open { background: #fee2e2; color: #991b1b; }
+        .badge-progress { background: #fef3c7; color: #92400e; }
+        .badge-resolved { background: #dcfce7; color: #166534; }
+
+        select.status-dropdown { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; cursor: pointer; font-size: 13px; background: #fff; }
+        
+        .code-tag { background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-family: monospace; font-weight: 600; color: var(--mehrum); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Bar -->
+        <div class="header">
+            <h1><i class="fa-solid fa-shield-halved" style="color: var(--primary-olive);"></i> Stay100% Admin Operations & Analytics</h1>
+            <button onclick="window.location.href='admin.html'" style="padding: 10px 16px; background: var(--text-dark); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+        </div>
+
+        <!-- Admin Navigation Tabs -->
+        <div class="admin-nav-tabs">
+            <button class="tab-btn active" onclick="switchAdminTab('communications', this)"><i class="fa-solid fa-phone-volume"></i> Calls & WhatsApp Logs</button>
+            <button class="tab-btn" onclick="switchAdminTab('support', this)"><i class="fa-solid fa-headset"></i> Support & Complaint Desk</button>
+        </div>
+
+        <!-- TAB 1: Communications & Interaction Logs -->
+        <div id="panelCommunications" class="tab-content-panel active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Interactions</h3>
+                    <div class="value" id="total-interactions">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Call Clicks</h3>
+                    <div class="value" id="total-calls">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total WhatsApp Clicks</h3>
+                    <div class="value" id="total-whatsapp">0</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User ID / Session</th>
+                            <th>Property Name</th>
+                            <th>Action Type</th>
+                            <th>Target Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tracking-table-body">
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-gray); padding: 30px;">Loading communication logs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: Support & Complaint Desk Management -->
+        <div id="panelSupport" class="tab-content-panel">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Support Tickets</h3>
+                    <div class="value" id="total-tickets">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Open / Pending</h3>
+                    <div class="value" id="open-tickets" style="color: var(--error-color);">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Resolved Tickets</h3>
+                    <div class="value" id="resolved-tickets" style="color: var(--success-color);">0</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Date / Time</th>
+                            <th>Role</th>
+                            <th>User Name</th>
+                            <th>Contact Details</th>
+                            <th>Category & Subject</th>
+                            <th>Severity</th>
+                            <th>Current Status</th>
+                            <th>Action / Update</th>
+                        </tr>
+                    </thead>
+                    <tbody id="support-table-body">
+                        <tr><td colspan="9" style="text-align: center; color: var(--text-gray); padding: 30px;">Loading support tickets from users & vendors...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Config Matrix
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
+            authDomain: "stay100-31316.firebaseapp.com",
+            databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "stay100-31316",
+            storageBucket: "stay100-31316.firebasestorage.app",
+            messagingSenderId: "91816784620",
+            appId: "1:91816784620:web:45cbf9baa3808fc580ebc9"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Switch Tabs Function
+        function switchAdminTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            if(tabName === 'communications') {
+                document.getElementById('panelCommunications').classList.add('active');
+            } else if(tabName === 'support') {
+                document.getElementById('panelSupport').classList.add('active');
+            }
+            btnElement.classList.add('active');
+        }
+
+        // 1. Fetch Communication Logs (Calls & WhatsApp)
+        db.ref('communication_logs').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tbody = document.getElementById('tracking-table-body');
+            
+            if (!data) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-gray); padding: 30px;">No communication logs recorded yet.</td></tr>`;
+                return;
+            }
+
+            let logsArray = Object.values(data).reverse();
+            let callCount = 0;
+            let wpCount = 0;
+
+            tbody.innerHTML = logsArray.map(log => {
+                if (log.action === 'CALL') callCount++;
+                if (log.action === 'WHATSAPP') wpCount++;
+
+                const badgeClass = log.action === 'CALL' ? 'badge-call' : 'badge-whatsapp';
+                return `
+                    <tr>
+                        <td>${log.date || 'N/A'}</td>
+                        <td><code>${log.userId ? log.userId.substring(0, 12) + '...' : 'Guest'}</code></td>
+                        <td><b>${log.propertyName || 'N/A'}</b></td>
+                        <td><span class="badge ${badgeClass}">${log.action}</span></td>
+                        <td>${log.phone || 'N/A'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('total-interactions').innerText = logsArray.length;
+            document.getElementById('total-calls').innerText = callCount;
+            document.getElementById('total-whatsapp').innerText = wpCount;
+        });
+
+        // 2. Fetch Support Tickets & Allow Status Updates
+        db.ref('support_tickets').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tbody = document.getElementById('support-table-body');
+
+            if (!data) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-gray); padding: 30px;">No support tickets raised by users or property owners.</td></tr>`;
+                document.getElementById('total-tickets').innerText = 0;
+                document.getElementById('open-tickets').innerText = 0;
+                document.getElementById('resolved-tickets').innerText = 0;
+                return;
+            }
+
+            let ticketsArray = Object.entries(data).reverse();
+            let totalCount = ticketsArray.length;
+            let openCount = 0;
+            let resolvedCount = 0;
+
+            tbody.innerHTML = ticketsArray.map(([key, ticket]) => {
+                const status = ticket.status || 'OPEN';
+                if(status === 'OPEN' || status === 'IN PROGRESS') openCount++;
+                if(status === 'RESOLVED') resolvedCount++;
+
+                let statusBadgeClass = 'badge-open';
+                if(status === 'IN PROGRESS') statusBadgeClass = 'badge-progress';
+                if(status === 'RESOLVED') statusBadgeClass = 'badge-resolved';
+
+                return `
+                    <tr>
+                        <td><span class="code-tag">${ticket.ticketId || key}</span></td>
+                        <td>${ticket.createdDateTime || 'N/A'}</td>
+                        <td><b>${ticket.role || 'USER'}</b></td>
+                        <td>${ticket.name || 'N/A'}</td>
+                        <td><div>${ticket.phone || 'N/A'}</div><small style="color: var(--text-gray);">${ticket.email || ''}</small></td>
+                        <td>
+                            <div style="font-weight: 600;">${ticket.subject || 'N/A'}</div>
+                            <small style="color: var(--text-gray);">${ticket.category || ''}</small>
+                        </td>
+                        <td>${ticket.severity || 'Medium'}</td>
+                        <td><span class="badge ${statusBadgeClass}" id="status-badge-${ticket.ticketId}">${status}</span></td>
+                        <td>
+                            <select class="status-dropdown" onchange="updateTicketStatus('${ticket.ticketId}', this.value)">
+                                <option value="OPEN" ${status === 'OPEN' ? 'selected' : ''}>OPEN</option>
+                                <option value="IN PROGRESS" ${status === 'IN PROGRESS' ? 'selected' : ''}>IN PROGRESS</option>
+                                <option value="RESOLVED" ${status === 'RESOLVED' ? 'selected' : ''}>RESOLVED</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('total-tickets').innerText = totalCount;
+            document.getElementById('open-tickets').innerText = openCount;
+            document.getElementById('resolved-tickets').innerText = resolvedCount;
+        });
+
+        // Function to update Ticket Status in Firebase directly
+        function updateTicketStatus(ticketId, newStatus) {
+            db.ref('support_tickets/' + ticketId).update({
+                status: newStatus
+            }, (error) => {
+                if (error) {
+                    alert("Failed to update status: " + error.message);
+                } else {
+                    // Success feedback can be subtle or automatic via snapshot listener
+                    console.log(`Ticket ${ticketId} updated to ${newStatus}`);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

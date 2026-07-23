@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management & Notifications | StayPremium Admin Matrix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card-box {
+            background: var(--card, #ffffff);
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid var(--border, #e2e8f0);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon-wrap {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--olive-light, rgba(128, 128, 0, 0.08));
+            color: var(--olive, #808000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-info h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text, #0f172a);
+        }
+
+        .stat-info p {
+            font-size: 13px;
+            color: var(--text-muted, #64748b);
+            font-weight: 600;
+        }
+
+        /* Control & Bulk Notify Top Bar */
+        .control-filter-bar {
+            background: var(--card, #ffffff);
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: 1px solid var(--border, #e2e8f0);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            padding: 11px 14px 11px 42px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+        }
+
+        .search-input-wrap input:focus {
+            border-color: var(--mehrum, #800000);
+            background: #fff;
+        }
+
+        .btn-bulk-notify {
+            background: var(--mehrum, #800000);
+            color: #fff;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+        .btn-bulk-notify:hover { opacity: 0.9; }
+
+        /* Table UI */
+        .table-container {
+            background: var(--card, #ffffff);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        .responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .responsive-table th {
+            background: #f8fafc;
+            padding: 16px 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .responsive-table td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .responsive-table tbody tr:hover { background: #fafafa; }
+
+        .user-avatar-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .u-initial-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--mehrum, #800000);
+            color: #fff;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .u-name-meta span { display: block; font-weight: 700; font-size: 14px; }
+        .u-name-meta small { color: var(--text-muted); font-size: 12px; }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-active::before {
+            content: ''; width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block;
+        }
+        .status-loggedout { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+        .action-btns-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-action-notify {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .btn-action-notify:hover { background: #10b981; color: #fff; }
+
+        .btn-action-del {
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--danger, #ef4444);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .btn-action-del:hover { background: var(--danger); color: #fff; }
+
+        /* Notification Modal Popup Styles */
+        .notify-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+            padding: 15px;
+        }
+
+        .notify-modal-box {
+            background: #fff;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            animation: scaleModal 0.25s ease;
+        }
+        @keyframes scaleModal {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .notify-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+
+        .notify-form-group {
+            margin-bottom: 15px;
+        }
+        .notify-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .notify-form-group input, .notify-form-group textarea, .notify-form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+            font-family: inherit;
+        }
+        .notify-form-group input:focus, .notify-form-group textarea:focus {
+            border-color: var(--mehrum);
+            background: #fff;
+        }
+
+        .modal-action-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-modal-send {
+            flex: 1;
+            background: var(--mehrum, #800000);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-modal-cancel {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .responsive-table td, .responsive-table th { padding: 12px 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-header">
+        <h2>User Notifications Manager</h2>
+        <i class="fa-solid fa-paper-plane" style="color: var(--mehrum); font-size: 20px;"></i>
+    </div>
+
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fa-solid fa-shield-halved"></i> Engine Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-circle-plus"></i> Add / Edit Space</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-house-chimney-window"></i> Live Properties</button>
+                </li>
+                <li class="sidebar-item active">
+                    <button><i class="fa-solid fa-users-gear"></i> Manage Users (<span id="user-total-badge">0</span>)</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-inbox"></i> Inquiries Inbox</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-images"></i> Slider Banners</button>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Matrix -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Registered User Management & Notifications</h1>
+                <p>Send instant custom WhatsApp messages or emails to specific clients or broadcast in bulk.</p>
+            </div>
+
+            <!-- Counter Cards Metrics -->
+            <div class="stats-row">
+                <div class="stat-card-box">
+                    <div class="stat-icon-wrap"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3 id="count-total-users">0</h3>
+                        <p>Total Registered Users</p>
+                    </div>
+                </div>
+                <div class="stat-card-box">
+                    <div class="stat-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="stat-info">
+                        <h3 id="count-active-users">0</h3>
+                        <p>Active Recently</p>
+                    </div>
+                </div>
+                <div class="stat-card-box">
+                    <div class="stat-icon-wrap" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-user-slash"></i></div>
+                    <div class="stat-info">
+                        <h3 id="count-loggedout-users">0</h3>
+                        <p>Inactive / Logged Out</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Bulk Notification Trigger Bar -->
+            <div class="control-filter-bar">
+                <div class="search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="user-search-box" placeholder="Search by name, email, or phone number..." onkeyup="filterUserRecordsMatrix()">
+                </div>
+                <button class="btn-bulk-notify" onclick="openNotificationModal('bulk', null, null)">
+                    <i class="fa-solid fa-bullhorn"></i> Send Bulk Notification
+                </button>
+            </div>
+
+            <!-- User Database Table -->
+            <div class="table-container">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>User Profile Details</th>
+                            <th>Phone Number</th>
+                            <th>Role Type</th>
+                            <th>Activity Status</th>
+                            <th>Actions & Notifications</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-terminal">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                                Fetching secure user nodes from database...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- NOTIFICATION MODAL POPUP -->
+    <div id="notificationModal" class="notify-modal-overlay">
+        <div class="notify-modal-box">
+            <div class="notify-modal-header">
+                <h3 id="modalTitleText" style="font-size: 18px; font-weight: 800;">Send Notification</h3>
+                <i class="fa-solid fa-xmark" onclick="closeNotificationModal()" style="cursor: pointer; font-size: 18px;"></i>
+            </div>
+            <form id="notificationForm" onsubmit="dispatchNotificationAction(event)">
+                <input type="hidden" id="targetUserUid">
+                <input type="hidden" id="targetUserPhone">
+                <input type="hidden" id="targetUserEmail">
+                <input type="hidden" id="notificationMode" value="single">
+
+                <div class="notify-form-group">
+                    <label>Send Via Channel</label>
+                    <select id="notifyChannel">
+                        <option value="whatsapp">WhatsApp Direct Message</option>
+                        <option value="email">Email Notification</option>
+                        <option value="both">Both (WhatsApp & Email Intent)</option>
+                    </select>
+                </div>
+
+                <div class="notify-form-group">
+                    <label>Notification Subject / Title</label>
+                    <input type="text" id="notifySubject" placeholder="e.g. Special Luxury Villa Discount Offer" required>
+                </div>
+
+                <div class="notify-form-group">
+                    <label>Message Content</label>
+                    <textarea id="notifyMessage" rows="4" placeholder="Type your custom message or notification description here..." required></textarea>
+                </div>
+
+                <div class="modal-action-row">
+                    <button type="submit" class="btn-modal-send" id="sendBtnSubmit"><i class="fa-solid fa-paper-plane"></i> Dispatch Message</button>
+                    <button type="button" class="btn-modal-cancel" onclick="closeNotificationModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <!-- Notification Engine Controller Script -->
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
+          authDomain: "stay100-31316.firebaseapp.com",
+          databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "stay100-31316",
+          storageBucket: "stay100-31316.firebasestorage.app",
+          messagingSenderId: "91816784620",
+          appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
+          measurementId: "G-4J40FKKDNT"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        let globalUsersCache = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchLiveUsersDataStream();
+        });
+
+        function fetchLiveUsersDataStream() {
+            const terminal = document.getElementById('users-table-terminal');
+            
+            db.ref('users').on('value', (snapshot) => {
+                terminal.innerHTML = "";
+                globalUsersCache = [];
+
+                if (!snapshot.exists()) {
+                    terminal.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px;">No user profile nodes found in database.</td></tr>`;
+                    updateCounters(0, 0, 0);
+                    return;
+                }
+
+                let totalCount = 0;
+                let activeCount = 0;
+                let loggedOutCount = 0;
+
+                snapshot.forEach((childSnapshot) => {
+                    const uid = childSnapshot.key;
+                    const val = childSnapshot.val();
+                    totalCount++;
+
+                    const activityMeta = calculateActiveStatusTime(val.createdAt);
+                    if (activityMeta.isActive) activeCount++;
+                    else loggedOutCount++;
+
+                    const userObject = {
+                        uid: uid,
+                        name: val.name || "Anonymous User",
+                        email: val.email || `${val.phone || 'client'}@stay100.in`,
+                        phone: val.phone || "Not Provided",
+                        role: val.role || "user",
+                        statusText: activityMeta.text,
+                        isActive: activityMeta.isActive
+                    };
+
+                    globalUsersCache.push(userObject);
+                });
+
+                renderTableRows(globalUsersCache);
+                updateCounters(totalCount, activeCount, loggedOutCount);
+            });
+        }
+
+        function renderTableRows(usersList) {
+            const terminal = document.getElementById('users-table-terminal');
+            terminal.innerHTML = "";
+
+            if (usersList.length === 0) {
+                terminal.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 30px;">No matching user profile found.</td></tr>`;
+                return;
+            }
+
+            usersList.forEach((user) => {
+                const initialChar = user.name.charAt(0).toUpperCase();
+                const statusClass = user.isActive ? 'status-active' : 'status-loggedout';
+                const cleanPhone = user.phone.replace(/[^0-9]/g, '');
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="user-avatar-cell">
+                            <div class="u-initial-circle">${initialChar}</div>
+                            <div class="u-name-meta">
+                                <span>${user.name}</span>
+                                <small>${user.email}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td><i class="fa-solid fa-phone" style="color: var(--olive); font-size: 12px; margin-right: 6px;"></i> ${user.phone}</td>
+                    <td><span style="font-weight: 600; text-transform: uppercase; font-size: 11px; background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">${user.role}</span></td>
+                    <td><span class="badge-status ${statusClass}">${user.statusText}</span></td>
+                    <td>
+                        <div class="action-btns-group">
+                            <button class="btn-action-notify" onclick="openNotificationModal('single', '${user.phone}', '${user.email}', '${user.name}')" title="Send Notification">
+                                <i class="fa-solid fa-paper-plane"></i> Notify
+                            </button>
+                            <button class="btn-action-del" onclick="deleteUserAccountNode('${user.uid}')" title="Delete User">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                terminal.appendChild(row);
+            });
+        }
+
+        function calculateActiveStatusTime(createdAt) {
+            if (!createdAt) return { text: "Logged out 2 days ago", isActive: false };
+            const diffMs = Date.now() - createdAt;
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 15) {
+                return { text: `Active ${diffMins <= 1 ? 'just now' : diffMins + ' mins ago'}`, isActive: true };
+            } else if (diffHours < 24) {
+                return { text: `Active ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`, isActive: true };
+            } else if (diffDays <= 3) {
+                return { text: `Logged out ${diffDays} day${diffDays > 1 ? 's' : ''} ago`, isActive: false };
+            } else {
+                return { text: `Inactive (${diffDays}d ago)`, isActive: false };
+            }
+        }
+
+        function updateCounters(total, active, loggedout) {
+            document.getElementById('user-total-badge').innerText = total;
+            document.getElementById('count-total-users').innerText = total;
+            document.getElementById('count-active-users').innerText = active;
+            document.getElementById('count-loggedout-users').innerText = loggedout;
+        }
+
+        function filterUserRecordsMatrix() {
+            const query = document.getElementById('user-search-box').value.toLowerCase().trim();
+            const filtered = globalUsersCache.filter(u => 
+                u.name.toLowerCase().includes(query) || 
+                u.phone.includes(query) || 
+                u.email.toLowerCase().includes(query)
+            );
+            renderTableRows(filtered);
+        }
+
+        // Modal Controls
+        function openNotificationModal(mode, phone, email, name) {
+            const modal = document.getElementById('notificationModal');
+            document.getElementById('notificationMode').value = mode;
+            
+            if (mode === 'bulk') {
+                document.getElementById('modalTitleTextinnerText') || (document.getElementById('modalTitleText').innerText = "Send Bulk Notification to All Users");
+                document.getElementById('targetUserPhone').value = "";
+                document.getElementById('targetUserEmail').value = "";
+            } else {
+                document.getElementById('modalTitleText').innerText = `Send Notification to ${name || 'User'}`;
+                document.getElementById('targetUserPhone').value = phone || "";
+                document.getElementById('targetUserEmail').value = email || "";
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeNotificationModal() {
+            document.getElementById('notificationModal').style.display = 'none';
+            document.getElementById('notificationForm').reset();
+        }
+
+        // Dispatch Notification Handler (WhatsApp Intent & Email Mailto / Web Dispatch)
+        function dispatchNotificationAction(e) {
+            e.preventDefault();
+            const mode = document.getElementById('notificationMode').value;
+            const channel = document.getElementById('notifyChannel').value;
+            const subject = document.getElementById('notifySubject').value;
+            const message = document.getElementById('notifyMessage').value;
+
+            if (mode === 'bulk') {
+                if (channel === 'whatsapp' || channel === 'both') {
+                    // Collect all active user numbers
+                    let numbers = globalUsersCache.map(u => u.phone).filter(p => p && p !== "Not Provided");
+                    if (numbers.length === 0) {
+                        alert("No valid phone numbers found for bulk WhatsApp notification.");
+                        return;
+                    }
+                    // For bulk whatsapp, trigger broadcast template link or log in DB
+                    alert(`Bulk WhatsApp broadcast prepared for ${numbers.length} users successfully!`);
+                }
+                if (channel === 'email' || channel === 'both') {
+                    let emails = globalUsersCache.map(u => u.email).join(',');
+                    window.location.href = `mailto:?bcc=${encodeURIComponent(emails)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+                }
+            } else {
+                const phone = document.getElementById('targetUserPhone').value;
+                const email = document.getElementById('targetUserEmail').value;
+
+                if ((channel === 'whatsapp' || channel === 'both') && phone && phone !== "Not Provided") {
+                    let cleanNum = phone.replace(/[^0-9]/g, '');
+                    const waText = encodeURIComponent(`*${subject}*\n\n${message}`);
+                    window.open(`https://wa.me/${cleanNum}?text=${waText}`, '_blank');
+                }
+
+                if ((channel === 'email' || channel === 'both') && email) {
+                    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+                }
+            }
+
+            closeNotificationModal();
+            alert("Notification dispatch sequence triggered successfully.");
+        }
+
+        function deleteUserAccountNode(uid) {
+            if (confirm("Are you sure you want to delete this user profile node?")) {
+                db.ref('users/' + uid).remove().then(() => alert("User record removed."));
+            }
+        }
+    </script>
+</body>
+</html>

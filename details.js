@@ -392,15 +392,12 @@ function setupReadMoreToggle(elementId, fallbackText) {
  * Advanced Matrix View Toggle Framework for Specifications Section
  */
 function setupMatrixSpecificationsToggle() {
-    // Select the containing grid element for specs key/values
     const specContainer = document.querySelector('.specifications-matrix-grid') || document.getElementById('specifications-section-container');
     if (!specContainer) return;
 
-    // Fetch child specification nodes
     const specItems = Array.from(specContainer.children);
     if (specItems.length <= 6) return;
 
-    // Check if the button toggle already exists
     let matrixToggleBtn = document.getElementById('btn-matrix-spec-toggle');
     if (!matrixToggleBtn) {
         matrixToggleBtn = document.createElement('button');
@@ -411,7 +408,6 @@ function setupMatrixSpecificationsToggle() {
         specContainer.parentNode.insertBefore(matrixToggleBtn, specContainer.nextSibling);
     }
 
-    // Initialize hidden state elements
     let isMatrixExpanded = false;
     const updateMatrixState = () => {
         specItems.forEach((item, index) => {
@@ -440,17 +436,14 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     const baseOriginalPrice = targetPropertyObject.mrp || targetPropertyObject.originalPrice || targetPropertyObject.price || 0;
     const baseCurrentPrice = targetPropertyObject.price || targetPropertyObject.currentPrice || 0;
     
-    // Core SEO parameters tracking extracted safely from system properties
     const locCity = targetPropertyObject.city || "Jaipur";
     const locArea = targetPropertyObject.area || targetPropertyObject.localArea || "Mansarovar";
     const targetGender = targetPropertyObject.genderType || "Boys";
     const parsedShortPrice = Math.round(baseCurrentPrice / 1000);
 
-    // DYNAMIC INJECTION RULE: Google Optimization indexing syntax structure mapping rules
     const targetSeoTitle = `65+ PGs for ${targetGender} in ${locArea} ${locCity} under ${parsedShortPrice}k | STAY100%`;
     document.title = targetSeoTitle;
     
-    // Update structural header metadata targets globally for crawling bots
     const headDescription = document.querySelector('meta[name="description"]');
     if (headDescription) {
         headDescription.setAttribute("content", `Find verified flat listings. Best PGs for ${targetGender} in ${locArea} ${locCity} under ${baseCurrentPrice}/mo. Equipped with high speed Wi-Fi, Food, AC & Power Backup.`);
@@ -466,7 +459,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         titleLabel.innerHTML = `<span>${propertyTitle}</span> ${getVerifiedBadgeMarkup(isVerified)}`;
     }
 
-    // Dynamic Address Binding Logic Blocks
     const cleanFullAddressText = targetPropertyObject.address || `${targetPropertyObject.landmark || 'Near Metro Station'}, ${locArea}, ${locCity}, Rajasthan`;
     const googleMapsNavUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanFullAddressText)}`;
 
@@ -502,7 +494,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     updateText('lbl-config-bathrooms', targetPropertyObject.bathroomsCount || targetPropertyObject.bathroomConfig || "1 Bathroom");
     updateText('lbl-config-balconies', targetPropertyObject.balconiesCount || targetPropertyObject.balconyConfig || "2 Balconies");
     
-    // Process Expandable Read More Content Toggles safely
     setupReadMoreToggle('lbl-house-rules', targetPropertyObject.houseRules || "Standard disciplined premises norms apply.");
     setupReadMoreToggle('lbl-about-property', targetPropertyObject.aboutProperty || targetPropertyObject.description || "No metadata provided.");
     
@@ -520,16 +511,13 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     updateText('lbl-spec-power-backup', targetPropertyObject.powerBackup || "None");
     updateText('lbl-spec-property-age', targetPropertyObject.propertyAge || "1 to 5 Year Old");
 
-    // Dynamic Extra Parameters for 99Acres Feel
     if (targetPropertyObject.noticePeriod) updateText('lbl-spec-notice-period', targetPropertyObject.noticePeriod);
     if (targetPropertyObject.gateClosingTime) updateText('lbl-spec-gate-time', targetPropertyObject.gateClosingTime);
     if (targetPropertyObject.electricityPolicy) updateText('lbl-spec-electricity-rules', targetPropertyObject.electricityPolicy);
     if (targetPropertyObject.mealsConfig) updateText('lbl-spec-meal-type', targetPropertyObject.mealsConfig);
 
-    // Initialize Specifications Dynamic View Grid Toggle
     setupMatrixSpecificationsToggle();
 
-    // Google Maps Iframe Injector Logic Block
     const mapWrapper = document.getElementById('map-iframe-wrapper');
     const mapContainerBox = document.getElementById('map-visualization-box');
     if (mapWrapper && mapContainerBox && targetPropertyObject.googleMapsEmbedUrl) {
@@ -578,7 +566,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         let slidesHTMLArray = [];
         let allMediaSources = []; 
         
-        // 1. First inject autoplaying visual video feeds if hosted online
         if (targetPropertyObject.videoUrl && targetPropertyObject.videoUrl.trim() !== "") {
             allMediaSources.push({ type: 'video', src: targetPropertyObject.videoUrl });
             slidesHTMLArray.push(`
@@ -591,7 +578,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
             `);
         }
 
-        // 2. Process sequential property photography assets
         let imagesList = [];
         if (targetPropertyObject.allImages) {
             imagesList = Array.isArray(targetPropertyObject.allImages) 
@@ -657,7 +643,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         }
     }
 
-    // 5. Optimized Full Screen Lightbox Handler Block
     window.openMediaFullScreen = function(index) {
         const assets = window.currentPropertyMediaAssets || [];
         if (assets.length === 0) return;
@@ -705,7 +690,6 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
         setTimeout(() => overlay.style.opacity = '1', 50);
     };
 
-    // --- COMPLETE UPGRADED DYNAMIC AMENITIES MATRIX PACK ---
     globalGeneratedFacilitiesArray = [];
     const facilityIconMap = {
         "wifi": { text: "High Speed Wi-Fi", icon: "fa-wifi" },
@@ -755,7 +739,7 @@ const renderPropertyDataToDOMViewGrid = (isVerified = false) => {
     if (typeof updateReviewsUIRenderBlocks === 'function') updateReviewsUIRenderBlocks();
 };
 
-// --- AUTHENTICATED COMMUNICATION TRIGGERS ---
+// --- AUTHENTICATED COMMUNICATION TRIGGERS & FIREBASE LOGGING ---
 function triggerSecureCall() {
     const currentSessionUID = localStorage.getItem('stay100_uid');
     if (!currentSessionUID) {
@@ -764,6 +748,7 @@ function triggerSecureCall() {
         return;
     }
     if (targetPropertyObject && targetPropertyObject.ownerPhone) {
+        logCommunicationEvent('CALL'); // Yeh log save karega[cite: 17]
         window.location.href = `tel:${targetPropertyObject.ownerPhone}`;
     } else {
         alert("Owner phone contact detail is unavailable at this moment.");
@@ -778,15 +763,15 @@ function triggerSecureWhatsApp() {
         return;
     }
     if (targetPropertyObject && targetPropertyObject.ownerPhone) {
+        logCommunicationEvent('WHATSAPP'); // Yeh log save karega[cite: 17]
+
         const propTitle = targetPropertyObject.name || targetPropertyObject.title || "Premium Co-Living Space";
         const propPrice = targetPropertyObject.price || targetPropertyObject.currentPrice || 0;
         const propGender = targetPropertyObject.genderType || "Boys/Girls";
         const propLocation = targetPropertyObject.area || targetPropertyObject.city || "Mansarovar";
         
-        // Dynamic construction of a perfectly generated live URL string configuration
         const dynamicLiveRoutingUrl = window.location.origin + window.location.pathname + `?id=${activePropertySlugId}`;
 
-        // Structured, premium, highly converting inquiries text template message for owners
         const compiledMessageText = `Dear Property Owner,\n\nI am reaching out regarding your listed property space: *${propTitle}* (${propGender} setup in ${propLocation}) published on STAY100% at a monthly rental matrix value of *₹${propPrice.toLocaleString('en-IN')}/mo*.\n\nI am deeply interested in scheduling a site walkthrough and verification check for immediate lock-in. Please confirm vacancy details and current availability status.\n\nVerified Listing Reference Link: ${dynamicLiveRoutingUrl}`;
         
         const cleanPhoneNo = targetPropertyObject.ownerPhone.replace(/[^0-9]/g, '');
@@ -798,7 +783,25 @@ function triggerSecureWhatsApp() {
     }
 }
 
-// --- CORRECTED & IMMUTABLE AMENITIES RENDERING MATRIX ENGINE ---
+// Function to log click events to Firebase securely (100% Free)[cite: 17]
+function logCommunicationEvent(actionType) {
+    const currentSessionUID = localStorage.getItem('stay100_uid') || "Anonymous_Visitor";
+    const propertyNameStr = targetPropertyObject ? (targetPropertyObject.name || targetPropertyObject.title) : "Unknown Property";
+    const phoneNo = targetPropertyObject ? targetPropertyObject.ownerPhone : "N/A";
+    
+    const logData = {
+        userId: currentSessionUID,
+        propertyName: propertyNameStr,
+        action: actionType, // 'CALL' or 'WHATSAPP'
+        phone: phoneNo,
+        timestamp: Date.now(),
+        date: new Date().toLocaleString('en-IN')
+    };
+
+    // Push entry to Firebase Database freely[cite: 17]
+    db.ref('communication_logs').push(logData).catch(err => console.error("Logging error:", err));
+}
+
 const renderAmenitiesGridMatrix = () => {
     const facGrid = document.getElementById('amenities-collapsible-grid');
     if (!facGrid) return;
@@ -978,7 +981,6 @@ const executeWebSharePipeline = () => {
     const shareArea = targetPropertyObject ? (targetPropertyObject.area || "Jaipur") : "Jaipur";
     const dynamicLiveRoutingUrl = window.location.origin + window.location.pathname + `?id=${activePropertySlugId}`;
 
-    // Highly professional property sharing copy block structured for WhatsApp distribution channels
     const professionalShareMsg = `Hey! Check out this amazing accommodation listed on STAY100%:\n\n🏡 *${shareTitle}*\n📍 Location: ${shareArea}\n💰 Price: ₹${sharePrice.toLocaleString('en-IN')}/mo\n\n✨ Features fully managed verification checks, verified security nodes, high speed Wi-Fi, and premium amenities.\n\n🔗 View Live Property Details & Media Matrix: ${dynamicLiveRoutingUrl}`;
 
     if (navigator.share) {
@@ -988,11 +990,9 @@ const executeWebSharePipeline = () => {
             url: dynamicLiveRoutingUrl
         }).catch((err) => console.log("Web share execution halted cleanly:", err));
     } else {
-        // Fallback context: Redirect straight to WhatsApp web engine or clip directly
         const fallbackWhatsappWebUrl = `https://wa.me/?text=${encodeURIComponent(professionalShareMsg)}`;
         window.open(fallbackWhatsappWebUrl, '_blank');
         
-        // Meticulously clone into buffer stack as a solid failover option
         navigator.clipboard.writeText(dynamicLiveRoutingUrl)
             .then(() => showCenterToasterAlert("🔗 Professional share link copied to clipboard!"))
             .catch(() => alert("Failed to access buffer clipboard registry matrix."));
@@ -1004,7 +1004,6 @@ const toggleSavePropertyWishlist = () => {
     if (!activePropertySlugId || !targetPropertyObject) return;
     const currentSessionUID = localStorage.getItem('stay100_uid');
     
-    // Core LocalStorage Failover Cache System Architecture
     let savedList = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
     const index = savedList.indexOf(activePropertySlugId);
 
@@ -1016,7 +1015,6 @@ const toggleSavePropertyWishlist = () => {
         localStorage.setItem('stay100_saved_properties', JSON.stringify(savedList));
     }
 
-    // Secondary Path Sync Sequence: Authenticated Cloud Mirror
     if (currentSessionUID) {
         const userSavedRefNode = db.ref(`users_saved/${currentSessionUID}/${activePropertySlugId}`);
         if (index === -1) {
@@ -1038,7 +1036,6 @@ const toggleSavePropertyWishlist = () => {
             });
         }
     } else {
-        // Failsafe Mode Execution: Complete interaction processing using local storage caches cleanly
         if (index === -1) {
             showCenterToasterAlert("⭐ Saved to device local portfolio!");
             localRenderSaveButtonActiveState(true);
@@ -1066,12 +1063,10 @@ const updateSaveButtonUI = () => {
     if (!saveBtn || !activePropertySlugId) return;
     const currentSessionUID = localStorage.getItem('stay100_uid');
 
-    // First, sync against the Local Cache Matrix (Ensures working states when offline/unauthenticated)
     const savedList = JSON.parse(localStorage.getItem('stay100_saved_properties')) || [];
     const isSavedLocally = savedList.includes(activePropertySlugId);
     localRenderSaveButtonActiveState(isSavedLocally);
 
-    // If a cloud session exists, overlay realtime synchronization streams
     if (currentSessionUID) {
         db.ref(`users_saved/${currentSessionUID}/${activePropertySlugId}`).on('value', (snapshot) => {
             localRenderSaveButtonActiveState(snapshot.exists());
@@ -1151,7 +1146,6 @@ const generateHorizontalRecommendationCard = (item) => {
         cardImageSrc = cardImageSrc.split('?')[0] + "?auto=format&fit=crop&w=800&q=90";
     }
 
-    // DYNAMIC live redirection routing fix applied explicitly to handle clean routing matrix parameters
     return `
         <div class="mini-property-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.03); padding-bottom: 4px; cursor:pointer;" onclick="window.location.href='details.html?id=${item.id}'">
             <div style="width:100%; height:160px; background:#0f172a; display:flex; align-items:center; justify-content:center; overflow:hidden;">

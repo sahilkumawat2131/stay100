@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayPremium Engine | Traffic Analytics Matrix</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="analytics.css">
+</head>
+<body>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <h2>Traffic Analytics</h2>
+        <i class="fa-solid fa-chart-line" style="color: var(--mehrum); font-size: 20px;"></i>
+    </div>
+
+    <!-- Center Notification Toast -->
+    <div id="center-toast"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="sidebar" id="sidebarNav">
+            <div class="sidebar-brand">
+                <h2><i class="fa-solid fa-shield-halved"></i> Engine Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-circle-plus"></i> Add / Edit Space</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-house-chimney-window"></i> Live Properties</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='usermanage.html'">
+                    <button><i class="fa-solid fa-users-gear"></i> Manage Users</button>
+                </li>
+                <li class="sidebar-item active" data-target="analytics-panel">
+                    <button><i class="fa-solid fa-chart-pie"></i> Traffic Analytics</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-inbox"></i> Inquiries Inbox</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='admin.html'">
+                    <button><i class="fa-solid fa-images"></i> Slider Banners</button>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="main-content">
+            
+            <!-- PANEL: TRAFFIC ANALYTICS -->
+            <section id="analytics-panel" class="panel-view active">
+                <div class="content-header-flex">
+                    <div>
+                        <h1>Traffic & User Analytics Matrix</h1>
+                        <p>Real-time telemetry tracking visitor behaviors, geographic locations, and session durations.</p>
+                    </div>
+                    <!-- Time Filters -->
+                    <div class="filter-btn-group">
+                        <button class="filter-chip active" onclick="setAnalyticsFilter('today', this)">Today</button>
+                        <button class="filter-chip" onclick="setAnalyticsFilter('yesterday', this)">Yesterday</button>
+                        <button class="filter-chip" onclick="setAnalyticsFilter('weekly', this)">Weekly</button>
+                        <button class="filter-chip" onclick="setAnalyticsFilter('monthly', this)">Monthly</button>
+                        <button class="filter-chip" onclick="setAnalyticsFilter('yearly', this)">Yearly</button>
+                    </div>
+                </div>
+
+                <!-- Metrics Overview Cards -->
+                <div class="analytics-metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: rgba(128,0,0,0.1); color: var(--mehrum);"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <span class="metric-title">Total Unique Visitors</span>
+                            <h3 id="m-total-visitors">0</h3>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: rgba(16,185,129,0.1); color: var(--success);"><i class="fa-solid fa-eye"></i></div>
+                        <div>
+                            <span class="metric-title">Property Views</span>
+                            <h3 id="m-prop-views">0</h3>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: rgba(2,132,199,0.1); color: #0284c7;"><i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <span class="metric-title">Avg. Session Duration</span>
+                            <h3 id="m-avg-time">0m 0s</h3>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: rgba(128,128,0,0.1); color: var(--olive);"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <span class="metric-title">Active States Tracked</span>
+                            <h3 id="m-active-states">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphical Section -->
+                <div class="form-card chart-card-container">
+                    <div class="section-heading" style="margin-top:0;">Traffic Trend Graph (<span id="current-filter-label">Today</span>)</div>
+                    <div class="chart-wrapper">
+                        <canvas id="trafficTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detailed Tables Grid -->
+                <div class="grid-2" style="margin-top: 25px;">
+                    <!-- Property Interactions Table -->
+                    <div class="form-card" style="margin-bottom:0;">
+                        <div class="section-heading" style="margin-top:0;">Most Clicked Properties</div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Property Name</th>
+                                        <th>Clicks</th>
+                                        <th>Last Viewed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clicked-properties-tbody">
+                                    <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Loading interaction logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Geographic Distribution Table -->
+                    <div class="form-card" style="margin-bottom:0;">
+                        <div class="section-heading" style="margin-top:0;">Visitor Demographics (State / District)</div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>State</th>
+                                        <th>District / City</th>
+                                        <th>Visits</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="geo-location-tbody">
+                                    <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Loading telemetry origin nodes...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live User Session Log Table -->
+                <div class="form-card" style="margin-top: 25px;">
+                    <div class="section-heading" style="margin-top:0;">Live User Activity & Session Logs</div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User IP / ID</th>
+                                    <th>Location</th>
+                                    <th>Site Open Time</th>
+                                    <th>Time Spent</th>
+                                    <th>Action / Property Visited</th>
+                                </tr>
+                            </thead>
+                            <tbody id="live-sessions-tbody">
+                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Syncing live user session logs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-nav">
+        <button class="mobile-nav-item" onclick="window.location.href='admin.html'">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>Add Space</span>
+        </button>
+        <button class="mobile-nav-item" onclick="window.location.href='admin.html'">
+            <i class="fa-solid fa-house-chimney-window"></i>
+            <span>Properties</span>
+        </button>
+        <button class="mobile-nav-item active" data-target="analytics-panel">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Analytics</span>
+        </button>
+        <button class="mobile-nav-item" onclick="window.location.href='admin.html'">
+            <i class="fa-solid fa-inbox"></i>
+            <span>Inbox</span>
+        </button>
+    </nav>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- Custom Analytics Script -->
+    <script type="module" src="analytics.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ecosystem Support Desk & Command Center | Stay100%</title>
+    <title>Ecosystem Support Desk | Stay100%</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -51,7 +51,6 @@
             margin: 20px auto;
         }
 
-        /* Left Side Panel - Structural Unified Architecture Design Covering Area */
         .promo-banner-container {
             width: 100%;
             background-color: #ffffff;
@@ -78,7 +77,7 @@
             background-repeat: repeat;
             background-position: center;
             background-size: cover;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 1200' fill='none' stroke='%23556b2f' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.16'><path d='M20 150 L70 100 L120 150 Z M70 100 L70 150 M120 150 L120 80 L190 80 L190 150 M190 150 L230 110 L270 150 Z M230 110 L230 150 M270 150 L270 60 L340 60 L340 150 M340 150 L390 105 L440 150 Z M440 150 L440 80 L510 80 L510 150 M540 150 L580 110 L620 150 Z M620 150 L620 50 L690 50 L690 150 M10 150 L790 150' /><path d='M40 380 L95 325 L150 380 Z M95 325 L95 380 M150 380 L150 290 L230 290 L230 380 M190 290 L190 240 L220 240 L220 290 M230 380 L275 335 L320 380 Z M275 335 L275 380 M320 380 L320 260 L410 260 L410 380 M360 260 L360 210 L390 210 L390 260 M410 380 L465 315 L520 380 Z M465 315 L465 380 M520 380 L520 280 L610 280 L610 380 M640 380 L680 335 L720 380 Z M10 380 L790 380' /><path d='M30 650 L80 600 L130 650 Z M80 600 L80 650 M130 650 L130 560 L210 560 L210 650 M160 560 L160 510 L190 510 L190 560 M210 650 L250 610 L290 650 Z M250 610 L250 650 M290 650 L290 520 L370 520 L370 650 M320 520 L320 470 L350 470 L350 520 M370 650 L430 570 L490 650 Z M430 570 L430 650 M490 650 L490 540 L580 540 L580 650 M610 650 L650 600 L690 650 Z M650 600 L650 650 M690 650 L690 490 L770 490 L770 650 M10 650 L790 650' /><path d='M40 920 L90 870 L140 920 Z M90 870 L90 920 M140 920 L140 840 L210 840 L210 920 M210 920 L250 880 L290 920 Z M290 920 L290 810 L370 810 L370 920 M370 920 L420 875 L470 920 Z M470 920 L470 830 L540 830 L540 920 M560 920 L600 880 L640 920 Z M640 920 L640 800 L720 800 L720 920 M10 920 L790 920' /><line x1='135' y1='100' x2='135' y2='130' /><line x1='175' y1='100' x2='175' y2='130' /><line x1='285' y1='80' x2='285' y2='120' /><line x1='325' y1='80' x2='325' y2='120' /></svg>");
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 1200' fill='none' stroke='%23556b2f' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.16'><path d='M20 150 L70 100 L120 150 Z M70 100 L70 150 M120 150 L120 80 L190 80 L190 150 M190 150 L230 110 L270 150 Z M230 110 L230 150 M270 150 L270 60 L340 60 L340 150 M340 150 L390 105 L440 150 Z M440 150 L440 80 L510 80 L510 150 M540 150 L580 110 L620 150 Z M620 150 L620 50 L690 50 L690 150 M10 150 L790 150' /></svg>");
         }
 
         .promo-banner-container h2 {
@@ -129,35 +128,18 @@
             font-weight: 700; 
             letter-spacing: -0.5px;
         }
-
-        .admin-trigger-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.25);
-            transition: all 0.2s ease;
-        }
-        .admin-trigger-badge:hover {
-            background: var(--white);
-            color: var(--mehrum);
-        }
         
         .step-indicator { 
             display: flex; 
             justify-content: center; 
-            gap: 20px; 
+            gap: 15px; 
             margin: 12px 0 0 0; 
             font-weight: 600; 
             font-size: 13px; 
+            flex-wrap: wrap;
         }
         .step { 
-            color: rgba(255,255,255,0.5); 
+            color: rgba(255,255,255,0.6); 
             display: flex; 
             align-items: center; 
             gap: 6px; 
@@ -175,7 +157,6 @@
             flex: 1; 
         }
 
-        /* Segment Visibility Engines */
         .support-view-panel { display: none; }
         .support-view-panel.active { display: block; }
         
@@ -208,7 +189,7 @@
         }
         label span { color: var(--error-color); }
 
-        input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select, textarea {
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
             padding: 11px 14px; 
             border: 1px solid var(--border-color); 
             border-radius: 10px; 
@@ -244,102 +225,81 @@
         }
         .btn-submit:hover { background-color: var(--mehrum-hover); }
 
-        /* Admin Console CSS Infrastructure */
-        .admin-filter-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        /* Custom Popup Modal CSS */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 15px;
         }
-        .filter-btn {
-            background: #e5e7eb;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #4b5563;
-        }
-        .filter-btn.active {
-            background: var(--primary-olive);
-            color: var(--white);
-        }
-
-        .tickets-wrapper-scroll {
-            max-height: 500px;
-            overflow-y: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 10px;
-            background: #f9fafb;
-        }
-
-        .ticket-card {
+        .custom-modal-card {
             background: var(--white);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid var(--border-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            position: relative;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            animation: modalPop 0.3s ease-in-out;
         }
-        .ticket-card.priority-High { border-left-color: var(--error-color); }
-        .ticket-card.priority-Medium { border-left-color: var(--warning-color); }
-        .ticket-card.priority-Low { border-left-color: var(--success-color); }
-
-        .ticket-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .ticket-id { font-size: 12px; font-weight: 700; color: var(--text-gray); }
-        .ticket-role-badge {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            text-transform: uppercase;
+        .modal-icon {
+            font-size: 50px;
+            color: var(--success-color);
+            margin-bottom: 15px;
         }
-        .badge-user { background: #eff6ff; color: #2563eb; }
-        .badge-vendor { background: #fef2f2; color: var(--mehrum); }
-
-        .ticket-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text-black); }
-        .ticket-desc { font-size: 13px; color: #4b5563; line-height: 1.4; margin-bottom: 12px; }
-        
-        .ticket-meta-footer {
+        .modal-ticket-box {
+            background: #f3f4f6;
+            border: 2px dashed var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
-            color: var(--text-gray);
-            border-top: 1px dashed #e5e7eb;
-            padding-top: 10px;
         }
-
-        .admin-action-box {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
+        .modal-ticket-code {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-olive);
+            letter-spacing: 2px;
         }
-        .btn-action-resolve {
-            background: var(--success-color);
-            color: var(--white);
+        .btn-copy {
+            background: var(--primary-olive);
+            color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-copy:hover { background: var(--primary-hover); }
+
+        .tracking-result-box {
+            margin-top: 20px;
+            background: #f9fafb;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+            display: none;
         }
 
-        /* DESKTOP SPLIT MULTI-PANEL MANAGEMENT */
         @media (min-width: 992px) {
             body { padding: 30px; }
             .page-wrapper { flex-direction: row; align-items: stretch; }
             .promo-banner-container { width: 35%; padding: 40px; border-right: 1px solid #eef0eb; }
-            .promo-banner-container::before { background-size: cover; }
             .reg-container { width: 65%; border-top: none; }
             .form-body { padding: 40px; }
             .form-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
@@ -354,146 +314,135 @@
     <div class="promo-banner-container">
         <div class="desk-illustration-node"><i class="fa-solid fa-headset"></i></div>
         <h2>Stay100% Support Engine</h2>
-        <p>Real-time technical helpdesk and communication operations node for residents, users, agents, and corporate builders.</p>
+        <p>Real-time technical helpdesk and assistance operations for tenants and property owners.</p>
     </div>
 
     <div class="reg-container">
         <div class="reg-header">
-            <h1 id="support-panel-title">Ecosystem Resolution Desk</h1>
-            <div class="admin-trigger-badge" onclick="showAdminGate()"><i class="fa-solid fa-lock"></i> Staff Login</div>
+            <h1 id="support-panel-title">Tenant Support Desk</h1>
             
             <div class="step-indicator" id="roleSelectorBlock">
-                <div class="step active" id="tabUser" onclick="switchSupportRole('USER')"><i class="fa-solid fa-user"></i> Resident Support</div>
-                <div class="step" id="tabVendor" onclick="switchSupportRole('VENDOR')"><i class="fa-solid fa-building-user"></i> Vendor / Partner Desk</div>
+                <div class="step active" id="tabTenant" onclick="switchSupportRole('TENANT')"><i class="fa-solid fa-user"></i> Tenant Support</div>
+                <div class="step" id="tabOwner" onclick="switchSupportRole('OWNER')"><i class="fa-solid fa-house-chimney"></i> Property Owner Desk</div>
+                <div class="step" id="tabTrack" onclick="switchSupportRole('TRACK')"><i class="fa-solid fa-magnifying-glass"></i> Track Ticket</div>
             </div>
         </div>
 
         <div class="form-body">
             
-            <div id="panelUserSupport" class="support-view-panel active">
-                <form id="userTicketForm" onsubmit="submitSupportTicket(event, 'USER')">
-                    <div class="form-section-title"><i class="fa-solid fa-circle-info"></i> Raise Tenant / User Request</div>
+            <!-- 1. Tenant Support Form (No Payment Issues) -->
+            <div id="panelTenantSupport" class="support-view-panel active">
+                <form id="tenantTicketForm" onsubmit="submitSupportTicket(event, 'TENANT')">
+                    <div class="form-section-title"><i class="fa-solid fa-circle-info"></i> Raise Tenant Support Request</div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="usrName">Your Registered Name <span>*</span></label>
-                            <input type="text" id="usrName" placeholder="Enter complete full name" required>
+                            <label for="tenName">Your Name <span>*</span></label>
+                            <input type="text" id="tenName" placeholder="Enter complete full name" required>
                         </div>
                         <div class="form-group">
-                            <label for="usrEmail">Registered Email <span>*</span></label>
-                            <input type="email" id="usrEmail" placeholder="name@domain.com" required>
+                            <label for="tenEmail">Email Address <span>*</span></label>
+                            <input type="email" id="tenEmail" placeholder="name@domain.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="usrPhone">Contact Number <span>*</span></label>
-                            <input type="tel" id="usrPhone" placeholder="10-digit mobile number" required>
+                            <label for="tenPhone">Contact Number <span>*</span></label>
+                            <input type="tel" id="tenPhone" placeholder="10-digit mobile number" required>
                         </div>
                         <div class="form-group">
-                            <label for="usrCategory">Issue Classification Category <span>*</span></label>
-                            <select id="usrCategory" required>
+                            <label for="tenCategory">Issue Category <span>*</span></label>
+                            <select id="tenCategory" required>
                                 <option value="" disabled selected>Select category mapping</option>
-                                <option value="Booking & Token Matrix">Booking &amp; Token Matrix</option>
-                                <option value="Refund Request">Refund Request Failure</option>
-                                <option value="Room/PG Maintenance Issue">Room/PG Maintenance Issue</option>
-                                <option value="App System Bug">App System Bug/Tech Glitch</option>
+                                <option value="Room/PG Maintenance Issue">Room / PG Maintenance Issue</option>
+                                <option value="App System Bug / Glitch">App System Bug / Tech Glitch</option>
+                                <option value="Property Facility Inquiry">Property Facility Inquiry</option>
+                                <option value="General Support">General Support</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="usrSeverity">Impact Severity <span>*</span></label>
-                            <select id="usrSeverity" required>
+                            <label for="tenSeverity">Impact Severity <span>*</span></label>
+                            <select id="tenSeverity" required>
                                 <option value="Low">Low - Casual Inquiry</option>
                                 <option value="Medium" selected>Medium - Operational Block</option>
-                                <option value="High">High - Critical Infrastructure Failure</option>
+                                <option value="High">High - Critical Issue</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="usrSubject">Core Subject Heading <span>*</span></label>
-                            <input type="text" id="usrSubject" placeholder="Brief tagline of problem statement" required>
+                            <label for="tenSubject">Core Subject Heading <span>*</span></label>
+                            <input type="text" id="tenSubject" placeholder="Brief tagline of problem statement" required>
                         </div>
                         <div class="form-group full-width">
-                            <label for="usrMessage">Elaborate Structural Description <span>*</span></label>
-                            <textarea id="usrMessage" rows="4" placeholder="Provide tracking parameters, flat numbers, or reference IDs..." required></textarea>
+                            <label for="tenMessage">Detailed Description <span>*</span></label>
+                            <textarea id="tenMessage" rows="4" placeholder="Provide flat numbers or reference details..." required></textarea>
                         </div>
                     </div>
-                    <button type="submit" class="btn-submit">Dispatch Ticket Node <i class="fa-solid fa-paper-plane"></i></button>
+                    <button type="submit" class="btn-submit">Submit Tenant Ticket <i class="fa-solid fa-paper-plane"></i></button>
                 </form>
             </div>
 
-            <div id="panelVendorSupport" class="support-view-panel">
-                <form id="vendorTicketForm" onsubmit="submitSupportTicket(event, 'VENDOR')">
-                    <div class="form-section-title"><i class="fa-solid fa-sliders"></i> Raise Merchant / Broker Escalation</div>
+            <!-- 2. Property Owner Support Form (Includes Payment & Payout Issues) -->
+            <div id="panelOwnerSupport" class="support-view-panel">
+                <form id="ownerTicketForm" onsubmit="submitSupportTicket(event, 'PROPERTY OWNER')">
+                    <div class="form-section-title"><i class="fa-solid fa-house-laptop"></i> Raise Property Owner Escalation</div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="vndName">Partner / Firm Corporate Name <span>*</span></label>
-                            <input type="text" id="vndName" placeholder="e.g., Elite Reality Nodes" required>
+                            <label for="ownName">Owner / Property Name <span>*</span></label>
+                            <input type="text" id="ownName" placeholder="Enter owner full name" required>
                         </div>
                         <div class="form-group">
-                            <label for="vndEmail">Vendor Account Email <span>*</span></label>
-                            <input type="email" id="vndEmail" placeholder="partner@firm.com" required>
+                            <label for="ownEmail">Registered Email <span>*</span></label>
+                            <input type="email" id="ownEmail" placeholder="owner@domain.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="vndPhone">Mobile Line <span>*</span></label>
-                            <input type="tel" id="vndPhone" placeholder="Registered 10-digit line" required>
+                            <label for="ownPhone">Contact Number <span>*</span></label>
+                            <input type="tel" id="ownPhone" placeholder="10-digit mobile number" required>
                         </div>
                         <div class="form-group">
-                            <label for="vndCategory">Operational Loop Category <span>*</span></label>
-                            <select id="vndCategory" required>
-                                <option value="" disabled selected>Select execution barrier</option>
-                                <option value="Listing Verification Blocked">Listing Verification Blocked</option>
-                                <option value="Payout/Commission Reconciliation">Payout / Commission Reconciliation</option>
-                                <option value="Lease Generation Failure">Lease Generation Failure</option>
-                                <option value="Account Access Recovery">Account Access Recovery</option>
+                            <label for="ownCategory">Issue Category (Includes Payouts) <span>*</span></label>
+                            <select id="ownCategory" required>
+                                <option value="" disabled selected>Select category mapping</option>
+                                <option value="Rent Payout Disbursement Issue">Rent / Payout Disbursement Issue</option>
+                                <option value="Booking & Commission Payment Query">Booking & Commission Payment Query</option>
+                                <option value="Property Listing Verification">Property Listing Verification</option>
+                                <option value="Tenant Agreement / Lease Issue">Tenant Agreement / Lease Issue</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="vndSeverity">Operational Risk Impact <span>*</span></label>
-                            <select id="vndSeverity" required>
-                                <option value="Low">Low - Profile Adjustments</option>
-                                <option value="Medium" selected>Medium - Financial Processing Discrepancy</option>
-                                <option value="High">High - Legal / RERA Core Errors</option>
+                            <label for="ownSeverity">Impact Severity <span>*</span></label>
+                            <select id="ownSeverity" required>
+                                <option value="Low">Low - Profile Update</option>
+                                <option value="Medium" selected>Medium - Financial / Operational Discrepancy</option>
+                                <option value="High">High - Critical Payment Block</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="vndSubject">Escalation Header <span>*</span></label>
-                            <input type="text" id="vndSubject" placeholder="Primary topic descriptor" required>
+                            <label for="ownSubject">Core Subject Heading <span>*</span></label>
+                            <input type="text" id="ownSubject" placeholder="Brief subject description" required>
                         </div>
                         <div class="form-group full-width">
-                            <label for="vndMessage">Comprehensive Summary <span>*</span></label>
-                            <textarea id="vndMessage" rows="4" placeholder="Specify property RERA tag strings, location maps, or ledger audit reference sequences..." required></textarea>
+                            <label for="ownMessage">Detailed Description & Reference <span>*</span></label>
+                            <textarea id="ownMessage" rows="4" placeholder="Specify property ID, payment transaction reference, etc..." required></textarea>
                         </div>
                     </div>
-                    <button type="submit" class="btn-submit" style="background-color: var(--primary-olive);">File Corporate Ticket <i class="fa-solid fa-shield-heart"></i></button>
+                    <button type="submit" class="btn-submit" style="background-color: var(--primary-olive);">Submit Owner Ticket <i class="fa-solid fa-shield-heart"></i></button>
                 </form>
             </div>
 
-            <div id="panelAdminCommandCenter" class="support-view-panel">
-                
-                <div id="adminGateKeeperForm">
-                    <div class="form-section-title"><i class="fa-solid fa-key"></i> Internal Staff Matrix Authorization</div>
-                    <div style="max-width: 400px; margin: 0 auto; padding: 20px 0;">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label>Secure Key Code Pass</label>
-                            <input type="password" id="adminPasskey" placeholder="Enter structural admin master token">
-                        </div>
-                        <button type="button" class="btn-submit" onclick="verifyAdminCredentials()">Verify Secure Clearance</button>
-                        <button type="button" class="btn-submit" style="background: transparent; color: var(--text-gray); box-shadow: none;" onclick="exitAdminView()">Abort Session</button>
+            <!-- 3. Track Ticket Status Panel -->
+            <div id="panelTrackSupport" class="support-view-panel">
+                <div class="form-section-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Track Existing Ticket Status</div>
+                <div style="max-width: 450px; margin: 0 auto;">
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label>Ticket Number (e.g., AB1234)</label>
+                        <input type="text" id="trackTicketIdInput" placeholder="Enter 6-character ticket ID">
                     </div>
-                </div>
-
-                <div id="adminVerifiedWorkspace" style="display: none;">
-                    <div class="form-section-title"><i class="fa-solid fa-chart-line"></i> Real-Time Operations Control Center</div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Registered Mobile Number</label>
+                        <input type="tel" id="trackPhoneInput" placeholder="10-digit mobile number">
+                    </div>
+                    <button type="button" class="btn-submit" onclick="trackTicketStatus()">Search Status Node</button>
                     
-                    <div class="admin-filter-bar">
-                        <button class="filter-btn active" id="fltrAll" onclick="filterTickets('ALL')">All Streams</button>
-                        <button class="filter-btn" id="fltrUser" onclick="filterTickets('USER')">Residents Only</button>
-                        <button class="filter-btn" id="fltrVendor" onclick="filterTickets('VENDOR')">Vendors Only</button>
-                        <button class="filter-btn" id="fltrOpen" onclick="filterTickets('OPEN')">Open State</button>
-                        <button class="filter-btn" id="fltrResolved" onclick="filterTickets('RESOLVED')">Resolved Records</button>
+                    <div id="trackingResultBox" class="tracking-result-box">
+                        <!-- Dynamic result populated here -->
                     </div>
-
-                    <div class="tickets-wrapper-scroll" id="adminLiveTicketStream">
-                        <p style="text-align: center; color: var(--text-gray); padding: 20px;">Synchronizing structural active connection tracks...</p>
-                    </div>
-                    
-                    <button type="button" class="btn-submit" style="background-color: #4b5563; margin-top:20px;" onclick="exitAdminView()">Disconnect Control Desk Session</button>
                 </div>
             </div>
 
@@ -501,229 +450,182 @@
     </div>
 </div>
 
+<!-- Custom Popup Modal for Ticket Generation -->
+<div id="ticketSuccessModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+        <div class="modal-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3 style="color: var(--primary-olive); margin-bottom: 8px;">Ticket Registered Successfully!</h3>
+        <p style="font-size: 13px; color: var(--text-gray);">Your complaint has been logged and sent to admin. Please save your ticket number.</p>
+        
+        <div class="modal-ticket-box">
+            <span id="generatedTicketCode" class="modal-ticket-code">AB1234</span>
+            <button class="btn-copy" onclick="copyTicketToClipboard()"><i class="fa-solid fa-copy"></i> Copy</button>
+        </div>
+
+        <button type="button" class="btn-submit" style="margin-top: 15px;" onclick="closeTicketModal()">Okay, Proceed</button>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-    // Firebase Configuration String Setup
-    const firebaseConfig = {
-        databaseURL: "https://stay100-cd796-default-rtdb.firebaseio.com/"
-    };
-    
-    // Initialize Structural Firebase Context Securely
+    // Firebase Configuration
     let db;
     try {
-       const firebaseConfig = {
-  apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
-  authDomain: "stay100-31316.firebaseapp.com",
-  databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "stay100-31316",
-  storageBucket: "stay100-31316.firebasestorage.app",
-  messagingSenderId: "91816784620",
-  appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
-  measurementId: "G-4J40FKKDNT"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcStFHPf5AOCZgqMCWq9T7nd4lFXAcA8M",
+            authDomain: "stay100-31316.firebaseapp.com",
+            databaseURL: "https://stay100-31316-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "stay100-31316",
+            storageBucket: "stay100-31316.firebasestorage.app",
+            messagingSenderId: "91816784620",
+            appId: "1:91816784620:web:45cbf9baa3808fc580ebc9",
+            measurementId: "G-4J40FKKDNT"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         db = firebase.database();
     } catch(e) {
-        console.error("Firebase initializing anomaly sequence caught: ", e);
+        console.error("Firebase initialization error: ", e);
     }
 
-    // Active State Trackers
-    let currentActiveFilter = "ALL";
-    let globalTicketsCollection = {};
+    // Function to generate 6-character ticket ID (2 Alphabets + 4 Digits)
+    function generateCustomTicketId() {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const digits = "0123456789";
+        let result = "";
+        result += letters.charAt(Math.floor(Math.random() * letters.length));
+        result += letters.charAt(Math.floor(Math.random() * letters.length));
+        for (let i = 0; i < 4; i++) {
+            result += digits.charAt(Math.floor(Math.random() * digits.length));
+        }
+        return result;
+    }
 
-    // Tab Interface Routing Switches
+    // Role Switcher Tabs
     function switchSupportRole(role) {
         document.querySelectorAll('.support-view-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
         
-        if(role === 'USER') {
-            document.getElementById('panelUserSupport').classList.add('active');
-            document.getElementById('tabUser').classList.add('active');
-            document.getElementById('support-panel-title').innerText = "Ecosystem Resolution Desk";
-            document.getElementById('roleSelectorBlock').style.display = "flex";
-        } else if (role === 'VENDOR') {
-            document.getElementById('panelVendorSupport').classList.add('active');
-            document.getElementById('tabVendor').classList.add('active');
-            document.getElementById('support-panel-title').innerText = "Merchant Escalation Hub";
-            document.getElementById('roleSelectorBlock').style.display = "flex";
+        if(role === 'TENANT') {
+            document.getElementById('panelTenantSupport').classList.add('active');
+            document.getElementById('tabTenant').classList.add('active');
+            document.getElementById('support-panel-title').innerText = "Tenant Support Desk";
+        } else if (role === 'OWNER') {
+            document.getElementById('panelOwnerSupport').classList.add('active');
+            document.getElementById('tabOwner').classList.add('active');
+            document.getElementById('support-panel-title').innerText = "Property Owner Escalation Desk";
+        } else if (role === 'TRACK') {
+            document.getElementById('panelTrackSupport').classList.add('active');
+            document.getElementById('tabTrack').classList.add('active');
+            document.getElementById('support-panel-title').innerText = "Ticket Status Tracker";
         }
     }
 
-    // Admin Access Navigation Engines
-    function showAdminGate() {
-        document.querySelectorAll('.support-view-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('panelAdminCommandCenter').classList.add('active');
-        document.getElementById('support-panel-title').innerText = "System Command Deck";
-        document.getElementById('roleSelectorBlock').style.display = "none";
-        document.getElementById('adminGateKeeperForm').style.display = "block";
-        document.getElementById('adminVerifiedWorkspace').style.display = "none";
-    }
-
-    function verifyAdminCredentials() {
-        const passkey = document.getElementById('adminPasskey').value;
-        // High security dynamic credential mask
-        if(passkey === "STAY100@ADMIN") {
-            document.getElementById('adminGateKeeperForm').style.display = "none";
-            document.getElementById('adminVerifiedWorkspace').style.display = "block";
-            initializeLiveSupportStream();
-        } else {
-            alert("Security Clearance Refused: Authorization mismatch protocol initiated.");
-        }
-    }
-
-    function exitAdminView() {
-        document.getElementById('adminPasskey').value = "";
-        switchSupportRole('USER');
-    }
-
-    // Core Request Transmit Sub-Routine Engine
+    // Submit Ticket Handler
     function submitSupportTicket(event, roleContext) {
         event.preventDefault();
         
         let targetDataPayload = {};
-        const timestampMarker = new Date().toISOString();
-        const computedTicketId = "ST100-" + Math.floor(100000 + Math.random() * 900000);
+        
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const dateTimeString = `${formattedDate}, ${formattedTime}`;
+        
+        const computedTicketId = generateCustomTicketId();
 
-        if(roleContext === 'USER') {
+        if(roleContext === 'TENANT') {
             targetDataPayload = {
                 ticketId: computedTicketId,
-                role: "USER",
-                name: document.getElementById('usrName').value,
-                email: document.getElementById('usrEmail').value,
-                phone: document.getElementById('usrPhone').value,
-                category: document.getElementById('usrCategory').value,
-                severity: document.getElementById('usrSeverity').value,
-                subject: document.getElementById('usrSubject').value,
-                message: document.getElementById('usrMessage').value,
+                role: "TENANT",
+                name: document.getElementById('tenName').value,
+                email: document.getElementById('tenEmail').value,
+                phone: document.getElementById('tenPhone').value,
+                category: document.getElementById('tenCategory').value,
+                severity: document.getElementById('tenSeverity').value,
+                subject: document.getElementById('tenSubject').value,
+                message: document.getElementById('tenMessage').value,
                 status: "OPEN",
-                createdTime: timestampMarker
+                createdDateTime: dateTimeString
             };
         } else {
             targetDataPayload = {
                 ticketId: computedTicketId,
-                role: "VENDOR",
-                name: document.getElementById('vndName').value,
-                email: document.getElementById('vndEmail').value,
-                phone: document.getElementById('vndPhone').value,
-                category: document.getElementById('vndCategory').value,
-                severity: document.getElementById('vndSeverity').value,
-                subject: document.getElementById('vndSubject').value,
-                message: document.getElementById('vndMessage').value,
+                role: "PROPERTY OWNER",
+                name: document.getElementById('ownName').value,
+                email: document.getElementById('ownEmail').value,
+                phone: document.getElementById('ownPhone').value,
+                category: document.getElementById('ownCategory').value,
+                severity: document.getElementById('ownSeverity').value,
+                subject: document.getElementById('ownSubject').value,
+                message: document.getElementById('ownMessage').value,
                 status: "OPEN",
-                createdTime: timestampMarker
+                createdDateTime: dateTimeString
             };
         }
 
-        // Write directly to Realtime Database
         if(db) {
             db.ref('support_tickets/' + computedTicketId).set(targetDataPayload, function(error) {
                 if (error) {
-                    alert("Transmission block encountered: Database sync fault.");
+                    alert("Transmission error: Database sync fault.");
                 } else {
-                    alert(`Ticket registered successfully! Reference Sequence Node: ${computedTicketId}`);
-                    document.getElementById('userTicketForm').reset();
-                    document.getElementById('vendorTicketForm').reset();
+                    document.getElementById('generatedTicketCode').innerText = computedTicketId;
+                    document.getElementById('ticketSuccessModal').style.display = 'flex';
+                    
+                    document.getElementById('tenantTicketForm').reset();
+                    document.getElementById('ownerTicketForm').reset();
                 }
             });
         } else {
-            alert("Database environment not loaded. Target trace failed.");
+            alert("Database environment not loaded properly.");
         }
     }
 
-    // Realtime Sync Loop Reader Engine for Admin Command
-    function initializeLiveSupportStream() {
-        if(!db) return;
-        
-        db.ref('support_tickets').on('value', function(snapshot) {
-            globalTicketsCollection = snapshot.val() || {};
-            renderTicketStreamInterface();
+    function copyTicketToClipboard() {
+        const ticketCode = document.getElementById('generatedTicketCode').innerText;
+        navigator.clipboard.writeText(ticketCode).then(() => {
+            alert("Ticket number copied: " + ticketCode);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
         });
     }
 
-    // Dynamic Filter Core Rules
-    function filterTickets(filterCriteria) {
-        currentActiveFilter = filterCriteria;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        
-        if(filterCriteria === 'ALL') document.getElementById('fltrAll').classList.add('active');
-        if(filterCriteria === 'USER') document.getElementById('fltrUser').classList.add('active');
-        if(filterCriteria === 'VENDOR') document.getElementById('fltrVendor').classList.add('active');
-        if(filterCriteria === 'OPEN') document.getElementById('fltrOpen').classList.add('active');
-        if(filterCriteria === 'RESOLVED') document.getElementById('fltrResolved').classList.add('active');
-        
-        renderTicketStreamInterface();
+    function closeTicketModal() {
+        document.getElementById('ticketSuccessModal').style.display = 'none';
     }
 
-    // UI Render Engine for Dashboard Stream Mapping
-    function renderTicketStreamInterface() {
-        const targetContainer = document.getElementById('adminLiveTicketStream');
-        targetContainer.innerHTML = "";
-        
-        const ticketKeysArray = Object.keys(globalTicketsCollection).reverse();
-        let registeredMatchesCount = 0;
+    function trackTicketStatus() {
+        const inputTicket = document.getElementById('trackTicketIdInput').value.trim().toUpperCase();
+        const inputPhone = document.getElementById('trackPhoneInput').value.trim();
+        const resultBox = document.getElementById('trackingResultBox');
 
-        if(ticketKeysArray.length === 0) {
-            targetContainer.innerHTML = `<p style="text-align: center; color: var(--text-gray); padding: 30px;">Zero live ticket entries discovered in node directory.</p>`;
+        if(!inputTicket || !inputPhone) {
+            alert("Please provide both Ticket Number and Registered Mobile Number.");
             return;
         }
 
-        ticketKeysArray.forEach(key => {
-            const currentItem = globalTicketsCollection[key];
-            
-            // Check Matching Evaluation Rules
-            let evaluationPass = false;
-            if(currentActiveFilter === 'ALL') evaluationPass = true;
-            else if(currentActiveFilter === 'USER' && currentItem.role === 'USER') evaluationPass = true;
-            else if(currentActiveFilter === 'VENDOR' && currentItem.role === 'VENDOR') evaluationPass = true;
-            else if(currentActiveFilter === 'OPEN' && currentItem.status === 'OPEN') evaluationPass = true;
-            else if(currentActiveFilter === 'RESOLVED' && currentItem.status === 'RESOLVED') evaluationPass = true;
+        if(db) {
+            db.ref('support_tickets/' + inputTicket).once('value', (snapshot) => {
+                const data = snapshot.val();
+                resultBox.style.display = 'block';
 
-            if(evaluationPass) {
-                registeredMatchesCount++;
-                const cardNode = document.createElement('div');
-                cardNode.className = `ticket-card priority-${currentItem.severity}`;
-                
-                cardNode.innerHTML = `
-                    <div class="ticket-card-header">
-                        <span class="ticket-id"><i class="fa-solid fa-hashtag"></i> ${currentItem.ticketId}</span>
-                        <span class="ticket-role-badge badge-${currentItem.role.toLowerCase()}">${currentItem.role}</span>
-                    </div>
-                    <div class="ticket-title">${currentItem.subject}</div>
-                    <div class="ticket-desc">${currentItem.message}</div>
-                    <div style="font-size:12px; margin-bottom:10px;">
-                        <strong>Category:</strong> ${currentItem.category} | <strong>Impact Level:</strong> ${currentItem.severity}
-                    </div>
-                    <div class="ticket-meta-footer">
-                        <span><i class="fa-solid fa-envelope"></i> ${currentItem.email} | <i class="fa-solid fa-phone"></i> ${currentItem.phone}</span>
-                        <span style="font-weight:700; color: ${currentItem.status === 'OPEN' ? 'var(--error-color)' : 'var(--success-color)'}">${currentItem.status}</span>
-                    </div>
-                    ${currentItem.status === 'OPEN' ? `
-                        <div class="admin-action-box">
-                            <button class="btn-action-resolve" onclick="resolveTicketSequence('${currentItem.ticketId}')"><i class="fa-solid fa-check"></i> Mark Resolved</button>
+                if(data && data.phone === inputPhone) {
+                    let statusColor = data.status === 'OPEN' ? 'var(--error-color)' : 'var(--success-color)';
+                    resultBox.innerHTML = `
+                        <div style="font-size: 13px; line-height: 1.6;">
+                            <p><strong>Ticket ID:</strong> ${data.ticketId}</p>
+                            <p><strong>Role:</strong> ${data.role}</p>
+                            <p><strong>Subject:</strong> ${data.subject}</p>
+                            <p><strong>Category:</strong> ${data.category}</p>
+                            <p><strong>Logged On:</strong> ${data.createdDateTime}</p>
+                            <p><strong>Current Status:</strong> <span style="color: ${statusColor}; font-weight: 700;">${data.status}</span></p>
                         </div>
-                    ` : ''}
-                `;
-                targetContainer.appendChild(cardNode);
-            }
-        });
-
-        if(registeredMatchesCount === 0) {
-            targetContainer.innerHTML = `<p style="text-align: center; color: var(--text-gray); padding: 30px;">No operational tickets match the active filter criteria matrix.</p>`;
-        }
-    }
-
-    // Update Action Task Executor Node
-    function resolveTicketSequence(ticketId) {
-        if(!db) return;
-        if(confirm(`Confirm legal resolution update for Node ticket stream record: ${ticketId}?`)) {
-            db.ref('support_tickets/' + ticketId).update({
-                status: "RESOLVED"
-            }, function(error) {
-                if(error) {
-                    alert("State configuration rewrite failed.");
+                    `;
                 } else {
-                    alert("Ticket entry set to RESOLVED tracking array safely.");
+                    resultBox.innerHTML = `<p style="color: var(--error-color); font-size: 13px; font-weight: 600;">No matching record found. Please check your Ticket ID and Mobile Number.</p>`;
                 }
             });
         }

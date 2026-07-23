@@ -33,7 +33,7 @@ window.filterState = {
     maxBudget: Infinity,
     area: "",
     gender: "all",
-    sharingType: [],     
+    sharingType: [],    
     furnishing: [],      
     foodIncluded: false, 
     verifiedOnly: false, 
@@ -41,6 +41,54 @@ window.filterState = {
     nearbyHubs: []       
 };
 
+// ==========================================
+// --- TRAFFIC & SESSION ANALYTICS MATRIX ---
+// ==========================================
+const openTime = new Date().toISOString();
+let sessionStartEpoch = Date.now();
+
+// Default fallback geolocation state
+window.visitorGeo = { 
+    state: 'Rajasthan', 
+    district: 'Jaipur', 
+    userIp: '127.0.0.1' 
+};
+
+// Fetch real-time client location via IP API in background
+fetch('https://ipapi.co/json/')
+  .then(res => res.json())
+  .then(data => {
+      if (data && data.region) {
+          window.visitorGeo = {
+              state: data.region,
+              district: data.city || 'Jaipur',
+              userIp: data.ip || '127.0.0.1'
+          };
+      }
+  }).catch(() => {
+      console.log("Geo IP lookup fallback active.");
+  });
+
+/**
+ * Property Click Telemetry Logger function.
+ * Isko aapko apni UI me property card click ya detail view open hone par call karna hai:
+ * Example: onclick="logPropertyClick('Royal Palm PG')"
+ */
+window.logPropertyClick = function(propertyName) {
+    const timeSpentSeconds = Math.floor((Date.now() - sessionStartEpoch) / 1000);
+    const analyticsPayload = {
+        openTime: openTime,
+        timeSpentSeconds: timeSpentSeconds,
+        propertyClicked: propertyName,
+        state: window.visitorGeo.state,
+        district: window.visitorGeo.district,
+        userIp: window.visitorGeo.userIp
+    };
+    
+    // Push data directly to Firebase 'site_analytics' endpoint
+    firebase.database().ref('site_analytics').push(analyticsPayload)
+        .catch(err => console.error("Analytics Push Error:", err));
+};
 // Toast Notification Subsystem
 window.showCenterToast = function(message, isSuccess = true) {
     const activeToast = document.getElementById('staypremium-center-toast');

@@ -14,6 +14,16 @@
             padding: 0;
         }
 
+        :root {
+            --brand-olive: #556B2F;
+            --brand-olive-light: #6b8e23;
+            --brand-maroon: #800020;
+            --dark-charcoal: #111827;
+            --muted-slate: #4b5563;
+            --pure-white: #ffffff;
+            --accent-bg: rgba(128, 0, 32, 0.04);
+        }
+
         body {
             overflow-x: hidden;
             width: 100%;
@@ -54,7 +64,7 @@
         .doc-header h1 {
             font-size: clamp(26px, 5vw, 36px);
             font-weight: 800;
-            color: #0f172a;
+            color: var(--brand-olive);
             margin-bottom: 10px;
         }
         .doc-header p {
@@ -79,9 +89,9 @@
             background: #f8fafc;
         }
         .faq-search-box input:focus {
-            border-color: #4f46e5;
+            border-color: var(--brand-maroon);
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 4px rgba(128, 0, 32, 0.1);
         }
         .faq-search-box i {
             position: absolute;
@@ -125,7 +135,7 @@
             color: #0f172a;
         }
         .faq-tab-btn.active {
-            background: #4f46e5;
+            background: var(--brand-maroon);
             color: #fff;
         }
 
@@ -136,14 +146,14 @@
         .faq-group h2 {
             font-size: 18px;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--brand-olive);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         .faq-group h2 i {
-            color: #4f46e5;
+            color: var(--brand-maroon);
         }
 
         .faq-item {
@@ -159,7 +169,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.01);
         }
         .faq-item.active {
-            border-color: #4f46e5;
+            border-color: var(--brand-maroon);
         }
 
         .faq-trigger {
@@ -182,7 +192,7 @@
             transition: color 0.2s ease;
         }
         .faq-item.active .faq-question {
-            color: #4f46e5;
+            color: var(--brand-maroon);
         }
         .faq-icon {
             font-size: 14px;
@@ -191,7 +201,7 @@
         }
         .faq-item.active .faq-icon {
             transform: rotate(180deg);
-            color: #4f46e5;
+            color: var(--brand-maroon);
         }
 
         .faq-content {
@@ -211,21 +221,21 @@
 
         /* --- HYPERLINKS STYLE --- */
         .doc-link {
-            color: #4f46e5;
+            color: var(--brand-maroon);
             text-decoration: none;
             font-weight: 600;
-            border-bottom: 1px dashed #4f46e5;
+            border-bottom: 1px dashed var(--brand-maroon);
             transition: all 0.2s ease;
         }
         .doc-link:hover {
-            color: #4338ca;
+            color: #500014;
             border-bottom-style: solid;
         }
 
         /* --- CALLOUT BOX --- */
         .doc-callout {
-            background: #eeebff;
-            border-left: 4px solid #4f46e5;
+            background: rgba(128, 0, 32, 0.05);
+            border-left: 4px solid var(--brand-maroon);
             padding: 20px;
             border-radius: 0 12px 12px 0;
             margin: 35px 0 10px 0;
@@ -233,7 +243,7 @@
         }
         .doc-callout p {
             font-size: 14px;
-            color: #4338ca;
+            color: var(--brand-maroon);
             margin: 0;
             font-weight: 500;
         }
@@ -263,128 +273,114 @@
             
             <div class="doc-header">
                 <h1>Frequently Asked Questions</h1>
-                <p>Have questions about bookings, payments, or properties? Find your answers here.</p>
+                <p>Have questions about STAY100%, listings, subscriptions, or policies? Find your answers here.</p>
             </div>
 
             <div class="faq-search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="faqSearchInput" placeholder="Search for answers (e.g., Refund, Deposit, Owner)...">
+                <input type="text" id="faqSearchInput" placeholder="Search for answers (e.g., Subscription, Scam, Fine, Agreement)...">
             </div>
 
             <div class="faq-tabs">
                 <button class="faq-tab-btn active" onclick="filterFaqCategory('all')">All FAQs</button>
-                <button class="faq-tab-btn" onclick="filterFaqCategory('bookings')">Bookings & Leases</button>
-                <button class="faq-tab-btn" onclick="filterFaqCategory('payments')">Payments & Security</button>
-                <button class="faq-tab-btn" onclick="filterFaqCategory('amenities')">Amenities & Life</button>
+                <button class="faq-tab-btn" onclick="filterFaqCategory('platform')">Platform & Listings</button>
+                <button class="faq-tab-btn" onclick="filterFaqCategory('payments')">Subscriptions & Payments</button>
+                <button class="faq-tab-btn" onclick="filterFaqCategory('security')">Security & Penalties</button>
             </div>
 
             <div id="faqAccordionWrapper">
                 
-                <div class="faq-group" data-category="bookings">
-                    <h2><i class="fa-solid fa-hotel"></i> Bookings & Leases</h2>
+                <div class="faq-group" data-category="platform">
+                    <h2><i class="fa-solid fa-hotel"></i> Platform & Listings</h2>
                     
                     <div class="faq-item">
                         <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">How do I book a premium room or flat on STAY100%?</span>
+                            <span class="faq-question">What is STAY100% and what types of properties are listed here?</span>
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-content">
                             <div class="faq-inner-text">
-                                You can browse available properties, select your preferred stay, and click on "Inquiry Now" or "View Details" to connect directly with the host/owner.
-                                <br><br>
-                                <strong style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Important Note:</strong> STAY100% is a property discovery platform and <u>does not</u> create, draft, or execute rent agreements. All lease contracts, rent agreements, and mutual terms must be discussed and finalized directly between the Property Owner/Manager and the Tenant.
+                                STAY100% is an exclusive rental platform built solely for PGs, rooms, and flats. We act as a bridge to connect property seekers directly with verified spaces.
                             </div>
                         </div>
                     </div>
 
                     <div class="faq-item">
                         <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">Who is responsible for the rent agreement paperwork?</span>
+                            <span class="faq-question">Can property owners list their properties for free on STAY100%?</span>
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-content">
                             <div class="faq-inner-text">
-                                The property owner or manager is solely responsible for creating and providing the rent agreement. STAY100% has no involvement or intervention in legal contracts, police verification, or rental documentation loops.
+                                Yes! Owners can list their properties completely free of cost on STAY100% to reach thousands of potential tenants looking for PGs, rooms, and flats.
                             </div>
                         </div>
                     </div>
 
                     <div class="faq-item">
                         <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">What documents are required for background KYC verification?</span>
+                            <span class="faq-question">Does STAY100% handle rent agreements or legal contracts?</span>
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-content">
                             <div class="faq-inner-text">
-                                To protect platform integrity, owners usually check standard government-issued documents like an Aadhar Card, PAN card, or Passport, along with corporate employment proof or student IDs before moving in.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">Can I cancel my room booking contract before moving in?</span>
-                            <i class="fa-solid fa-chevron-down faq-icon"></i>
-                        </button>
-                        <div class="faq-content">
-                            <div class="faq-inner-text">
-                                Yes, inquiries or reservations can be managed through your account. However, token advance or holding money refunds are governed entirely by the policy of that specific property owner, as STAY100% does not hold your security amounts.
+                                <strong style="color: var(--brand-maroon);"><i class="fa-solid fa-triangle-exclamation"></i> Important Notice:</strong> STAY100% does not create or draft any property rent agreements. Any misunderstandings, disputes, or issues between tenants and owners are strictly outside STAY100%’s liability. We only connect tenants and property owners.
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="faq-group" data-category="payments">
-                    <h2><i class="fa-solid fa-credit-card"></i> Payments & Security</h2>
+                    <h2><i class="fa-solid fa-credit-card"></i> Subscriptions & Payments</h2>
                     
                     <div class="faq-item">
                         <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">Is my platform transaction fully secure?</span>
+                            <span class="faq-question">Is there any payment process for tenants on STAY100%?</span>
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-content">
                             <div class="faq-inner-text">
-                                Absolutely. Any premium listings activation or token features handled directly on STAY100% are processed through certified, industry-standard secure Payment Gateway Partners using end-to-end encryption architecture.
+                                No, there are no payment processes or fees for tenants on STAY100% platform. Tenants can search and connect with owners freely.
                             </div>
                         </div>
                     </div>
 
                     <div class="faq-item">
                         <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">How much security deposit do I need to pay to the owner?</span>
+                            <span class="faq-question">Who is the payment process meant for, and what are the benefits of subscriptions?</span>
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-content">
                             <div class="faq-inner-text">
-                                Security deposit metrics differ by landlord, though most properties listed on our app request a standard 1-month or 2-month rental amount. The expected range is transparently displayed on the property card layout.
+                                The payment process on STAY100% is exclusively for property owners to purchase a subscription package. 
+                                <br><br>
+                                <strong>Benefits of a Subscription:</strong>
+                                <ul style="margin-left: 20px; margin-top: 8px; line-height: 1.6;">
+                                    <li>Properties with an active subscription are showcased at the very top of search results.</li>
+                                    <li>A special <strong>Verified Badge</strong> is displayed on the property listing to build immediate user trust.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-group" data-category="amenities">
-                    <h2><i class="fa-solid fa-couch"></i> Amenities & Lifestyle</h2>
+                <div class="faq-group" data-category="security">
+                    <h2><i class="fa-solid fa-shield-halved"></i> Security & Penalties</h2>
                     
                     <div class="faq-item">
                         <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">What amenities are included under the "Fully Furnished" space badge?</span>
+                            <span class="faq-question">What happens if a tenant or owner provides wrong contact/property details?</span>
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-content">
                             <div class="faq-inner-text">
-                                Spaces displaying this badge generally feature setup utilities such as high-speed Wi-Fi, air conditioning (AC), clean beddings, functional wardrobes, and basic appliances managed by the host.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-trigger" onclick="toggleFaqItem(this)">
-                            <span class="faq-question">Are meals included in the rent or charged separately?</span>
-                            <i class="fa-solid fa-chevron-down faq-icon"></i>
-                        </button>
-                        <div class="faq-content">
-                            <div class="faq-inner-text">
-                                It depends entirely on the property setup. Check for the "Food" badge on the property card's facilities grid. If the details specify `foodIncluded` or `mess available`, meals are integrated into the facility package.
+                                Strict measures are enforced against fraudulent activities. If any tenant or owner provides incorrect details or engages in scams:
+                                <ul style="margin-left: 20px; margin-top: 8px; line-height: 1.6;">
+                                    <li>Strict <strong>police action</strong> can be taken against them.</li>
+                                    <li>Their account will be <strong>permanently disabled</strong>.</li>
+                                    <li>They must pay a fine of up to <strong>₹1,000</strong> to STAY100%.</li>
+                                    <li>If a user or owner is scammed due to wrong details, the offender must separately pay a <strong>₹1,000 fine</strong> directly to the affected party.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -393,7 +389,7 @@
             </div>
 
             <div class="doc-callout">
-                <p><i class="fa-solid fa-headset"></i> Still need clarification? <a href="contact.html" class="doc-link">Submit a Grievance Ticket</a> or drop an email to our support team.</p>
+                <p><i class="fa-solid fa-headset"></i> Need further assistance? Contact us at <a href="mailto:supportstay100@gmail.com" class="doc-link">supportstay100@gmail.com</a> or call <a href="tel:+919680063684" class="doc-link">+91-9680063684</a>.</p>
             </div>
 
         </div>
@@ -486,7 +482,6 @@
                 }
             });
         });
-    </script>
     </script>
 
 <!-- 1. इंस्टाग्राम लाइव प्रोफाइल सेक्शन कंटेनर -->

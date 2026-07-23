@@ -3,508 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StayPremium - Ultimate Control Matrix Engine</title>
+    <title>StayPremium Engine | Master Admin Control</title>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
     <link rel="stylesheet" href="admin.css">
-    
-    <style>
-        /* PIN Lock Overlay Styles */
-        .pin-lock-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0f172a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999; /* Ensure it stays above everything */
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #ffffff;
-        }
-        
-        .pin-lock-card {
-            background: #1e293b;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            border: 1px solid #334155;
-        }
-
-        .pin-lock-card i.lock-icon {
-            font-size: 48px;
-            color: #ffb300;
-            margin-bottom: 20px;
-        }
-
-        .pin-lock-card h3 {
-            margin: 0 0 10px 0;
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .pin-lock-card p {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
-        .pin-input-container {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .pin-field {
-            width: 45px;
-            height: 50px;
-            border-radius: 8px;
-            border: 2px solid #475569;
-            background: #0f172a;
-            color: #ffffff;
-            font-size: 24px;
-            text-align: center;
-            font-weight: 700;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .pin-field:focus {
-            border-color: #556b2f;
-        }
-
-        .pin-error-msg {
-            color: #ef4444;
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: -12px;
-            margin-bottom: 16px;
-            min-height: 20px;
-            visibility: hidden;
-        }
-
-        .btn-unlock {
-            background: #556b2f;
-            color: #ffffff;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: opacity 0.2s;
-        }
-
-        .btn-unlock:hover {
-            opacity: 0.9;
-        }
-    </style>
 </head>
 <body>
 
-    <!-- Local PIN Authentication Layer -->
-    <div id="pin-auth-screen" class="pin-lock-overlay">
-        <div class="pin-lock-card">
-            <i class="fa-solid fa-shield-halved lock-icon"></i>
-            <h3>Security Verification</h3>
-            <p>Enter the 6-digit access PIN to unlock the Engine Matrix.</p>
-            
-            <div class="pin-input-container">
-                <input type="password" maxlength="1" class="pin-field" autofocus>
-                <input type="password" maxlength="1" class="pin-field">
-                <input type="password" maxlength="1" class="pin-field">
-                <input type="password" maxlength="1" class="pin-field">
-                <input type="password" maxlength="1" class="pin-field">
-                <input type="password" maxlength="1" class="pin-field">
-            </div>
-            
-            <div id="pin-error-element" class="pin-error-msg">Invalid PIN sequence! Access Denied.</div>
-            
-            <button type="button" class="btn-unlock" onclick="verifyPinSequence()">Verify Identity Matrix</button>
-        </div>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <h2>StayPremium Matrix</h2>
+        <i class="fa-solid fa-sliders" style="color: var(--mehrum); font-size: 20px;"></i>
     </div>
 
-    <div class="mobile-header">
-        <h2>StayPremium Panel</h2>
-        <i class="fa-solid fa-layer-group" style="color: var(--mehrum); font-size: 20px;"></i>
-    </div>
+    <!-- Center Notification Toast -->
+    <div id="center-toast"></div>
 
     <div class="admin-layout">
-        <aside class="sidebar">
-            <div class="sidebar-brand">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="sidebar" id="sidebarNav">
+            <div class="sidebar-brand" style="display: flex; align-items: center; justify-content: space-between;">
                 <h2><i class="fa-solid fa-shield-halved"></i> Engine Panel</h2>
+                <a href="call_tracking.html" title="Support & Call Track" style="color: inherit; text-decoration: none; font-size: 18px; background: rgba(255, 255, 255, 0.1); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.2s;">
+                    <i class="fa-solid fa-headset"></i>
+                </a>
             </div>
             <ul class="sidebar-menu">
                 <li class="sidebar-item active" data-target="deployment-panel">
                     <button><i class="fa-solid fa-circle-plus"></i> Add / Edit Space</button>
                 </li>
                 <li class="sidebar-item" data-target="properties-panel" onclick="fetchLivePropertiesStream()">
-                    <button><i class="fa-solid fa-house-chimney-window"></i> Live Properties (<span id="sidebar-count">0</span>)</button>
+                    <button><i class="fa-solid fa-house-chimney-window"></i> Live Properties <span id="sidebar-count" style="background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:10px; font-size:11px; margin-left:auto;">0</span></button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='usermanage.html'">
+                    <button><i class="fa-solid fa-users-gear"></i> Manage Users</button>
+                </li>
+                <li class="sidebar-item" onclick="window.location.href='vendormanage.html'">
+                    <button><i class="fa-solid fa-user-tie"></i> Manage Vendors</button>
+                </li>
+                <!-- Traffic Analytics Linked Here -->
+                <li class="sidebar-item" onclick="window.location.href='analytics.html'">
+                    <button><i class="fa-solid fa-chart-pie"></i> Traffic Analytics</button>
                 </li>
                 <li class="sidebar-item" data-target="inbox-panel">
                     <button><i class="fa-solid fa-inbox"></i> Inquiries Inbox</button>
                 </li>
-                <li class="sidebar-item" data-target="banner-panel">
+                <li class="sidebar-item" data-target="banners-panel">
                     <button><i class="fa-solid fa-images"></i> Slider Banners</button>
-                </li>
-                 <li class="sidebar-item" data-target="primium-panel">
-                    <button onclick="window.location.href='subscriptionadmin.html'">
-                        <i class="fa-solid fa-crown" style="color: #ffb300; margin-right: 8px;"></i> subscription manage
-                    </button>
                 </li>
             </ul>
         </aside>
 
+        <!-- Main Content Wrapper -->
         <main class="main-content">
             
+            <!-- PANEL 1: DEPLOYMENT / EDIT PROPERTY -->
             <section id="deployment-panel" class="panel-view active">
                 <div class="content-header">
                     <h1 id="form-main-heading">Deploy Living Asset Nodes</h1>
                     <p id="form-sub-heading">Real-time Cloudinary image processing configuration system framework for listed clusters.</p>
                 </div>
 
-                <div class="edit-indicator-bar" id="edit-mode-indicator">
-                    <span><i class="fa-solid fa-pen-to-square"></i> <b>EDIT MODE ACTIVE:</b> Modifying live database properties.</span>
-                    <button type="button" class="btn-small btn-remove" onclick="terminateFormEditMode()" style="padding: 6px 12px;">Cancel Edit</button>
+                <div id="edit-mode-indicator" class="edit-indicator-bar">
+                    <span><i class="fa-solid fa-triangle-exclamation"></i> EDIT MODE ACTIVE: Modifying existing database record node.</span>
+                    <button type="button" class="btn-small btn-remove" onclick="terminateFormEditMode()">Cancel Edit</button>
                 </div>
 
-                <form id="property-payload-form" class="form-card">
-                    <input type="hidden" id="p-edit-target-id" value="">
-                    <input type="hidden" id="p-existing-hero-url" value="">
+                <div class="form-card">
+                    <form id="property-payload-form">
+                        <input type="hidden" id="p-edit-target-id">
+                        <input type="hidden" id="p-existing-hero-url">
+                        
+                        <div class="section-heading">Basic Information & Category</div>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Property / Space Name *</label>
+                                <input type="text" id="p-name" placeholder="e.g. Royal Palm Luxury Living" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category Type *</label>
+                                <select id="p-category">
+                                    <option value="pg">Paying Guest (PG)</option>
+                                    <option value="flat">Independent Flat</option>
+                                    <option value="room">Private Room</option>
+                                    <option value="hostel">Luxury Hostel</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Sharing Type *</label>
+                                <select id="p-sharing">
+                                    <option value="Single Room">Single Room</option>
+                                    <option value="Double Sharing">Double Sharing</option>
+                                    <option value="Triple Sharing">Triple Sharing</option>
+                                    <option value="Full Flat">Full Flat</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="section-heading" style="margin-top: 0;">Core Taxonomy Configurations</div>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Property Name / Space Title</label>
-                            <input type="text" id="p-name" placeholder="e.g. Stanza Living Boston House" required>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Furnishing Status</label>
+                                <select id="p-furnishing">
+                                    <option value="Fully Furnished">Fully Furnished</option>
+                                    <option value="Semi Furnished">Semi Furnished</option>
+                                    <option value="Unfurnished">Unfurnished</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender Accommodation</label>
+                                <select id="p-gender">
+                                    <option value="Both">Unisex / Both</option>
+                                    <option value="Boys Only">Boys Only</option>
+                                    <option value="Girls Only">Girls Only</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Available From</label>
+                                <input type="text" id="p-available-from" placeholder="e.g. Immediate / 1st June">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Structural Architecture Category</label>
-                            <select id="p-category" required>
-                                <option value="pg" selected>PG (Paying Guest Space)</option>
-                                <option value="room">Independent Room Unit</option>
-                                <option value="flat">Apartment Complex / Luxury Flat</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label>Spatial Configuration Spec</label>
-                            <select id="p-sharing" required>
-                                <option value="Single Room">Single Sharing / Private Room</option>
-                                <option value="Double Sharing" selected>Double Sharing Matrix</option>
-                                <option value="Triple Sharing">Triple Sharing Framework</option>
-                                <option value="1BHK">1 BHK Apartment</option>
-                                <option value="2BHK">2 BHK Apartment</option>
-                                <option value="3BHK">3 BHK Luxury Suite</option>
-                            </select>
+                        <div class="section-heading">Pricing & Financials</div>
+                        <div class="grid-4">
+                            <div class="form-group">
+                                <label>Monthly Rent / Price (₹) *</label>
+                                <input type="number" id="p-price" placeholder="12500" required>
+                            </div>
+                            <div class="form-group">
+                                <label>MRP / Strikethrough Price (₹)</label>
+                                <input type="number" id="p-mrp" placeholder="15000">
+                            </div>
+                            <div class="form-group">
+                                <label>Security Deposit (₹)</label>
+                                <input type="number" id="p-deposit" placeholder="10000">
+                            </div>
+                            <div class="form-group">
+                                <label>Badge Text</label>
+                                <input type="text" id="p-badge" placeholder="e.g. Verified 100%, Best Value">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Furnishing Status Vector</label>
-                            <select id="p-furnishing" required>
-                                <option value="Fully Furnished" selected>Fully Furnished State</option>
-                                <option value="Semi-Furnished">Semi-Furnished Layout</option>
-                                <option value="Unfurnished">Raw Unfurnished Space</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Suitable For Gender Type</label>
-                            <select id="p-gender" required>
-                                <option value="Both" selected>Both (Boys & Girls)</option>
-                                <option value="Boys">Boys Only</option>
-                                <option value="Girls">Girls Only</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Available From (Date / Timeline)</label>
-                            <input type="text" id="p-available-from" placeholder="e.g. Immediate / 1st July" required>
+                        <div class="section-heading">Description & Rules</div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>About Property / Description</label>
+                                <textarea id="p-desc" rows="3" placeholder="Describe ambiance, features, rules..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>House Rules</label>
+                                <textarea id="p-rules" rows="3" placeholder="e.g. No smoking, Visitors allowed till 9 PM..."></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Suitable For (Target Audience)</label>
-                            <input type="text" id="p-suitable-for" placeholder="e.g. Working Professionals, Students" value="Working Professionals, Students" required>
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>About Property / Narrative Description</label>
-                        <textarea id="p-desc" rows="3" placeholder="State overarching overview of your living ecosystem node..." required></textarea>
-                    </div>
+                        <div class="section-heading">Specifications & Infrastructure</div>
+                        <div class="grid-4">
+                            <div class="form-group"><label>Rooms Count</label><input type="text" id="p-count-rooms" placeholder="1 Room"></div>
+                            <div class="form-group"><label>Bathrooms Count</label><input type="text" id="p-count-bathrooms" placeholder="1 Bathroom"></div>
+                            <div class="form-group"><label>Balconies Count</label><input type="text" id="p-count-balconies" placeholder="1 Balcony"></div>
+                            <div class="form-group"><label>Property Type Meta</label><input type="text" id="p-type-meta" placeholder="Studio / Apartment"></div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>House Rules (One per line)</label>
-                        <textarea id="p-rules" rows="3" placeholder="e.g. Gate closes at 11 PM&#10;No loud music after 10 PM&#10;Visitors allowed till evening" required></textarea>
-                    </div>
+                        <div class="grid-4">
+                            <div class="form-group"><label>Floor Number</label><input type="text" id="p-floor" placeholder="1st of 4 Floors"></div>
+                            <div class="form-group"><label>Flooring Type</label><input type="text" id="p-flooring-type" placeholder="Ceramic / Vitrified"></div>
+                            <div class="form-group"><label>Parking Available</label><input type="text" id="p-parking" placeholder="Bike / Car Parking"></div>
+                            <div class="form-group"><label>Power Backup</label><input type="text" id="p-power-backup" placeholder="Inverter / Generator"></div>
+                        </div>
 
-                    <div class="section-heading">Commercial Matrix & Pricing Framework</div>
-                    <div class="grid-4">
-                        <div class="form-group">
-                            <label>Net Rental (₹ / mo)</label>
-                            <input type="number" id="p-price" placeholder="e.g. 12500" required>
+                        <div class="grid-4">
+                            <div class="form-group"><label>Attached Bathroom</label><input type="text" id="p-attached-bathroom" placeholder="Yes / No"></div>
+                            <div class="form-group"><label>Attached Balcony</label><input type="text" id="p-attached-balcony" placeholder="Yes / No"></div>
+                            <div class="form-group"><label>Minimum Contract</label><input type="text" id="p-contract" placeholder="6 Months"></div>
+                            <div class="form-group"><label>Early Leaving Charges</label><input type="text" id="p-leaving-charges" placeholder="1 month rent"></div>
                         </div>
-                        <div class="form-group">
-                            <label>Baseline MRP Crossout (₹)</label>
-                            <input type="number" id="p-mrp" placeholder="e.g. 15000">
-                        </div>
-                        <div class="form-group">
-                            <label>Security Deposit (₹)</label>
-                            <input type="number" id="p-deposit" placeholder="e.g. 25000" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Promotional Badging Label</label>
-                            <input type="text" id="p-badge" placeholder="e.g. 10% OFF / Best Seller">
-                        </div>
-                    </div>
 
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label>Minimum Contract Duration</label>
-                            <input type="text" id="p-contract" placeholder="e.g. 6 Months" value="6 Months" required>
+                        <div class="grid-2">
+                            <div class="form-group"><label>Property Age</label><input type="text" id="p-age" placeholder="1 to 5 Years Old"></div>
+                            <div class="form-group"><label>Suitable For</label><input type="text" id="p-suitable-for" placeholder="Working Professionals, Students"></div>
                         </div>
-                        <div class="form-group">
-                            <label>Early Leaving Charges</label>
-                            <input type="text" id="p-leaving-charges" placeholder="e.g. 1 month(s) of rent" value="1 month(s) of rent" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Property Age Matrix</label>
-                            <input type="text" id="p-age" placeholder="e.g. 1 to 5 Year Old" value="1 to 5 Year Old" required>
-                        </div>
-                    </div>
 
-                    <div class="section-heading">Configuration & Structural Layout Architecture</div>
-                    <div class="grid-4">
-                        <div class="form-group">
-                            <label>Total Rooms Count</label>
-                            <input type="text" id="p-count-rooms" placeholder="e.g. 1 Room" value="1 Room" required>
+                        <div class="section-heading">Location & Media Assets</div>
+                        <div class="grid-3">
+                            <div class="form-group"><label>Area / Locality *</label><input type="text" id="p-area" placeholder="Malviya Nagar" required></div>
+                            <div class="form-group"><label>City *</label><input type="text" id="p-city" placeholder="Jaipur" required></div>
+                            <div class="form-group"><label>Google Map Embed Link</label><input type="text" id="p-map" placeholder="https://maps.google.com/..."></div>
                         </div>
-                        <div class="form-group">
-                            <label>Bathrooms Count</label>
-                            <input type="text" id="p-count-bathrooms" placeholder="e.g. 1 Bathroom" value="1 Bathroom" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Balconies Count</label>
-                            <input type="text" id="p-count-balconies" placeholder="e.g. 2 Balconies" value="2 Balconies" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Property Type Meta</label>
-                            <input type="text" id="p-type-meta" placeholder="e.g. Studio Apartment" value="Studio Apartment" required>
-                        </div>
-                    </div>
 
-                    <div class="grid-4">
-                        <div class="form-group">
-                            <label>Floor Level Setup</label>
-                            <input type="text" id="p-floor" placeholder="e.g. 1st of 4 Floors" value="1st of 4 Floors" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Flooring Type Material</label>
-                            <input type="text" id="p-flooring-type" placeholder="e.g. Ceramic / Marble" value="Ceramic" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Parking Allocation</label>
-                            <input type="text" id="p-parking" placeholder="e.g. 1 Open / 1 Covered" value="1 Open" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Power Backup Parameter</label>
-                            <input type="text" id="p-power-backup" placeholder="e.g. None / 24*7" value="None" required>
-                        </div>
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Attached Bathroom Available?</label>
-                            <select id="p-attached-bathroom" required>
-                                <option value="Yes" selected>Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Attached Balcony Available?</label>
-                            <select id="p-attached-balcony" required>
-                                <option value="Yes">Yes</option>
-                                <option value="No" selected>No</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="section-heading">Direct Cloudinary Image Upload Pipeline (Gallery Selector)</div>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Primary Thumbnail Cover (Upload to Cloudinary)</label>
-                            <input type="file" id="p-hero-file" accept="image/*">
-                            <div id="hero-preview-hook"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Supplementary Portfolio Gallery Assets</label>
-                            <div id="gallery-repeater-root">
-                                <div class="repeater-box">
-                                    <input type="file" class="gallery-file-field" accept="image/*">
-                                    <button type="button" class="btn-small btn-add" onclick="injectGalleryField()"><i class="fa-solid fa-plus"></i></button>
+                        <div class="grid-2" style="margin-top: 15px;">
+                            <div class="form-group">
+                                <label>Primary Cover Image File (Cloudinary) *</label>
+                                <input type="file" id="p-hero-file" accept="image/*">
+                                <div id="hero-preview-hook" style="margin-top:5px;"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Gallery Image Repeater Nodes</label>
+                                <div id="gallery-repeater-root">
+                                    <div class="repeater-box">
+                                        <input type="file" class="gallery-file-field" accept="image/*">
+                                        <button type="button" class="btn-small btn-add" onclick="injectGalleryField()"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="section-heading">Geo-Spatial Infrastructure Context</div>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>City Hub Base Location</label>
-                            <input type="text" id="p-city" placeholder="e.g. Jaipur" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Micro-Neighborhood Sector / Area Name</label>
-                            <input type="text" id="p-area" placeholder="e.g. Mansarovar" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Google Maps Navigation Embed URL String</label>
-                        <input type="url" id="p-map" placeholder="http://maps.google.com/..." required>
-                    </div>
-
-                    <div class="section-heading">Extended Facilities Vector Matrix (Checklist Setup)</div>
-                    <div class="form-group">
+                        <div class="section-heading">Amenities Matrix</div>
                         <div class="facilities-matrix">
-                            <label class="matrix-checkbox"><input type="checkbox" id="v-wifi" checked><span><i class="fa-solid fa-wifi"></i> Wifi</span></label>
-                            <label class="matrix-checkbox"><input type="checkbox" id="v-ac" checked><span><i class="fa-solid fa-snowflake"></i> AC Available</span></label>
-                            <label class="matrix-checkbox"><input type="checkbox" id="v-food" checked><span><i class="fa-solid fa-utensils"></i> Food Included</span></label>
-                            <label class="matrix-checkbox"><input type="checkbox" id="v-gym"><span><i class="fa-solid fa-dumbbell"></i> Gym Club</span></label>
-                            <label class="matrix-checkbox"><input type="checkbox" id="v-power"><span><i class="fa-solid fa-bolt"></i> Power Grid</span></label>
-                            <label class="matrix-checkbox"><input type="checkbox" id="v-laundry"><span><i class="fa-solid fa-shirt"></i> Laundry Box</span></label>
+                            <label class="matrix-checkbox"><input type="checkbox" id="v-wifi"> High Speed Wifi</label>
+                            <label class="matrix-checkbox"><input type="checkbox" id="v-ac"> AC Attached</label>
+                            <label class="matrix-checkbox"><input type="checkbox" id="v-food"> Food Included</label>
+                            <label class="matrix-checkbox"><input type="checkbox" id="v-gym"> Fitness Gym</label>
+                            <label class="matrix-checkbox"><input type="checkbox" id="v-power"> Power Backup</label>
+                            <label class="matrix-checkbox"><input type="checkbox" id="v-laundry"> Laundry Service</label>
                         </div>
-                    </div>
 
-                    <div class="section-heading">Stakeholder / Posted Management Meta</div>
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label>Posted By Entity Category</label>
-                            <select id="p-posted-by" required>
-                                <option value="Owner" selected>Owner</option>
-                                <option value="Agent">Agent / Broker</option>
-                                <option value="StayPremium Executive">StayPremium Executive</option>
-                            </select>
+                        <div class="section-heading">Owner / Contact Information</div>
+                        <div class="grid-3">
+                            <div class="form-group"><label>Posted By Type</label><input type="text" id="p-posted-by" value="Owner"></div>
+                            <div class="form-group"><label>Owner / Manager Name</label><input type="text" id="p-owner-name" placeholder="Rajesh Sharma"></div>
+                            <div class="form-group"><label>Owner Contact Phone</label><input type="text" id="p-owner-phone" placeholder="9876543210"></div>
                         </div>
-                        <div class="form-group">
-                            <label>Assigned Lead Corporate Name</label>
-                            <input type="text" id="p-owner-name" placeholder="e.g. Suresh Sharma" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Corporate Target WhatsApp Line Number</label>
-                            <input type="tel" id="p-owner-phone" placeholder="e.g. 9876543210" required>
-                        </div>
-                    </div>
 
-                    <button type="submit" class="btn-primary" id="p-submit-btn">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> <span id="submit-btn-text">Deploy Asset Node System</span>
-                    </button>
-                </form>
+                        <div style="margin-top: 30px;">
+                            <button type="submit" id="p-submit-btn" class="btn-primary">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> <span id="submit-btn-text">Deploy Asset Node System</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </section>
 
+            <!-- PANEL 2: LIVE PROPERTIES MATRIX -->
             <section id="properties-panel" class="panel-view">
                 <div class="content-header">
-                    <h1>Live Listed Assets Preview</h1>
-                    <p>Real-time visual monitoring grid for all database records. Modify parameters or remove items instantly.</p>
+                    <h1>Live Properties Matrix</h1>
+                    <p>Inspect active database endpoints, modify structure parameters, or purge records.</p>
                 </div>
-                <div id="live-properties-terminal" class="properties-grid">
-                    <div style="text-align:center; color:var(--text-muted); padding:40px; grid-column: 1/-1;">Fetching active matrix cluster nodes...</div>
+                <div class="properties-grid" id="live-properties-terminal">
+                    <div style="text-align:center; color:var(--text-muted); padding:40px; grid-column: 1/-1;">Syncing live properties terminal...</div>
                 </div>
             </section>
 
+            <!-- PANEL 3: INQUIRIES INBOX -->
             <section id="inbox-panel" class="panel-view">
                 <div class="content-header">
-                    <h1>Inquiries Inbox Engine</h1>
-                    <p>Track realtime incoming client target leads generated across StayPremium interface nodes.</p>
+                    <h1>Client Inquiries Inbox</h1>
+                    <p>Real-time consolidated lead capture stream across all portal spaces.</p>
                 </div>
-                <div id="inbox-cards-terminal" class="inbox-container">
-                    <div style="text-align:center; color:var(--text-muted); padding:40px;">Establishing Realtime Stream Pipeline...</div>
+                <div class="inbox-container" id="inbox-cards-terminal">
+                    <div style="text-align:center; color:var(--text-muted); padding:40px;">Checking unified lead database logs...</div>
                 </div>
             </section>
 
-            <section id="banner-panel" class="panel-view">
-                <div class="content-header" style="margin-bottom: 20px;">
-                    <h1><i class="fa-solid fa-layer-group" style="color: var(--primary-olive, #556b2f); margin-right: 8px;"></i> Dynamic 3-Banner Matrix Setup</h1>
-                    <p>Manage exactly 3 active promo banners simultaneously with separate desktop and mobile viewport optimizations.</p>
+            <!-- PANEL 4: SLIDER BANNERS -->
+            <section id="banners-panel" class="panel-view">
+                <div class="content-header">
+                    <h1>Hero Slider Banners Management</h1>
+                    <p>Configure dynamic promotional banner creative clusters for website main viewport.</p>
                 </div>
-                
-                <div class="matrix-form-container" style="display: flex; flex-direction: column; gap: 25px;">
-                    
-                    <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--primary-olive, #556b2f);">
-                        <h3 style="margin-bottom: 15px; color: var(--primary-olive, #556b2f); font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 1 (Default Active)</h3>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
-                                    <input type="file" id="b1-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                                </div>
-                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
-                                    <input type="file" id="b1-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                                </div>
-                            </div>
-                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                                <input type="text" id="b1-title" placeholder="Banner 1 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                <input type="text" id="b1-subtitle" placeholder="Banner 1 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                            </div>
-                            <input type="text" id="b1-link" placeholder="Redirection Link (e.g., pg.html)" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
+                <div class="form-card">
+                    <div class="section-heading">Add New Banner Creative</div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Banner Image File *</label>
+                            <input type="file" id="b-img-file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Title Text</label>
+                            <input type="text" id="b-title" placeholder="Stay100% Coliving Spaces">
                         </div>
                     </div>
-
-                    <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid #b8860b;">
-                        <h3 style="margin-bottom: 15px; color: #b8860b; font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 2</h3>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
-                                    <input type="file" id="b2-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                                </div>
-                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
-                                    <input type="file" id="b2-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                                </div>
-                            </div>
-                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                                <input type="text" id="b2-title" placeholder="Banner 2 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                <input type="text" id="b2-subtitle" placeholder="Banner 2 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                            </div>
-                            <input type="text" id="b2-link" placeholder="Redirection Link" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
+                    <div class="grid-2" style="margin-top: 15px;">
+                        <div class="form-group">
+                            <label>Subtitle Description</label>
+                            <input type="text" id="b-subtitle" placeholder="Verified 100% Spaces">
+                        </div>
+                        <div class="form-group">
+                            <label>Action Destination Link</label>
+                            <input type="text" id="b-link" placeholder="#">
                         </div>
                     </div>
-
-                    <div class="form-card" style="background: var(--white, #ffffff); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--mehrum, #800020);">
-                        <h3 style="margin-bottom: 15px; color: var(--mehrum, #800020); font-size: 16px; font-weight: 700;"><i class="fa-solid fa-image"></i> Banner Slot 3</h3>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Desktop Image (1600x800) *</label>
-                                    <input type="file" id="b3-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                                </div>
-                                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Mobile Image (800x400)</label>
-                                    <input type="file" id="b3-mobile-img-file" accept="image/*" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;">
-                                </div>
-                            </div>
-                            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-                                <input type="text" id="b3-title" placeholder="Banner 3 Display Title" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                <input type="text" id="b3-subtitle" placeholder="Banner 3 Subtext Caption" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                            </div>
-                            <input type="text" id="b3-link" placeholder="Redirection Link" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; width: 100%;">
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn-primary" id="b-submit-btn" onclick="deployAllBannersMatrix()" style="background: var(--primary-olive, #556b2f); color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(85, 107, 47, 0.25);">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Deploy & Sync All 3 Banners Live
+                    <button type="button" id="b-submit-btn" class="btn-primary" style="margin-top: 20px;" onclick="deployBannerMatrixNode()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Synchronize Banner Sequence
                     </button>
                 </div>
             </section>
@@ -512,156 +294,32 @@
         </main>
     </div>
 
-    <nav class="mobile-nav" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #cbd5e1; z-index: 9999;">
-        <button class="mobile-nav-item active" data-target="deployment-panel" onclick="closeMobileMoreMenu()">
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-nav">
+        <button class="mobile-nav-item active" data-target="deployment-panel" onclick="window.location.href='admin.html'">
             <i class="fa-solid fa-circle-plus"></i>
-            <span>Manage</span>
+            <span>Add Space</span>
         </button>
-        <button class="mobile-nav-item" data-target="properties-panel" onclick="fetchLivePropertiesStream(); closeMobileMoreMenu();">
+        <button class="mobile-nav-item" onclick="window.location.href='admin.html'">
             <i class="fa-solid fa-house-chimney-window"></i>
-            <span>Live Assets</span>
+            <span>Properties</span>
         </button>
-        <button class="mobile-nav-item" data-target="inbox-panel" onclick="closeMobileMoreMenu()">
+        <!-- Mobile Bottom Navigation Analytics Link -->
+        <button class="mobile-nav-item" onclick="window.location.href='analytics.html'">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Analytics</span>
+        </button>
+        <button class="mobile-nav-item" onclick="window.location.href='admin.html'">
             <i class="fa-solid fa-inbox"></i>
             <span>Inbox</span>
         </button>
-        <button class="mobile-nav-item" id="mobile-more-btn" onclick="toggleMobileMoreMenu(event)">
-            <i class="fa-solid fa-ellipsis"></i>
-            <span>More</span>
-        </button>
     </nav>
 
-    <div id="mobile-more-dropdown" style="display: none; position: fixed; bottom: 70px; right: 16px; background: #ffffff; border-radius: 14px; box-shadow: 0 10px 25px rgba(15,23,42,0.15); border: 1px solid #e2e8f0; width: 200px; z-index: 10000; overflow: hidden; animation: slideUpMobile 0.2s ease-out;">
-        <div style="padding: 6px 0;">
-            <button class="mobile-nav-item" data-target="banner-panel" onclick="handleMoreMenuPanelSelection(this)" style="display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1e293b; text-align: left; cursor: pointer;">
-                <i class="fa-solid fa-images" style="color: #64748b; font-size: 16px; width: 20px;"></i>
-                <span>Manage Banners</span>
-            </button>
-            
-            <button onclick="window.location.href='subscriptionadmin.html'" style="display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1e293b; text-align: left; cursor: pointer; border-top: 1px solid #f1f5f9;">
-                <i class="fa-solid fa-crown" style="color: #ffb300; font-size: 16px; width: 20px;"></i>
-                <span>Subscription Admin</span>
-            </button>
-        </div>
-    </div>
-
-    <style>
-        @keyframes slideUpMobile {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .mobile-nav-item {
-            background: none; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #64748b; cursor: pointer; gap: 4px;
-        }
-        .mobile-nav-item i { font-size: 18px; }
-        .mobile-nav-item.active { color: #556b2f !important; font-weight: 700; }
-    </style>
-
-    <script>
-        // --- LOCAL PIN AUTHENTICATION CONTROLLER ---
-        const TARGET_PIN = "312131";
-        const sessionAuthKey = "staypremium_session_auth";
-
-        // Check verification immediately when document loads
-        document.addEventListener("DOMContentLoaded", function() {
-            if (sessionStorage.getItem(sessionAuthKey) === "verified") {
-                document.getElementById("pin-auth-screen").style.display = "none";
-            } else {
-                setupPinInputsBehavior();
-            }
-        });
-
-        // Set up field switching logic (auto-focusing next block)
-        function setupPinInputsBehavior() {
-            const fields = document.querySelectorAll('.pin-field');
-            
-            fields.forEach((field, index) => {
-                field.addEventListener('input', (e) => {
-                    const val = e.target.value;
-                    // Keep only numeric values
-                    e.target.value = val.replace(/[^0-9]/g, '');
-                    
-                    if (e.target.value.length === 1 && index < fields.length - 1) {
-                        fields[index + 1].focus();
-                    }
-                    
-                    // If all inputs filled, automatically attempt check
-                    const combined = Array.from(fields).map(f => f.value).join('');
-                    if (combined.length === 6) {
-                        verifyPinSequence();
-                    }
-                });
-
-                field.addEventListener('keydown', (e) => {
-                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                        fields[index - 1].focus();
-                    }
-                });
-            });
-        }
-
-        // Complete matching execution 
-        function verifyPinSequence() {
-            const fields = document.querySelectorAll('.pin-field');
-            const errorText = document.getElementById('pin-error-element');
-            const entryPin = Array.from(fields).map(f => f.value).join('');
-
-            if (entryPin === TARGET_PIN) {
-                sessionStorage.setItem(sessionAuthKey, "verified");
-                errorText.style.visibility = "hidden";
-                
-                // Animate lock screen away clean
-                const overlay = document.getElementById("pin-auth-screen");
-                overlay.style.transition = "opacity 0.3s ease";
-                overlay.style.opacity = "0";
-                setTimeout(() => {
-                    overlay.style.display = "none";
-                }, 300);
-            } else {
-                errorText.style.visibility = "visible";
-                // Clear out inputs for clean retry sequence
-                fields.forEach((f, idx) => {
-                    f.value = "";
-                    if (idx === 0) f.focus();
-                });
-            }
-        }
-
-        // --- ORIGINAL INTERACTIVE CONTROLS ---
-        function toggleMobileMoreMenu(event) {
-            event.stopPropagation();
-            const menu = document.getElementById('mobile-more-dropdown');
-            if (menu.style.display === 'none' || menu.style.display === '') {
-                menu.style.display = 'block';
-                document.getElementById('mobile-more-btn').classList.add('active');
-            } else {
-                closeMobileMoreMenu();
-            }
-        }
-
-        function closeMobileMoreMenu() {
-            document.getElementById('mobile-more-dropdown').style.display = 'none';
-            document.getElementById('mobile-more-btn').classList.remove('active');
-        }
-
-        function handleMoreMenuPanelSelection(buttonElement) {
-            closeMobileMoreMenu();
-            if (typeof showPanel === 'function') {
-                const target = buttonElement.getAttribute('data-target');
-                showPanel(target);
-            }
-        }
-
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('mobile-more-dropdown');
-            const moreBtn = document.getElementById('mobile-more-btn');
-            if (menu && !menu.contains(e.target) && !moreBtn.contains(e.target)) {
-                closeMobileMoreMenu();
-            }
-        });
-    </script>
-
-    <div id="center-toast"></div>
+    <!-- Firebase SDK Scripts (Compat & Modular compatibility layer) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- Custom Admin Script -->
     <script type="module" src="admin.js"></script>
 </body>
 </html>
